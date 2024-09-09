@@ -1,0 +1,68 @@
+{
+	"printWidth": 100,
+	"tabWidth": 4,
+	"useTabs": false,
+	"semi": true,
+	"singleQuote": true,
+	"trailingComma": "es5",
+	"bracketSpacing": true,
+	"jsxBracketSameLine": false,
+	"arrowParens": "always",
+	"endOfLine": "lf",
+	"quoteProps": "as-needed",
+	"requirePragma": false,
+	"insertPragma": false,
+	"vueIndentScriptAndStyle": true,
+	"parser": "typescript",
+	"eslintIntegration": true,
+	"stylelintIntegration": true,
+	"htmlWhitespaceSensitivity": "css",
+	"embeddedLanguageFormatting": "auto",
+	"cssEnableSemicolonAutoInsertion": true,
+	"phpIndentScript": "normal",
+	"phpScriptTags": true,
+	"plugins": ["prettier-plugin-tailwindcss"],
+	"tailwindcss": {
+		"format": true,
+		"sortClasses": true,
+		"indent": 4,
+		"breakClassChains": true,
+		"emptyLineBetweenGroups": true,
+		"maxLineLength": 100,
+		"spacesAroundCurlyBraces": false
+	},
+	"overrides": [
+		{
+			"files": "*.{js,jsx}",
+			"options": {
+				"parser": "babel"
+			}
+		},
+		{
+			"files": "*.json",
+			"options": {
+				"parser": "json",
+				"printWidth": 80,
+				"tabWidth": 4,
+				"useTabs": false,
+				"semi": false,
+				"singleQuote": false,
+				"trailingComma": "none",
+				"bracketSpacing": true,
+				"jsxBracketSameLine": true,
+				"arrowParens": "avoid"
+			}
+		},
+		{
+			"files": "*.yml",
+			"options": { "parser": "yaml" }
+		},
+		{
+			"files": "*.prisma",
+			"options": {
+				"parser": "prisma",
+				"tabWidth": 4
+			}
+		}
+	]
+}
