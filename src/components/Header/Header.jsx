@@ -2,6 +2,8 @@
 
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 import { Home, LineChart, Menu, Package, Package2, ShoppingCart, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,13 +21,16 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import SetImageLogin from '@/components/Sidebar/SetImagenLogin';
 import SetNameLogin from '@/components/Sidebar/SetNameLogin';
 
-const handleSignOut = async () => {
-    console.log('Cerrando sesión...');
-    await signOut();
-    console.log('Sesión cerrada');
-};
-
 export default function Header() {
+    const router = useRouter();
+
+    const handleSignOut = async () => {
+        console.log('Cerrando sesión...');
+        await signOut({ redirect: false });
+        console.log('Sesión cerrada');
+        router.push('/login');
+    };
+
     return (
         <header className="flex h-14 items-center gap-4 border-b bg-[#ffffff] px-4 lg:h-[60px] lg:px-6">
             <Sheet>

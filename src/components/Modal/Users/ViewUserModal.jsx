@@ -11,14 +11,10 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
-    DialogClose,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 
-import { View } from 'lucide-react';
-
-export default function ViewUserModal({ id }) {
+export default function ViewUserModal({ id, open, onClose }) {
     const [user, setUser] = useState({});
 
     useEffect(() => {
@@ -31,10 +27,7 @@ export default function ViewUserModal({ id }) {
     }, [id]);
 
     return (
-        <Dialog>
-            <DialogTrigger className="flex items-center">
-                <View className="h-[18px] w-[18px] hover:text-verde" />
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[800px]">
                 <DialogHeader>
                     <DialogTitle>Información del Usuario</DialogTitle>
@@ -121,11 +114,12 @@ export default function ViewUserModal({ id }) {
                     </div>
                 </div>
                 <DialogFooter className="mt-6">
-                    <DialogClose asChild>
-                        <Button className="h-[36px] w-[100px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]">
-                            Cerrar
-                        </Button>
-                    </DialogClose>
+                    <Button
+                        onClick={onClose}
+                        className="h-[36px] w-[100px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]"
+                    >
+                        Cerrar
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

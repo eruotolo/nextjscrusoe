@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useSettingContext } from '@/context/SettingContext';
 import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
@@ -19,9 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus } from 'lucide-react';
 
-export default function NewUserModal() {
-    const { updateUsers } = useSettingContext();
-
+export default function NewUserModal({ open, onClose, refresh }) {
     const [formData, setFormData] = useState({
         name: '',
         lastName: '',
@@ -67,7 +64,7 @@ export default function NewUserModal() {
 
             if (res.ok) {
                 console.log('File and data uploaded successfully');
-                updateUsers();
+                refresh();
                 // Aquí puedes agregar lógica adicional después de un envío exitoso
             }
         } catch (error) {
@@ -75,12 +72,13 @@ export default function NewUserModal() {
         }
     };
 
+    const isFormValid = () => {
+        const { name, lastName, email, phone, address, city, password } = formData;
+        return name && lastName && email && phone && address && city && password;
+    };
+
     return (
-        <Dialog>
-            <DialogTrigger className="flex h-[36px] w-[100px] items-center justify-center rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]">
-                Nuevo
-                <Plus className="ml-[5px] h-3 w-3" />
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[800px]">
                 <DialogHeader>
                     <DialogTitle>Crear Nuevo Usuario</DialogTitle>
@@ -194,14 +192,13 @@ export default function NewUserModal() {
                         </div>
                     </div>
                     <DialogFooter className="mt-6">
-                        <DialogClose asChild>
-                            <Button
-                                type="submit"
-                                className="h-[36px] w-[100px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]"
-                            >
-                                Crear
-                            </Button>
-                        </DialogClose>
+                        <Button
+                            type="submit"
+                            disabled={!isFormValid()}
+                            className="h-[36px] w-[100px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]"
+                        >
+                            Crear
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

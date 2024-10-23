@@ -10,11 +10,12 @@ export default function SetImageLogin() {
         <>
             <Image
                 src={`/profile/${
-                    session && session.user ? session.user.image : '/profile/perfil-defaul.jpeg'
+                    session && session.user ? session.user.image : '/perfil-default.jpg'
                 }`}
                 alt="Imagen Perfil Usuario"
                 width={770}
                 height={770}
+                priority={true}
                 className="h-[45px] w-[45px] rounded-full"
             />
         </>

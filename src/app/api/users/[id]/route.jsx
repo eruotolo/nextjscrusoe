@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { writeFile } from 'fs/promises';
+import path from 'path';
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(request, { params }) {
     //return NextResponse.json({ message: 'Obtengo un usuario' });
@@ -36,6 +39,7 @@ export async function PUT(request, { params: { id } }) {
     let data = {};
 
     const contentType = request.headers.get('Content-Type');
+    //console.log('Content-Type:', contentType);
 
     if (contentType.includes('multipart/form-data')) {
         const formData = await request.formData();
@@ -44,6 +48,7 @@ export async function PUT(request, { params: { id } }) {
         });
 
         const { password, file, ...rest } = data;
+        //console.log('Form Data:', data);
 
         if (password) {
             const hashedPassword = await bcrypt.hash(password, 10);
@@ -61,27 +66,41 @@ export async function PUT(request, { params: { id } }) {
             rest.image = randomFileName; // Update the image field with the new file name
         }
 
+        // Convert state to integer if it exists
+        if (rest.state) {
+            rest.state = parseInt(rest.state, 10);
+        }
+
         data = rest;
     } else if (contentType.includes('application/json')) {
         data = await request.json();
+        //console.log('JSON Data:', data);
 
         if (data.password) {
             const hashedPassword = await bcrypt.hash(data.password, 10);
             data.password = hashedPassword;
+        }
+
+        // Convert state to integer if it exists
+        if (data.state) {
+            data.state = parseInt(data.state, 10);
         }
     } else {
         return NextResponse.json({ error: 'Unsupported Content-Type' }, { status: 415 });
     }
 
     try {
+        //console.log('Data to update:', data);
         const userUpdated = await prisma.user.update({
             where: {
                 id: Number(id),
             },
             data: data,
         });
+        //console.log('User updated:', userUpdated);
         return NextResponse.json(userUpdated);
     } catch (error) {
+        //console.error('Error updating user:', error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

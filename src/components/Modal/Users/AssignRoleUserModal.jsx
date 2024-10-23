@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSettingContext } from '@/context/SettingContext';
+import { getRoles } from '@/services/roleService';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -10,18 +10,20 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
     DialogFooter,
-    DialogClose,
 } from '@/components/ui/dialog';
 
-import { UserCog } from 'lucide-react';
-
-export default function AssignRoleUserModal({ id }) {
-    const { updateUsers, roleData } = useSettingContext();
-
+export default function AssignRoleUserModal({ id, refresh, open, onClose }) {
+    const [roleData, setRoleData] = useState([]);
     const [userRoles, setUserRoles] = useState([]);
     const [selectedRoles, setSelectedRoles] = useState([]);
+
+    useEffect(() => {
+        // Fetch all roles
+        getRoles()
+            .then((data) => setRoleData(data))
+            .catch((error) => console.error('Error fetching roles:', error));
+    }, []);
 
     useEffect(() => {
         // Fetch user's current roles
@@ -55,7 +57,8 @@ export default function AssignRoleUserModal({ id }) {
 
             if (res.ok) {
                 console.log('Roles updated successfully');
-                updateUsers();
+                await refresh();
+                onClose();
             } else {
                 const errorData = await res.json();
                 console.error('Error updating roles:', errorData);
@@ -66,10 +69,7 @@ export default function AssignRoleUserModal({ id }) {
     };
 
     return (
-        <Dialog>
-            <DialogTrigger className="flex items-center">
-                <UserCog className="h-[18px] w-[18px] hover:text-verde" />
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[400px]">
                 <DialogHeader>
                     <DialogTitle>Asignar Permisos y Roles</DialogTitle>
@@ -103,14 +103,12 @@ export default function AssignRoleUserModal({ id }) {
                         ))}
                     </div>
                     <DialogFooter>
-                        <DialogClose asChild>
-                            <Button
-                                type="submit"
-                                className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
-                            >
-                                Guardar Cambios
-                            </Button>
-                        </DialogClose>
+                        <Button
+                            type="submit"
+                            className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
+                        >
+                            Actualizar
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

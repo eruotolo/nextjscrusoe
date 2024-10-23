@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JetClientState">
+    <option name="folders">
+      <list>
+        <folderState>
+          <option name="description" value="Sistema Dashboard" />
+          <option name="environmentGroups">
+            <list>
+              <environmentGroupState>
+                <option name="name" value="Default" />
+              </environmentGroupState>
+            </list>
+          </option>
+          <option name="folders">
+            <list>
+              <folderState>
+                <option name="id" value="7e7db8cd-3e79-451f-a927-3bc6700c3c99" />
+                <option name="name" value="City" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="id" value="c793158e-12ab-406e-88c9-e85cff74ce22" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="GetAll" />
+                      <option name="sortWeight" value="1000000" />
+                      <option name="url" value="http://localhost:3083/api/city" />
+                    </requestState>
+                    <requestState>
+                      <option name="id" value="44913d58-a000-47df-adc6-5e5576db7187" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="FindUnique" />
+                      <option name="queryParams">
+                        <list>
+                          <queryParamState>
+                            <option name="key" value="search" />
+                            <option name="value" value="montevideo" />
+                          </queryParamState>
+                        </list>
+                      </option>
+                      <option name="sortWeight" value="2000000" />
+                      <option name="url" value="http://localhost:3083/api/city?search=montevideo" />
+                    </requestState>
+                    <requestState>
+                      <option name="id" value="3d0d0810-e8e8-4cd1-8fbd-87c9990afcfd" />
+                      <option name="method" value="DELETE" />
+                      <option name="name" value="Delete" />
+                      <option name="sortWeight" value="3000000" />
+                      <option name="url" value="http://localhost:3000/api/city/15" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="1000000" />
+              </folderState>
+              <folderState>
+                <option name="id" value="22c2e0a5-5bcc-4242-ad41-058dc26372a9" />
+                <option name="name" value="Country" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="id" value="a43b65e3-a716-4040-a323-98a5e8d38dc2" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="GetAll" />
+                      <option name="sortWeight" value="1000000" />
+                      <option name="url" value="http://localhost:3083/api/country" />
+                    </requestState>
+                    <requestState>
+                      <option name="body">
+                        <bodyState>
+                          <option name="raw" value="{&#10;  &quot;code&quot;: &quot;AU&quot;,&#10;  &quot;name&quot;: &quot;Australia&quot;,&#10;}" />
+                          <option name="type" value="JSON" />
+                        </bodyState>
+                      </option>
+                      <option name="id" value="979931ea-3876-464d-a379-67f4e69fefb2" />
+                      <option name="method" value="PUT" />
+                      <option name="name" value="FindUnique" />
+                      <option name="sortWeight" value="2000000" />
+                      <option name="url" value="http://localhost:3083/api/country/1" />
+                    </requestState>
+                    <requestState>
+                      <option name="id" value="58ab1808-bc6c-4a83-b161-d987e2b49853" />
+                      <option name="method" value="DELETE" />
+                      <option name="name" value="UpdateUnique" />
+                      <option name="sortWeight" value="3000000" />
+                    </requestState>
+                    <requestState>
+                      <option name="id" value="da0734a0-d9e9-4ebf-a9dd-388bd852a34e" />
+                      <option name="method" value="DELETE" />
+                      <option name="name" value="DELETE" />
+                      <option name="sortWeight" value="4000000" />
+                      <option name="url" value="http://localhost:3000/api/country/249" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="2000000" />
+              </folderState>
+              <folderState>
+                <option name="id" value="fb5caf15-cf9a-40ca-be68-e088b9b76c18" />
+                <option name="name" value="User" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="id" value="2e6edaec-d039-42aa-890b-b80bc582fa4f" />
+                      <option name="method" value="POST" />
+                      <option name="name" value="RecoveryPassWord" />
+                      <option name="queryParams">
+                        <list>
+                          <queryParamState>
+                            <option name="key" value="email" />
+                            <option name="value" value="'samruotololapaz@gmail.com'" />
+                          </queryParamState>
+                        </list>
+                      </option>
+                      <option name="sortWeight" value="1000000" />
+                      <option name="url" value="http://localhost:3000/api/recovery?email='samruotololapaz@gmail.com'" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="3000000" />
+              </folderState>
+              <folderState>
+                <option name="id" value="6a85fb15-1790-436f-b938-e409f1f2f552" />
+                <option name="name" value="Airports" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="id" value="da346118-7c5a-4840-a5f9-4d1b95c38360" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="getAll" />
+                      <option name="queryParams">
+                        <list>
+                          <queryParamState>
+                            <option name="key" value="page" />
+                            <option name="value" value="1" />
+                          </queryParamState>
+                          <queryParamState>
+                            <option name="key" value="pageSize" />
+                            <option name="value" value="100" />
+                          </queryParamState>
+                          <queryParamState>
+                            <option name="key" value="search" />
+                            <option name="value" value="Carrasco" />
+                          </queryParamState>
+                        </list>
+                      </option>
+                      <option name="sortWeight" value="1000000" />
+                      <option name="url" value="http://localhost:3000/api/airports?page=1&amp;pageSize=100&amp;search=Carrasco" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="4000000" />
+              </folderState>
+              <folderState>
+                <option name="id" value="40a52abe-a32e-4241-a3b2-55a8ea33908e" />
+                <option name="name" value="ShippingPort" />
+                <option name="requests">
+                  <list>
+                    <requestState>
+                      <option name="id" value="62237013-1d8f-42ca-a140-abb6270a2f0a" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="GetAll" />
+                      <option name="queryParams">
+                        <list>
+                          <queryParamState>
+                            <option name="key" value="search" />
+                            <option name="value" value="montevideo" />
+                          </queryParamState>
+                        </list>
+                      </option>
+                      <option name="sortWeight" value="1000000" />
+                      <option name="url" value="http://localhost:3000/api/ports/all?search=montevideo" />
+                    </requestState>
+                    <requestState>
+                      <option name="id" value="07a7bbcf-9fda-4d7c-828b-f1fa575a60ca" />
+                      <option name="method" value="GET" />
+                      <option name="name" value="GetUnique" />
+                      <option name="sortWeight" value="2000000" />
+                      <option name="url" value="http://localhost:3000/api/shippingports/61090" />
+                    </requestState>
+                  </list>
+                </option>
+                <option name="sortWeight" value="5000000" />
+              </folderState>
+            </list>
+          </option>
+          <option name="id" value="af57da27-00dd-4f90-aca2-c41e96334cfc" />
+          <option name="name" value="NextJsCrusoe" />
+          <option name="selectedEnvironmentIds">
+            <map>
+              <entry key="default" />
+            </map>
+          </option>
+          <option name="syncProperties">
+            <synchronizationPropertiesState>
+              <option name="autoSync" value="true" />
+              <option name="folderPath" value="$PROJECT_DIR$/.jetclient" />
+            </synchronizationPropertiesState>
+          </option>
+        </folderState>
+      </list>
+    </option>
+    <option name="id" value="62b5a6ad-f5fc-4931-9905-fc7982368b54" />
+    <option name="version" value="4" />
+  </component>
+</project>

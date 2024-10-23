@@ -16,14 +16,13 @@ export async function POST(request) {
             },
         });
 
-        const { ...role } = newRole;
-        return NextResponse.json(role);
+        return NextResponse.json(newRole);
     } catch (error) {
         if (error.code === 'P2002') {
-            // Este código de error corresponde a una violación de restricción de unicidad en Prisma
             return NextResponse.json(
                 {
-                    message: 'Violación de restricción de unicidad en los campos.',
+                    message:
+                        'Ya existe un rol con este nombre. Por favor, elige un nombre diferente.',
                 },
                 {
                     status: 400,

@@ -18,10 +18,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { FilePenLine } from 'lucide-react';
 import { Label } from '@/components/ui/label';
-import { useSettingContext } from '@/context/SettingContext';
 
-export default function EditUserModal({ id }) {
-    const { updateUsers } = useSettingContext();
+export default function EditUserModal({ id, refresh, open, onClose }) {
     const [formData, setFormData] = useState({
         name: '',
         lastName: '',
@@ -92,7 +90,8 @@ export default function EditUserModal({ id }) {
 
             if (res.ok) {
                 console.log('File and data uploaded successfully');
-                updateUsers(); // Asumiendo que updateUsers refresca la lista de usuarios
+                await refresh();
+                onClose();
             } else {
                 const errorData = await res.json();
                 console.error('Error updating user:', errorData);
@@ -103,10 +102,7 @@ export default function EditUserModal({ id }) {
     };
 
     return (
-        <Dialog>
-            <DialogTrigger className="flex items-center">
-                <FilePenLine className="h-[18px] w-[18px] hover:text-verde" />
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[800px]">
                 <DialogHeader>
                     <DialogTitle>Editar Información del Usuario</DialogTitle>
@@ -234,14 +230,12 @@ export default function EditUserModal({ id }) {
                         </div>
                     </div>
                     <DialogFooter>
-                        <DialogClose asChild>
-                            <Button
-                                type="submit"
-                                className="h-[36px] w-[100px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]"
-                            >
-                                Guardar Cambios
-                            </Button>
-                        </DialogClose>
+                        <Button
+                            type="submit"
+                            className="h-[36px] w-[100px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]"
+                        >
+                            Actualizar
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

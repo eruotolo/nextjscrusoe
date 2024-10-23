@@ -10,22 +10,18 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
     DialogFooter,
-    DialogClose,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { FilePenLine } from 'lucide-react';
-import { useSettingContext } from '@/context/SettingContext';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 
-export default function EditRoleModal({ id }) {
-    const { updateRoles, updateUsers } = useSettingContext();
-
+export default function EditRoleModal({ id, refresh, open, onClose }) {
     const {
         register,
         handleSubmit,
-        reset,
         setValue,
+        watch,
         formState: { errors },
     } = useForm();
 
@@ -34,30 +30,41 @@ export default function EditRoleModal({ id }) {
             .then((res) => res.json())
             .then((data) => {
                 setValue('name', data.name);
+                setValue('state', data.state === 1);
             })
-            .catch((error) => console.error('Error fetching role:', error));
+            .catch((error) => {
+                console.error('Error fetching role:', error);
+            });
     }, [id, setValue]);
 
+    const state = watch('state');
+
     const onSubmit = handleSubmit(async (data) => {
-        const res = await fetch(`/api/roles/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify(data),
-            headers: {
-                'content-type': 'application/json',
-            },
-        });
-        if (res.ok) {
-            updateUsers();
-            updateRoles();
+        try {
+            const res = await fetch(`/api/roles/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    ...data,
+                    state: data.state ? 1 : 0,
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (res.ok) {
+                await refresh();
+                onClose();
+            } else {
+                console.error('Error updating role:', res.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating role:', error);
         }
     });
 
     return (
-        <Dialog>
-            <DialogTrigger>
-                <FilePenLine className="h-[18px] w-[18px] hover:text-verde" />
-            </DialogTrigger>
-            <DialogContent>
+        <Dialog open={open} onOpenChange={onClose}>
+            <DialogContent className="sm:max-w-[400px]">
                 <DialogHeader>
                     <DialogTitle>Editar Rol</DialogTitle>
                     <DialogDescription>
@@ -66,6 +73,22 @@ export default function EditRoleModal({ id }) {
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={onSubmit}>
+                    <div className="mb-[15px] grid grid-cols-1">
+                        <div className="flex items-center space-x-2">
+                            <Switch
+                                id="state"
+                                {...register('state')}
+                                checked={state}
+                                onCheckedChange={(checked) => setValue('state', checked)}
+                            />
+                            <Label
+                                htmlFor="airplane-mode"
+                                className="text-[14px] font-normal text-[#8D8989]"
+                            >
+                                {state ? 'Activo' : 'Inactivo'}
+                            </Label>
+                        </div>
+                    </div>
                     <div className="mb-[15px] grid grid-cols-1">
                         <Input
                             id="name"
@@ -78,14 +101,12 @@ export default function EditRoleModal({ id }) {
                         {errors.name && <p>{errors.name.message}</p>}
                     </div>
                     <DialogFooter>
-                        <DialogClose asChild>
-                            <Button
-                                type="submit"
-                                className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
-                            >
-                                Actualizar
-                            </Button>
-                        </DialogClose>
+                        <Button
+                            type="submit"
+                            className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
+                        >
+                            Actualizar
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

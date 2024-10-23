@@ -1,41 +1,67 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { getUsers } from '@/services/userService';
-import { getRoles } from '@/services/roleService';
+
+import { getCountries } from '@/services/countryService';
+import { getAirports } from '@/services/airportService';
+import { getCities, getAllCities } from '@/services/cityService';
 
 const SettingContext = createContext();
 
 export const SettingProvider = ({ children }) => {
-    const [userData, setUserData] = useState([]);
-    const [roleData, setRoleData] = useState([]);
+    const [isInitialized, setIsInitialized] = useState(false);
 
-    //------------------------ GetUpdate Usuarios -------------------------/
-    const updateUsers = async () => {
-        //console.log('Obtener Nuevos Usuarios');
-        const data = await getUsers();
-        setUserData(data);
-    };
-    useEffect(() => {
-        updateUsers();
+    const [countriesData, setCountriesData] = useState([]);
+    const [airportData, setAirportData] = useState([]);
+    const [citiesData, setCitiesData] = useState([]);
+
+    const updateCountries = useCallback(async () => {
+        const data = await getCountries();
+        setCountriesData(data);
     }, []);
 
-    //------------------------ GetUpdate Role -------------------------/
-    const updateRoles = async () => {
-        const data = await getRoles();
-        setRoleData(data);
-    };
-    useEffect(() => {
-        updateRoles();
+    const refreshAirport = useCallback(async () => {
+        const data = await getAirports();
+        setAirportData(data);
     }, []);
 
-    return (
-        <SettingContext.Provider
-            value={{ userData, updateUsers, roleData, updateRoles, setUserData }}
-        >
-            {children}
-        </SettingContext.Provider>
+    const updateCities = useCallback(async () => {
+        const data = await getAllCities();
+        setCitiesData({
+            data,
+            meta: {
+                total: data.length,
+                page: 1,
+                pageSize: 100,
+                totalPages: Math.ceil(data.length / 100),
+            },
+        });
+    }, []);
+
+    useEffect(() => {
+        if (!isInitialized) {
+            const initializeData = async () => {
+                await Promise.all([updateCountries(), updateCities(), refreshAirport()]);
+                setIsInitialized(true);
+            };
+            initializeData();
+        }
+    }, [isInitialized, updateCountries, updateCities, refreshAirport]);
+
+    const contextValue = useMemo(
+        () => ({
+            countriesData,
+            updateCountries,
+            citiesData,
+            updateCities,
+            airportData,
+            refreshAirport,
+        }),
+        [countriesData, citiesData, airportData, updateCountries, updateCities, refreshAirport]
     );
+
+    return <SettingContext.Provider value={contextValue}>{children}</SettingContext.Provider>;
 };
 
 export const useSettingContext = () => useContext(SettingContext);

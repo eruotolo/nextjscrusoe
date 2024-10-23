@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { signIn, getSession } from 'next-auth/react';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -29,11 +29,12 @@ export default function LoginPage() {
         console.log(res);
 
         if (res.error) {
+            console.log(`Error: ${res.error}`); // Añadido para depuración
             switch (res.error) {
-                case 'Error: No users found with this email':
+                case 'No users found':
                     setError('No se encontró un usuario con este correo');
                     break;
-                case 'Error: Password incorrect':
+                case 'Wrong Password':
                     setError('La contraseña es incorrecta');
                     break;
                 // Más casos a manejar...
@@ -41,7 +42,12 @@ export default function LoginPage() {
                     setError('Ha ocurrido un error durante el inicio de sesión');
             }
         } else {
-            router.push('/dashboard');
+            const session = await getSession();
+            if (session && session.user.state === 1) {
+                router.push('/dashboard');
+            } else {
+                setError('Tu cuenta está inactiva. Contacta al administrador.');
+            }
         }
     });
 
@@ -76,6 +82,7 @@ export default function LoginPage() {
                     )}
                 </div>
             </div>
+
             <div className="grid gap-2">
                 <label className="select-none text-gray-600">Password</label>
                 <div className="relative mt-2 max-w-xl">
@@ -138,7 +145,7 @@ export default function LoginPage() {
                         <span className="text-sm text-red-500">{errors.password.message}</span>
                     )}
                 </div>
-                <Link href="#" className="ml-auto inline-block text-sm underline">
+                <Link href="/recovery" className="ml-auto inline-block text-sm underline">
                     Forgot your password?
                 </Link>
             </div>

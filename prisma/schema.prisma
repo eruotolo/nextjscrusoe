@@ -24,7 +24,7 @@ model User {
 
 model Role {
   id        Int        @id @default(autoincrement())
-  name      String
+  name      String     @unique
   state     Int        @default(1)
   createdAt DateTime   @default(now())
   users     UserRole[]
@@ -40,17 +40,52 @@ model UserRole {
 }
 
 model Country {
-  id        Int      @id @default(autoincrement())
-  code      String   @unique
-  name      String
-  cities    City[]
-  createdAt DateTime @default(now())
+  id            Int             @id @default(autoincrement())
+  code          String          @unique
+  name          String
+  cities        City[]
+  airports      Airports[]
+  shippingPorts ShippingPorts[]
+  createdAt     DateTime        @default(now())
 }
 
 model City {
   id          Int      @id @default(autoincrement())
-  countryCode String
+  countryCode String?
   name        String
-  country     Country  @relation(fields: [countryCode], references: [code])
+  country     Country? @relation(fields: [countryCode], references: [code], onDelete: Cascade, onUpdate: Cascade)
   createdAt   DateTime @default(now())
+
+  @@index([name])
+  @@index([countryCode])
+}
+
+model Airports {
+  id          Int      @id @default(autoincrement())
+  geocode     String
+  name        String
+  gcdiata     String
+  gcdicao     String
+  latitude    String?
+  longitude   String?
+  codeCountry String?
+  country     Country? @relation(fields: [codeCountry], references: [code], onDelete: Cascade, onUpdate: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@index([name])
+  @@index([codeCountry])
+}
+
+model ShippingPorts {
+  id          Int      @id @default(autoincrement())
+  unCode      String
+  name        String
+  codeCountry String?
+  latitude    String?
+  longitude   String?
+  country     Country? @relation(fields: [codeCountry], references: [code], onDelete: Cascade, onUpdate: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@index([name])
+  @@index([codeCountry])
 }

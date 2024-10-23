@@ -138,3 +138,16 @@ div:where(.swal2-icon).swal2-warning{
     border-radius: 10px;
     width: 120px;
 }
+.separator::after {
+    content: "|"; /* puedes cambiar esto a una pequeña línea vertical si lo prefieres */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+    color: #8d8d8d; /* Cambia el color según sea necesario */
+    padding-left: 8px; /* Añadir espacio alrededor del separador */
+}
+.swal2-title, .swal2-html-container{
+    font-family: "Inter", sans-serif;
+    color: #414547;
+}

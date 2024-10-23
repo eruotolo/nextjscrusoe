@@ -9,16 +9,11 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
     DialogFooter,
-    DialogClose,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { KeyRound } from 'lucide-react';
-import { useSettingContext } from '@/context/SettingContext';
 
-export default function ChangeUserPassModal({ id }) {
-    const { updateUsers } = useSettingContext();
+export default function ChangeUserPassModal({ id, refresh, open, onClose }) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isDisabled, setIsDisabled] = useState(true);
@@ -41,8 +36,9 @@ export default function ChangeUserPassModal({ id }) {
         });
 
         if (res.ok) {
-            updateUsers();
+            await refresh();
             resetForm();
+            onClose();
         }
     });
 
@@ -62,10 +58,7 @@ export default function ChangeUserPassModal({ id }) {
     }, [password, confirmPassword]);
 
     return (
-        <Dialog>
-            <DialogTrigger className="flex items-center">
-                <KeyRound className="h-[18px] w-[18px] hover:text-verde" />
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[400px]">
                 <DialogHeader>
                     <DialogTitle>Cambiar Contraseña</DialogTitle>
@@ -111,15 +104,13 @@ export default function ChangeUserPassModal({ id }) {
                     </div>
 
                     <DialogFooter>
-                        <DialogClose asChild>
-                            <Button
-                                type="submit"
-                                className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
-                                disabled={isDisabled}
-                            >
-                                Guardar Cambios
-                            </Button>
-                        </DialogClose>
+                        <Button
+                            type="submit"
+                            disabled={isDisabled}
+                            className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
+                        >
+                            Actualizar
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>
