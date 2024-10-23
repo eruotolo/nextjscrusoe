@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getUsers, activeUser, disableUser } from '@/services/userService';
+import { getUsers } from '@/services/userService';
 import dynamic from 'next/dynamic';
 
 import GenericTable from '@/components/TableGeneric/TableGeneric';
@@ -12,8 +12,6 @@ import {
     BtnViewTable,
     BtnAssignRole,
 } from '@/components/BtnTable/BtnTable';
-
-import NewUserModal from '@/components/Modal/Users/NewUserModal';
 
 const DynamicNewUserModal = dynamic(() => import('@/components/Modal/Users/NewUserModal'), {
     ssr: false,
@@ -35,7 +33,7 @@ const DynamicAssignRoleModal = dynamic(
 );
 
 import Swal from 'sweetalert2';
-import { Trash2, FileSpreadsheet, Check, X, ArrowUpDown, Plus } from 'lucide-react';
+import { Check, X, ArrowUpDown, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
 

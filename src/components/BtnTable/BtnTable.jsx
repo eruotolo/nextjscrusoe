@@ -1,16 +1,5 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import {
-    Trash2,
-    Check,
-    X,
-    ArrowUpDown,
-    Plus,
-    FilePenLine,
-    PowerOff,
-    KeyRound,
-    View,
-    UserCog,
-} from 'lucide-react';
+import { FilePenLine, PowerOff, KeyRound, View, UserCog } from 'lucide-react';
 
 export function BtnChangeTable({ onClick }) {
     return (

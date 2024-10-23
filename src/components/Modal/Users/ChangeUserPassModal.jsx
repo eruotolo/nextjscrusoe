@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,7 +21,6 @@ export default function ChangeUserPassModal({ id, refresh, open, onClose }) {
     const {
         register,
         handleSubmit,
-        watch,
         reset,
         formState: { errors },
     } = useForm();

@@ -1,0 +1,29 @@
+version: "3.9"
+
+networks:
+  myNetworkSistema:
+
+services:
+  postgres:
+    image: "postgres:latest"
+    container_name: nextjs-sistema-prisma
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./postgres-data:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_USER=eruotolo
+      - POSTGRES_PASSWORD=Guns026772
+      - POSTGRES_DB=sistema
+    networks:
+      - myNetworkSistema
+
+  adminer:
+    image: "adminer:latest"
+    container_name: adminer
+    ports:
+      - "8080:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres
+    networks:
+      - myNetworkSistema

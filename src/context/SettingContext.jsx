@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
-import { getUsers } from '@/services/userService';
 
 import { getCountries } from '@/services/countryService';
 import { getAirports } from '@/services/airportService';
