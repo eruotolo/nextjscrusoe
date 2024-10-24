@@ -1,5 +1,5 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { FilePenLine, PowerOff, KeyRound, View, UserCog } from 'lucide-react';
+import { FilePenLine, PowerOff, KeyRound, View, UserCog, Trash2 } from 'lucide-react';
 
 export function BtnChangeTable({ onClick }) {
     return (
@@ -7,7 +7,7 @@ export function BtnChangeTable({ onClick }) {
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger onClick={onClick}>
-                        <PowerOff className="h-[18px] w-[18px] cursor-pointer hover:text-verde" />
+                        <PowerOff className="h-[16px] w-[16px] cursor-pointer hover:text-verde" />
                     </TooltipTrigger>
                     <TooltipContent>
                         <p>Cambiar Estado</p>
@@ -23,10 +23,25 @@ export function BtnEditTable({ onClick }) {
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger onClick={onClick}>
-                    <FilePenLine className="h-[18px] w-[18px] cursor-pointer hover:text-verde" />
+                    <FilePenLine className="h-[16px] w-[16px] cursor-pointer hover:text-verde" />
                 </TooltipTrigger>
                 <TooltipContent>
                     <p>Editar</p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    );
+}
+
+export function BtnDeleteTable({ onClick }) {
+    return (
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger onClick={onClick}>
+                    <Trash2 className="h-[16px] w-[16px] cursor-pointer hover:text-verde" />
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Eliminar</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
@@ -38,7 +53,7 @@ export function BtnChangePassTable({ onClick }) {
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger onClick={onClick}>
-                    <KeyRound className="h-[18px] w-[18px] cursor-pointer hover:text-verde" />
+                    <KeyRound className="h-[16px] w-[16px] cursor-pointer hover:text-verde" />
                 </TooltipTrigger>
                 <TooltipContent>
                     <p>Cambiar Password</p>
@@ -53,7 +68,7 @@ export function BtnViewTable({ onClick }) {
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger onClick={onClick}>
-                    <View className="h-[18px] w-[18px] cursor-pointer hover:text-verde" />
+                    <View className="h-[16px] w-[16px] cursor-pointer hover:text-verde" />
                 </TooltipTrigger>
                 <TooltipContent>
                     <p>Ver</p>
@@ -68,7 +83,7 @@ export function BtnAssignRole({ onClick }) {
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger onClick={onClick}>
-                    <UserCog className="h-[18px] w-[18px] cursor-pointer hover:text-verde" />
+                    <UserCog className="h-[16px] w-[16px] cursor-pointer hover:text-verde" />
                 </TooltipTrigger>
                 <TooltipContent>
                     <p>Asignar Role</p>

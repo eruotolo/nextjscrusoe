@@ -11,12 +11,9 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
-    DialogClose,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus } from 'lucide-react';
 
 export default function NewUserModal({ open, onClose, refresh }) {
     const [formData, setFormData] = useState({
@@ -64,12 +61,28 @@ export default function NewUserModal({ open, onClose, refresh }) {
 
             if (res.ok) {
                 console.log('File and data uploaded successfully');
+                resetForm();
                 refresh();
-                // Aquí puedes agregar lógica adicional después de un envío exitoso
+                onClose();
             }
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const resetForm = () => {
+        setFormData({
+            name: '',
+            lastName: '',
+            email: '',
+            phone: '',
+            address: '',
+            city: '',
+            password: '',
+            file: '',
+        });
+        setFile(null);
+        fileInputRef.current.value = null;
     };
 
     const isFormValid = () => {

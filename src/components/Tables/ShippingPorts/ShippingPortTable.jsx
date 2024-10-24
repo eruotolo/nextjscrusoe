@@ -1,10 +1,13 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { deleteShippingPort, getShippingPorts } from '@/services/shippingPortService';
 import dynamic from 'next/dynamic';
-
 import GenericTable from '@/components/TableGeneric/TableGeneric';
+import { deleteShippingPort, getShippingPorts } from '@/services/shippingPortService';
+import Swal from 'sweetalert2';
+import { Trash2, ArrowUpDown, Plus, FilePenLine } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import * as XLSX from 'xlsx';
 
 const DynamicNewShippingPortModal = dynamic(
     () => import('@/components/Modal/ShippingPorts/NewShippingPortModal'),
@@ -21,11 +24,6 @@ const DynamicEditShippingPortModal = dynamic(
         loading: () => <p>Cargando...</p>,
     }
 );
-
-import Swal from 'sweetalert2';
-import { Trash2, ArrowUpDown, Plus, FilePenLine } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import * as XLSX from 'xlsx';
 
 export default function ShippingPortTable() {
     const [shippingPortData, setShippingPortData] = useState([]);

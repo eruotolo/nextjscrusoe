@@ -167,7 +167,7 @@ export default function UserTable() {
                 return (
                     <Button
                         variant="ghost"
-                        className="text-[12px] font-normal leading-[13px] text-[#8D8989] 2xl:text-[13px]"
+                        className="text-[12px] font-normal leading-[13px] text-[#8D8989] 2xl:text-[12px]"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Nombre
@@ -194,7 +194,7 @@ export default function UserTable() {
                 <div>
                     {row.original.roles.length > 0
                         ? row.original.roles.map((role, index) => (
-                              <span key={index} className="text-[13px] leading-[18px]">
+                              <span key={index} className="text-[12px] leading-[18px]">
                                   {role.role.name}
                                   {index < row.original.roles.length - 1 ? ', ' : ''}
                               </span>
@@ -209,9 +209,9 @@ export default function UserTable() {
             cell: ({ row }) => (
                 <div className="flex justify-center">
                     {row.original.state === 1 ? (
-                        <Check className="w-[18px] text-verde" />
+                        <Check className="w-[17px] text-verde" />
                     ) : (
-                        <X className="w-[18px] text-red-600" />
+                        <X className="w-[17px] text-red-600" />
                     )}
                 </div>
             ),

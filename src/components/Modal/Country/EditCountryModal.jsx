@@ -10,18 +10,13 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
     DialogFooter,
-    DialogClose,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { FilePenLine } from 'lucide-react';
-import { useSettingContext } from '@/context/SettingContext';
+
 import { getCountryById, updateCountry } from '@/services/countryService';
 
-export default function EditCountryModal({ id }) {
-    const { updateCities, updateCountries } = useSettingContext();
-
+export default function EditCountryModal({ id, refresh, open, onClose }) {
     const {
         register,
         handleSubmit,
@@ -44,8 +39,8 @@ export default function EditCountryModal({ id }) {
         try {
             const updatedCountry = await updateCountry(id, data);
             if (updatedCountry) {
-                updateCities();
-                updateCountries();
+                await refresh();
+                onClose();
             } else {
                 console.error('Error updating country');
             }
@@ -55,10 +50,7 @@ export default function EditCountryModal({ id }) {
     });
 
     return (
-        <Dialog>
-            <DialogTrigger>
-                <FilePenLine className="h-[18px] w-[18px] hover:text-verde" />
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[400px]">
                 <DialogHeader>
                     <DialogTitle>Editar País</DialogTitle>
@@ -91,14 +83,12 @@ export default function EditCountryModal({ id }) {
                         {errors.name && <p>{errors.name.message}</p>}
                     </div>
                     <DialogFooter>
-                        <DialogClose asChild>
-                            <Button
-                                type="submit"
-                                className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
-                            >
-                                Actualizar
-                            </Button>
-                        </DialogClose>
+                        <Button
+                            type="submit"
+                            className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
+                        >
+                            Actualizar
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

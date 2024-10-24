@@ -1,25 +1,69 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useSettingContext } from '@/context/SettingContext';
+import { useEffect, useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
-import { deleteCountry } from '@/services/countryService';
-import EditCountryModal from '@/components/Modal/Country/EditCountryModal';
+import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
+import { deleteCountry, getCountries } from '@/services/countryService';
 import Swal from 'sweetalert2';
-import { FilePenLine, Trash2, ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
 
+const DynamicEditCountryModal = dynamic(
+    () => import('@/components/Modal/Country/EditCountryModal'),
+    {
+        ssr: false,
+    }
+);
+
+const DynamicNewCountryModal = dynamic(() => import('@/components/Modal/Country/NewCountryModal'), {
+    ssr: false,
+});
+
 export default function CountryTable() {
-    const { countriesData, updateCountries } = useSettingContext();
+    const [countriesData, setCountriesData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        // Asegúrate de que las ciudades están disponibles y no están vacías
-        if (countriesData && countriesData.length > 0) {
+    const [openNew, setOpenNew] = useState(false);
+    const [openEdit, setOpenEdit] = useState(false);
+    const [selectedCountryId, setSelectedCountryId] = useState(null);
+
+    // GET DATA
+    const fetchCountries = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const data = await getCountries();
+            setCountriesData(data);
+        } catch (error) {
+            console.error('Error fetching country:', error);
+        } finally {
             setIsLoading(false);
         }
-    }, [countriesData]);
+    }, []);
+
+    useEffect(() => {
+        fetchCountries();
+    }, [fetchCountries]);
+
+    // REFRESH TABLE BEFORE UPDATE
+    const refreshTable = useCallback(async () => {
+        const data = await getCountries();
+        setCountriesData(data);
+    }, []);
+
+    // DIALOG OPEN AND CLOSE
+    const handleNewOpenModal = () => setOpenNew(true);
+    const handleNewCloseModal = () => setOpenNew(false);
+
+    const handleEditOpenModal = (id) => {
+        setOpenEdit(true);
+        setSelectedCountryId(id);
+    };
+    const handleEditCloseModal = () => {
+        setOpenEdit(false);
+        setSelectedCountryId(null);
+    };
 
     // DELETE COUNTRY
     async function handleDelete(id) {
@@ -35,7 +79,7 @@ export default function CountryTable() {
             if (result.isConfirmed) {
                 const success = await deleteCountry(id);
                 if (success) {
-                    updateCountries();
+                    await refreshTable();
                     Swal.fire({
                         title: '¡Eliminado!',
                         text: 'La pais ha sido eliminado.',
@@ -68,7 +112,7 @@ export default function CountryTable() {
                 return (
                     <Button
                         variant="ghost"
-                        className="text-[12px] font-normal leading-[13px] text-[#8D8989] 2xl:text-[13px]"
+                        className="text-[12px] font-medium leading-[12px] text-[#8D8989] 2xl:text-[12px]"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Nombre País
@@ -82,11 +126,8 @@ export default function CountryTable() {
             header: 'Acciones',
             cell: ({ row }) => (
                 <div className="flex items-center justify-center space-x-3">
-                    <EditCountryModal id={row.original.id} />
-
-                    <button onClick={() => handleDelete(row.original.id)}>
-                        <Trash2 className="h-[18px] w-[18px] text-gris hover:text-verde" />
-                    </button>
+                    <BtnEditTable onClick={() => handleEditOpenModal(row.original.id)} />
+                    <BtnDeleteTable onClick={() => handleDelete(row.original.id)} />
                 </div>
             ),
         },
@@ -108,11 +149,47 @@ export default function CountryTable() {
     };
 
     return (
-        <GenericTable
-            columns={columns}
-            data={countriesData}
-            loading={isLoading}
-            exportToExcel={exportToExcel}
-        />
+        <>
+            <div className="flex h-auto w-full justify-between">
+                <div>
+                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">
+                        Listado de países
+                    </h5>
+                    <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
+                </div>
+                <div>
+                    <button
+                        onClick={handleNewOpenModal}
+                        className="flex h-[36px] w-[100px] items-center justify-center rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]"
+                    >
+                        Nuevo <Plus className="ml-[5px] h-3 w-3" />
+                    </button>
+                </div>
+            </div>
+            <div className="mt-[20px] flex">
+                <GenericTable
+                    columns={columns}
+                    data={countriesData}
+                    loading={isLoading}
+                    exportToExcel={exportToExcel}
+                />
+            </div>
+
+            {openNew && (
+                <DynamicNewCountryModal
+                    open={openNew}
+                    onClose={handleNewCloseModal}
+                    refresh={refreshTable}
+                />
+            )}
+            {openEdit && setSelectedCountryId && (
+                <DynamicEditCountryModal
+                    id={selectedCountryId}
+                    refresh={refreshTable}
+                    open={openEdit}
+                    onClose={handleEditCloseModal}
+                />
+            )}
+        </>
     );
 }

@@ -8,6 +8,7 @@ datasource db {
 }
 
 model User {
+  id        Int        @id @default(autoincrement())
   email     String     @unique
   name      String?
   lastName  String?
@@ -15,10 +16,9 @@ model User {
   address   String?
   city      String?
   password  String
+  image     String     @default("Hola")
   state     Int        @default(1)
   createdAt DateTime   @default(now())
-  id        Int        @id @default(autoincrement())
-  image     String     @default("Hola")
   roles     UserRole[]
 }
 

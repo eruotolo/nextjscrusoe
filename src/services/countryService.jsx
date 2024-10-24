@@ -5,15 +5,15 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 export const getCountries = cache(async () => {
     try {
         const response = await fetch(`${API_URL}/api/country`, {
-            next: { revalidate: 60 },
+            next: { revalidate: 3600 },
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            console.error(`Error al obtener: ${response.status} - ${response.statusText}`);
+            return null;
         }
 
-        let data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.error('Error fetching countries:', error);
         return [];
@@ -22,7 +22,7 @@ export const getCountries = cache(async () => {
 
 export const createCountry = async (countryData) => {
     try {
-        const response = await fetch(`/api/country`, {
+        const response = await fetch(`${API_URL}/api/country`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -35,8 +35,7 @@ export const createCountry = async (countryData) => {
             return null;
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.log('Error creating country:', error);
         return null;
@@ -45,7 +44,7 @@ export const createCountry = async (countryData) => {
 
 export const deleteCountry = async (id) => {
     try {
-        const response = await fetch(`/api/country/${id}`, {
+        const response = await fetch(`${API_URL}/api/country/${id}`, {
             method: 'DELETE',
         });
 
@@ -54,7 +53,7 @@ export const deleteCountry = async (id) => {
             return false;
         }
 
-        return true;
+        return await response.json();
     } catch (error) {
         console.error('Error deleting country:', error);
         return false;
@@ -70,8 +69,7 @@ export const getCountryById = async (id) => {
             return null;
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.error('Error fetching country:', error);
         return null;
@@ -93,8 +91,7 @@ export const updateCountry = async (id, countryData) => {
             return null;
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.error('Error updating country:', error);
         return null;

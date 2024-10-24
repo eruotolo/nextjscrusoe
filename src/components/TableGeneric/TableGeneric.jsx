@@ -98,7 +98,7 @@ export default function GenericTable({ columns, data, exportToExcel, loading = f
                             {headerGroup.headers.map((header, index) => (
                                 <TableHead
                                     key={header.id}
-                                    className={`relative h-[45px] text-[12px] font-normal leading-[13px] text-[#8D8989] 2xl:text-[13px] ${index === 0 ? 'rounded-bl-[10px] rounded-tl-[10px]' : ''} ${index === headerGroup.headers.length - 1 ? 'rounded-br-[10px] rounded-tr-[10px] text-center' : ''} ${index !== headerGroup.headers.length - 1 ? 'separator' : ''}`}
+                                    className={`relative h-[45px] text-[12px] font-medium leading-[13px] text-[#8D8989] 2xl:text-[12px] ${index === 0 ? 'rounded-bl-[10px] rounded-tl-[10px]' : ''} ${index === headerGroup.headers.length - 1 ? 'rounded-br-[10px] rounded-tr-[10px] text-center' : ''} ${index !== headerGroup.headers.length - 1 ? 'separator' : ''}`}
                                     style={{
                                         width: header.column.columnDef.size
                                             ? `${header.column.columnDef.size}px`
@@ -129,7 +129,7 @@ export default function GenericTable({ columns, data, exportToExcel, loading = f
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell
                                         key={cell.id}
-                                        className="px-4 py-3 text-[12px] font-light leading-[13px] 2xl:text-[13px] 2xl:font-normal"
+                                        className="px-4 py-3 text-[12px] font-light leading-[13px] 2xl:text-[12px] 2xl:font-normal"
                                     >
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </TableCell>
