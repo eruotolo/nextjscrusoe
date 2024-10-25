@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
+import NewCountryModal from '@/components/Modal/Country/NewCountryModal';
 import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
 import { deleteCountry, getCountries } from '@/services/countryService';
 import Swal from 'sweetalert2';
@@ -17,15 +18,10 @@ const DynamicEditCountryModal = dynamic(
     }
 );
 
-const DynamicNewCountryModal = dynamic(() => import('@/components/Modal/Country/NewCountryModal'), {
-    ssr: false,
-});
-
 export default function CountryTable() {
     const [countriesData, setCountriesData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const [openNew, setOpenNew] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [selectedCountryId, setSelectedCountryId] = useState(null);
 
@@ -53,9 +49,6 @@ export default function CountryTable() {
     }, []);
 
     // DIALOG OPEN AND CLOSE
-    const handleNewOpenModal = () => setOpenNew(true);
-    const handleNewCloseModal = () => setOpenNew(false);
-
     const handleEditOpenModal = (id) => {
         setOpenEdit(true);
         setSelectedCountryId(id);
@@ -158,12 +151,7 @@ export default function CountryTable() {
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
                 <div>
-                    <button
-                        onClick={handleNewOpenModal}
-                        className="flex h-[36px] w-[100px] items-center justify-center rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]"
-                    >
-                        Nuevo <Plus className="ml-[5px] h-3 w-3" />
-                    </button>
+                    <NewCountryModal refresh={refreshTable} />
                 </div>
             </div>
             <div className="mt-[20px] flex">
@@ -174,14 +162,6 @@ export default function CountryTable() {
                     exportToExcel={exportToExcel}
                 />
             </div>
-
-            {openNew && (
-                <DynamicNewCountryModal
-                    open={openNew}
-                    onClose={handleNewCloseModal}
-                    refresh={refreshTable}
-                />
-            )}
             {openEdit && setSelectedCountryId && (
                 <DynamicEditCountryModal
                     id={selectedCountryId}

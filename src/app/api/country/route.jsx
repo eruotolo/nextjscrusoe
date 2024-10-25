@@ -30,20 +30,8 @@ export async function POST(request) {
             },
         });
 
-        const { ...country } = newCountry;
-        return NextResponse.json(country);
+        return NextResponse.json(newCountry);
     } catch (error) {
-        if (error.code === 'P2002') {
-            return NextResponse.json(
-                {
-                    message: 'Violación de restricción de unicidad en los campos.',
-                },
-                {
-                    status: 400,
-                }
-            );
-        }
-
         return NextResponse.json(
             {
                 message: error.message,

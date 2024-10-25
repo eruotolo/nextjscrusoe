@@ -31,7 +31,11 @@ export const createCountry = async (countryData) => {
         });
 
         if (!response.ok) {
-            console.error(`Error creating country: ${response.status} - ${response.statusText}`);
+            const errorData = await response.json();
+            console.error(
+                `Error creating country: ${response.status} - ${response.statusText}`,
+                errorData
+            );
             return null;
         }
 
