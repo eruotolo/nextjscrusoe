@@ -2,9 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 
-import { getCountries } from '@/services/countryService';
 import { getAirports } from '@/services/airportService';
-import { getCities, getAllCities } from '@/services/cityService';
 
 const SettingContext = createContext();
 

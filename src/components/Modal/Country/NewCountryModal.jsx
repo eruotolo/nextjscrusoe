@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { createCountry } from '@/services/countryService';
 
-import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
@@ -15,7 +14,6 @@ import {
     DialogClose,
 } from '@/components/ui/dialog';
 
-import { Input } from '@/components/ui/input';
 import { Plus } from 'lucide-react';
 export default function NewCountryModal({ refresh }) {
     const [code, setCode] = useState('');

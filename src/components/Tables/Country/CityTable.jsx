@@ -9,15 +9,13 @@ import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
 import NewCityModal from '@/components/Modal/Country/NewCityModal';
 
 import Swal from 'sweetalert2';
-import { FilePenLine, Trash2, ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
 
 const DynamicEditCityModal = dynamic(() => import('@/components/Modal/Country/EditCityModal'), {
     ssr: false,
 });
-
-import TableGenericLarge from '@/components/TableGeneric/TableGenericLarge';
 
 export default function CityTable() {
     const [citiesData, setCitiesData] = useState([]);

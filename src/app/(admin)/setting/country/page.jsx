@@ -1,7 +1,5 @@
 import CountryTable from '@/components/Tables/Country/CountryTable';
 import CityTable from '@/components/Tables/Country/CityTable';
-import NewCityModal from '@/components/Modal/Country/NewCityModal';
-import NewCountryModal from '@/components/Modal/Country/NewCountryModal';
 
 export default function SettingCountryPage() {
     return (
