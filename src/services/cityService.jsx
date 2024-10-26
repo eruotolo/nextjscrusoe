@@ -1,54 +1,28 @@
-export const getCities = async ({ search = '', page = 1, pageSize = 100 } = {}) => {
+import { cache } from 'react';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+
+export const getCities = cache(async () => {
     try {
-        const response = await fetch(
-            `/api/city?search=${encodeURIComponent(search)}&page=${page}&pageSize=${pageSize}`
-        );
+        const response = await fetch(`${API_URL}/api/city`, {
+            next: { revalidate: 3600 },
+        });
 
         if (!response.ok) {
-            console.error(`Error fetching cities: ${response.status} - ${response.statusText}`);
-            return { data: [], meta: { total: 0, page: 1, pageSize: 100, totalPages: 1 } };
+            console.error(`Error al obtener: ${response.status} - ${response.statusText}`);
+            return null;
         }
+
         return await response.json();
     } catch (error) {
-        console.log(error);
-        return { data: [], meta: { total: 0, page: 1, pageSize: 100, totalPages: 1 } };
-    }
-};
-
-export const getAllCities = async (search = '') => {
-    try {
-        const response = await fetch(`/api/city/all?search=${encodeURIComponent(search)}`);
-
-        if (!response.ok) {
-            console.error(`Error fetching all cities: ${response.status} - ${response.statusText}`);
-            return [];
-        }
-        return await response.json();
-    } catch (error) {
-        console.log(error);
+        console.error('Error fetching cities:', error);
         return [];
     }
-};
-
-export const deleteCity = async (id) => {
-    try {
-        const response = await fetch(`/api/city/${id}`, {
-            method: 'DELETE',
-        });
-        if (!response.ok) {
-            console.error(`Error deleting city: ${response.status} - ${response.statusText}`);
-            return false;
-        }
-        return true;
-    } catch (error) {
-        console.error('Error deleting city'.error);
-        return false;
-    }
-};
+});
 
 export const createCity = async (cityData) => {
     try {
-        const response = await fetch(`/api/city`, {
+        const response = await fetch(`${API_URL}/api/city`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -61,24 +35,39 @@ export const createCity = async (cityData) => {
             return null;
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.log('Error creating city:', error);
         return null;
     }
 };
 
+export const deleteCity = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/api/city/${id}`, {
+            method: 'DELETE',
+        });
+        if (!response.ok) {
+            console.error(`Error deleting city: ${response.status} - ${response.statusText}`);
+            return false;
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error deleting city'.error);
+        return false;
+    }
+};
+
 export const getCityById = async (id) => {
     try {
-        const response = await fetch(`/api/city/${id}`);
+        const response = await fetch(`${API_URL}/api/city/${id}`);
+
         if (!response.ok) {
             console.error(`Error fetching city: ${response.status} - ${response.statusText}`);
             return null;
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.error('Error fetching city:', error);
         return null;
@@ -87,23 +76,28 @@ export const getCityById = async (id) => {
 
 export const updateCity = async (id, cityData) => {
     try {
-        const response = await fetch(`/api/city/${id}`, {
+        console.log('Actualizando ciudad con datos:', cityData);
+        const response = await fetch(`${API_URL}/api/city/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(cityData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
-            console.error(`Error updating city: ${response.status} - ${response.statusText}`);
+            const errorText = await response.text();
+            console.error(
+                `Error al actualizar la ciudad: ${response.status} - ${response.statusText}`,
+                errorText
+            );
             return null;
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
-        console.error('Error updating city:', error);
+        console.error('Error al actualizar la ciudad:', error);
         return null;
     }
 };

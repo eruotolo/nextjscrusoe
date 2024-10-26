@@ -1,13 +1,15 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import dynamic from 'next/dynamic';
-import GenericTable from '@/components/TableGeneric/TableGeneric';
-import NewCountryModal from '@/components/Modal/Country/NewCountryModal';
-import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
 import { deleteCountry, getCountries } from '@/services/countryService';
+import dynamic from 'next/dynamic';
+
+import GenericTable from '@/components/TableGeneric/TableGeneric';
+import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
+import NewCountryModal from '@/components/Modal/Country/NewCountryModal';
+
 import Swal from 'sweetalert2';
-import { ArrowUpDown, Plus } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
 

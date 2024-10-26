@@ -1,44 +1,62 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useSettingContext } from '@/context/SettingContext';
-import { getCities, getAllCities, deleteCity } from '@/services/cityService';
-import TableGenericLarge from '@/components/TableGeneric/TableGenericLarge';
-import EditCityModal from '@/components/Modal/Country/EditCityModal';
+import { getCities, deleteCity } from '@/services/cityService';
+import dynamic from 'next/dynamic';
+
+import GenericTable from '@/components/TableGeneric/TableGeneric';
+import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
+import NewCityModal from '@/components/Modal/Country/NewCityModal';
+
+import Swal from 'sweetalert2';
 import { FilePenLine, Trash2, ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
 
-import Swal from 'sweetalert2';
+const DynamicEditCityModal = dynamic(() => import('@/components/Modal/Country/EditCityModal'), {
+    ssr: false,
+});
+
+import TableGenericLarge from '@/components/TableGeneric/TableGenericLarge';
 
 export default function CityTable() {
-    const [citiesData, setCitiesData] = useState({ data: [], meta: {} });
-    const { updateCities } = useSettingContext();
-
+    const [citiesData, setCitiesData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [globalFilter, setGlobalFilter] = useState('');
-    const [isExporting, setIsExporting] = useState(false);
+    const [openEdit, setOpenEdit] = useState(false);
+    const [selectedCityId, setSelectedCityId] = useState(null);
 
-    const fetchCities = useCallback(async (page = 1, search = '') => {
+    // GET DATA
+    const fetchCities = useCallback(async () => {
         setIsLoading(true);
-        const result = await getCities({ search, page, pageSize: 9 });
-        setCitiesData(result);
-        setIsLoading(false);
+        try {
+            const data = await getCities();
+            setCitiesData(data);
+        } catch (error) {
+            console.error('Error fetching cities:', error);
+        } finally {
+            setIsLoading(false);
+        }
     }, []);
 
     useEffect(() => {
-        fetchCities(currentPage, globalFilter);
-    }, [currentPage, globalFilter, fetchCities, updateCities]);
+        fetchCities();
+    }, [fetchCities]);
 
-    const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
+    // REFRESH TABLE BEFORE UPDATE
+    const refreshTable = useCallback(async () => {
+        const data = await getCities();
+        setCitiesData(data);
+    }, []);
+
+    // DIALOG OPEN AND CLOSE
+    const handleEditOpenModal = (id) => {
+        setOpenEdit(true);
+        setSelectedCityId(id);
     };
-
-    const handleGlobalFilterChange = (value) => {
-        setGlobalFilter(value);
-        setCurrentPage(1);
+    const handleEditCloseModal = () => {
+        setOpenEdit(false);
+        setSelectedCityId(null);
     };
 
     // Eliminar Ciudad
@@ -94,7 +112,7 @@ export default function CityTable() {
                 return (
                     <Button
                         variant="ghost"
-                        className="text-[12px] font-normal leading-[13px] text-[#8D8989] 2xl:text-[13px]"
+                        className="text-[12px] font-normal leading-[13px] text-[#8D8989] 2xl:text-[12px]"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Nombre Ciudad
@@ -113,11 +131,8 @@ export default function CityTable() {
             header: 'Acciones',
             cell: ({ row }) => (
                 <div className="flex items-center justify-center space-x-3">
-                    <EditCityModal id={row.original.id} />
-
-                    <button onClick={() => handleDelete(row.original.id)}>
-                        <Trash2 className="h-[18px] w-[18px] hover:text-verde" />
-                    </button>
+                    <BtnEditTable onClick={() => handleEditOpenModal(row.original.id)} />
+                    <BtnDeleteTable onClick={() => handleDelete(row.original.id)} />
                 </div>
             ),
         },
@@ -125,42 +140,52 @@ export default function CityTable() {
 
     // Exportación de Archivo Excel
     const exportToExcel = async () => {
-        setIsExporting(true);
         try {
-            const allCities = await getAllCities(globalFilter);
-            const dataToExport = allCities.map((city) => ({
+            const combinedData = citiesData.map((city) => ({
                 countryCode: city.countryCode,
                 countryName: city.country.name,
-                cityId: city.id,
                 cityName: city.name,
             }));
-            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            // Crear hoja de trabajo a partir de los datos combinados
+            const worksheet = XLSX.utils.json_to_sheet(combinedData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, 'Ciudades');
+            // Exportar archivo Excel
             XLSX.writeFile(workbook, 'ciudades_export.xlsx');
         } catch (error) {
             console.error('Error exporting to Excel:', error);
-        } finally {
-            setIsExporting(false);
         }
     };
 
     return (
-        <div>
-            <TableGenericLarge
-                columns={columns}
-                data={citiesData.data}
-                loading={isLoading}
-                exportToExcel={exportToExcel}
-                isExporting={isExporting}
-                pagination={{
-                    currentPage,
-                    totalPages: citiesData.meta.totalPages,
-                    onPageChange: handlePageChange,
-                }}
-                globalFilter={globalFilter}
-                onGlobalFilterChange={handleGlobalFilterChange}
-            />
-        </div>
+        <>
+            <div className="flex h-auto w-full justify-between">
+                <div>
+                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">
+                        Listado de ciudades
+                    </h5>
+                    <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
+                </div>
+                <div>
+                    <NewCityModal refresh={refreshTable} />
+                </div>
+            </div>
+            <div className="mt-[20px] flex">
+                <GenericTable
+                    columns={columns}
+                    data={citiesData}
+                    loading={isLoading}
+                    exportToExcel={exportToExcel}
+                />
+            </div>
+            {openEdit && setSelectedCityId && (
+                <DynamicEditCityModal
+                    id={selectedCityId}
+                    refresh={refreshTable}
+                    open={openEdit}
+                    onClose={handleEditCloseModal}
+                />
+            )}
+        </>
     );
 }

@@ -61,7 +61,7 @@ model City {
 }
 
 model Airports {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   geocode     String
   name        String
   gcdiata     String
@@ -77,7 +77,7 @@ model Airports {
 }
 
 model ShippingPorts {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   unCode      String
   name        String
   codeCountry String?

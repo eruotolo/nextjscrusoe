@@ -151,3 +151,16 @@ div:where(.swal2-icon).swal2-warning{
     font-family: "Inter", sans-serif;
     color: #414547;
 }
+.no-default-arrow {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: none; /* Elimina cualquier imagen de fondo */
+}
+.custom-select {
+    padding-right: 2.5rem; /* Adjust this value as needed */
+    background-image: url('/chevron-down.svg'); /* Path to your arrow down icon */
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center; /* Adjust this value as needed */
+    background-size: 0.75rem; /* Adjust this value as needed */
+}

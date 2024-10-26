@@ -10,22 +10,7 @@ export default function SettingCountryPage() {
                 <CountryTable />
             </div>
             <div className="rounded-[10px] bg-[#ffffff] p-[30px] shadow-lg">
-                <div className="flex h-auto justify-between">
-                    <div>
-                        <h5 className="mb-[5px] font-medium leading-none tracking-tight">
-                            Listado de ciudades
-                        </h5>
-                        <p className="text-[13px] text-muted-foreground">
-                            Crear, Editar y Eliminar
-                        </p>
-                    </div>
-                    <div>
-                        <NewCityModal />
-                    </div>
-                </div>
-                <div className="mt-[20px] flex">
-                    <CityTable />
-                </div>
+                <CityTable />
             </div>
         </div>
     );

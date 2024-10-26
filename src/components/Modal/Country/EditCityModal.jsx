@@ -2,38 +2,22 @@
 
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { useSettingContext } from '@/context/SettingContext';
-import { getCityById, updateCity } from '@/services/cityService';
-import { getCountries } from '@/services/countryService';
 
-import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
     DialogFooter,
-    DialogClose,
 } from '@/components/ui/dialog';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { FilePenLine } from 'lucide-react';
 
-export default function EditCityModal({ id }) {
-    const { updateCities, updateCountries } = useSettingContext();
+import { getCityById, updateCity } from '@/services/cityService';
+import { getCountries } from '@/services/countryService';
+
+export default function EditCityModal({ id, refresh, open, onClose }) {
     const [countries, setCountries] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState('');
-    const [cityName, setCityName] = useState('');
 
     const {
         register,
@@ -52,14 +36,19 @@ export default function EditCityModal({ id }) {
 
     useEffect(() => {
         const fetchCity = async () => {
-            const cityData = await getCityById(id);
-            if (cityData) {
-                setValue('name', cityData.name);
-                setSelectedCountry(cityData.countryCode);
+            if (id) {
+                const cityData = await getCityById(id);
+                console.log('City data fetched:', cityData);
+                if (cityData) {
+                    setValue('name', cityData.name);
+                    setSelectedCountry(cityData.countryCode);
+                }
             }
         };
-        fetchCity();
-    }, [id, setValue]);
+        if (open) {
+            fetchCity();
+        }
+    }, [id, setValue, open]);
 
     const onSubmit = handleSubmit(async (data) => {
         try {
@@ -68,20 +57,19 @@ export default function EditCityModal({ id }) {
                 countryCode: selectedCountry,
             });
             if (updatedCity) {
-                updateCities();
-                updateCountries();
+                await refresh();
+                onClose();
+            } else {
+                console.error('No se pudo actualizar la ciudad');
             }
         } catch (error) {
-            console.error('Error submitting form:', error);
+            console.error('Error al enviar el formulario:', error);
         }
     });
 
     return (
-        <Dialog>
-            <DialogTrigger>
-                <FilePenLine className="h-[18px] w-[18px] hover:text-verde" />
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[400px]">
+        <Dialog open={open} onOpenChange={onClose}>
+            <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
                     <DialogTitle>Editar Ciudad</DialogTitle>
                     <DialogDescription>
@@ -92,44 +80,35 @@ export default function EditCityModal({ id }) {
                 </DialogHeader>
                 <form onSubmit={onSubmit}>
                     <div className="mb-[15px] grid grid-cols-1">
-                        <Select
-                            className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                        <select
+                            id="country"
                             value={selectedCountry}
-                            onValueChange={setSelectedCountry}
+                            onChange={(e) => setSelectedCountry(e.target.value)}
+                            className="custom-select"
                         >
-                            <SelectTrigger className="w-full border-0 bg-grisclaro text-[#8D8989]">
-                                <SelectValue placeholder="Seleccionar el País" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>País</SelectLabel>
-                                    {countries.map((country) => (
-                                        <SelectItem key={country.code} value={country.code}>
-                                            {country.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                            <option value="" disabled>
+                                Seleccionar el País
+                            </option>
+                            {countries.map((country) => (
+                                <option key={country.code} value={country.code}>
+                                    {country.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <div className="mb-[15px] grid grid-cols-1">
-                        <Input
+                        <input
+                            className="custom-input"
                             type="text"
-                            placeholder="Nombre Ciudad"
-                            className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
                             {...register('name', { required: true })}
                         />
+
                         {errors.name && <span>Este campo es obligatorio</span>}
                     </div>
                     <DialogFooter>
-                        <DialogClose asChild>
-                            <Button
-                                type="submit"
-                                className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
-                            >
-                                Actualizar
-                            </Button>
-                        </DialogClose>
+                        <button type="submit" className="custom-button">
+                            Actualizar
+                        </button>
                     </DialogFooter>
                 </form>
             </DialogContent>

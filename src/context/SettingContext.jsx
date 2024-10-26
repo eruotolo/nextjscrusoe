@@ -11,53 +11,29 @@ const SettingContext = createContext();
 export const SettingProvider = ({ children }) => {
     const [isInitialized, setIsInitialized] = useState(false);
 
-    const [countriesData, setCountriesData] = useState([]);
     const [airportData, setAirportData] = useState([]);
-    const [citiesData, setCitiesData] = useState([]);
-
-    const updateCountries = useCallback(async () => {
-        const data = await getCountries();
-        setCountriesData(data);
-    }, []);
 
     const refreshAirport = useCallback(async () => {
         const data = await getAirports();
         setAirportData(data);
     }, []);
 
-    const updateCities = useCallback(async () => {
-        const data = await getAllCities();
-        setCitiesData({
-            data,
-            meta: {
-                total: data.length,
-                page: 1,
-                pageSize: 100,
-                totalPages: Math.ceil(data.length / 100),
-            },
-        });
-    }, []);
-
     useEffect(() => {
         if (!isInitialized) {
             const initializeData = async () => {
-                await Promise.all([updateCountries(), updateCities(), refreshAirport()]);
+                await Promise.all([refreshAirport()]);
                 setIsInitialized(true);
             };
             initializeData();
         }
-    }, [isInitialized, updateCountries, updateCities, refreshAirport]);
+    }, [isInitialized, refreshAirport]);
 
     const contextValue = useMemo(
         () => ({
-            countriesData,
-            updateCountries,
-            citiesData,
-            updateCities,
             airportData,
             refreshAirport,
         }),
-        [countriesData, citiesData, airportData, updateCountries, updateCities, refreshAirport]
+        [airportData, refreshAirport]
     );
 
     return <SettingContext.Provider value={contextValue}>{children}</SettingContext.Provider>;

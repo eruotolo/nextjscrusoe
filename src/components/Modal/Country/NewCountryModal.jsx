@@ -35,6 +35,8 @@ export default function NewCountryModal({ refresh }) {
             const createdCountry = await createCountry(countryData);
             if (createdCountry) {
                 console.log('Hola');
+                await refresh();
+                resetForm();
             }
         } catch (error) {
             setError('Error de red al crear el país');
@@ -66,33 +68,33 @@ export default function NewCountryModal({ refresh }) {
                 </DialogHeader>
                 <form onSubmit={handleCreateCountry}>
                     <div className="mb-[15px] grid grid-cols-1">
-                        <Input
+                        <input
                             type="text"
                             placeholder="Codigo País"
                             value={code}
                             onChange={(e) => setCode(e.target.value)}
-                            className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                            className="custom-input"
                         />
                     </div>
                     <div className="mb-[15px] grid grid-cols-1">
-                        <Input
+                        <input
                             type="text"
                             placeholder="Nombre País"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                            className="custom-input"
                         />
                     </div>
                     {error && <div className="mt-2 text-sm text-red-500">{error}</div>}
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button
+                            <button
                                 type="submit"
                                 disabled={!isFormValid()}
-                                className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
+                                className="custom-button"
                             >
                                 Crear País
-                            </Button>
+                            </button>
                         </DialogClose>
                     </DialogFooter>
                 </form>

@@ -99,7 +99,41 @@ module.exports = {
                 'accordion-down': 'accordion-down 0.2s ease-out',
                 'accordion-up': 'accordion-up 0.2s ease-out',
             },
+            // Define custom classes
+            customForms: (theme) => ({
+                '.custom-select': {
+                    '@apply flex w-full items-center justify-between rounded-[10px] border-0 border-neutral-200 bg-grisclaro px-3 py-[12px] pr-10 text-sm text-[#8D8989] ring-offset-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50':
+                        {},
+                },
+                '.custom-input': {
+                    '@apply flex h-10 w-full rounded-[10px] border-0 border-input bg-grisclaro px-[15px] py-2 text-sm text-[#8D8989] ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50':
+                        {},
+                },
+                '.custom-button': {
+                    '@apply h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]':
+                        {},
+                },
+            }),
         },
     },
-    plugins: [require('tailwindcss-animate')],
+    plugins: [
+        require('tailwindcss-animate'),
+        require('@tailwindcss/forms'),
+        function ({ addComponents }) {
+            addComponents({
+                '.custom-select': {
+                    '@apply flex w-full items-center justify-between rounded-[10px] border-0 border-neutral-200 bg-grisclaro px-3 py-[12px] pr-10 text-sm text-[#8D8989] ring-offset-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50':
+                        {},
+                },
+                '.custom-input': {
+                    '@apply flex h-10 w-full rounded-[10px] border-0 border-input bg-grisclaro px-[15px] py-2 text-sm text-[#8D8989] ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50':
+                        {},
+                },
+                '.custom-button': {
+                    '@apply h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]':
+                        {},
+                },
+            });
+        },
+    ],
 };

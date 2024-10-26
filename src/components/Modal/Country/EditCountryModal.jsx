@@ -3,7 +3,6 @@
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 
-import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
@@ -12,7 +11,6 @@ import {
     DialogTitle,
     DialogFooter,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 
 import { getCountryById, updateCountry } from '@/services/countryService';
 
@@ -61,10 +59,10 @@ export default function EditCountryModal({ id, refresh, open, onClose }) {
                 </DialogHeader>
                 <form onSubmit={onSubmit}>
                     <div className="mb-[15px] grid grid-cols-1">
-                        <Input
+                        <input
                             id="code"
                             type="text"
-                            className="rounded-[10px] border-0 bg-grisclaro px-[15px] uppercase text-[#8D8989] focus:ring-azul"
+                            className="custom-input"
                             {...register('code', {
                                 required: 'Este campo es requerido',
                             })}
@@ -72,10 +70,10 @@ export default function EditCountryModal({ id, refresh, open, onClose }) {
                         {errors.code && <p>{errors.code.message}</p>}
                     </div>
                     <div className="mb-[15px] grid grid-cols-1">
-                        <Input
+                        <input
                             id="name"
                             type="text"
-                            className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                            className="custom-input"
                             {...register('name', {
                                 required: 'Este campo es requerido',
                             })}
@@ -83,12 +81,9 @@ export default function EditCountryModal({ id, refresh, open, onClose }) {
                         {errors.name && <p>{errors.name.message}</p>}
                     </div>
                     <DialogFooter>
-                        <Button
-                            type="submit"
-                            className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
-                        >
+                        <button type="submit" className="custom-button">
                             Actualizar
-                        </Button>
+                        </button>
                     </DialogFooter>
                 </form>
             </DialogContent>

@@ -1,12 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSettingContext } from '@/context/SettingContext';
 import { Plus } from 'lucide-react';
 import { getCountries } from '@/services/countryService'; // Asegúrate de tener esta función en tu servicio
 import { createCity } from '@/services/cityService';
 
-import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
@@ -17,19 +15,8 @@ import {
     DialogFooter,
     DialogClose,
 } from '@/components/ui/dialog';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
 
-export default function NewCityModal() {
-    const { updateCities, updateCountries } = useSettingContext();
+export default function NewCityModal({ refresh }) {
     const [countries, setCountries] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState('');
     const [cityName, setCityName] = useState('');
@@ -48,10 +35,9 @@ export default function NewCityModal() {
             countryCode: selectedCountry,
             name: cityName,
         };
-        const createdCity = await createCity(cityData); // Renamed variable to createdCity
+        const createdCity = await createCity(cityData);
         if (createdCity) {
-            updateCities();
-            updateCountries();
+            await refresh();
         }
     };
 
@@ -61,7 +47,7 @@ export default function NewCityModal() {
                 Nuevo
                 <Plus className="ml-[5px] h-3 w-3" />
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[400px]">
+            <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
                     <DialogTitle>Crear Nueva Ciudad</DialogTitle>
                     <DialogDescription>
@@ -70,43 +56,36 @@ export default function NewCityModal() {
                 </DialogHeader>
                 <form onSubmit={handleCreateCity}>
                     <div className="mb-[15px] grid grid-cols-1">
-                        <Select
-                            className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                        <select
+                            id="country"
                             value={selectedCountry}
-                            onValueChange={setSelectedCountry}
+                            onChange={(e) => setSelectedCountry(e.target.value)}
+                            className="custom-select"
                         >
-                            <SelectTrigger className="w-full border-0 bg-grisclaro text-[#8D8989]">
-                                <SelectValue placeholder="Seleccionar el País" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>País</SelectLabel>
-                                    {countries.map((country) => (
-                                        <SelectItem key={country.code} value={country.code}>
-                                            {country.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                            <option value="" disabled>
+                                Seleccionar el País
+                            </option>
+                            {countries.map((country) => (
+                                <option key={country.code} value={country.code}>
+                                    {country.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <div className="mb-[15px] grid grid-cols-1">
-                        <Input
+                        <input
                             type="text"
                             placeholder="Nombre Ciudad"
                             value={cityName}
                             onChange={(e) => setCityName(e.target.value)}
-                            className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                            className="custom-input"
                         />
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button
-                                type="submit"
-                                className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
-                            >
+                            <button type="submit" className="custom-button">
                                 Crear Ciudad
-                            </Button>
+                            </button>
                         </DialogClose>
                     </DialogFooter>
                 </form>

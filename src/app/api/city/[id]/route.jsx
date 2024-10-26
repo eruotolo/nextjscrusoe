@@ -13,6 +13,15 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
     try {
         const data = await request.json();
+
+        // Validar datos de entrada
+        if (!data.name || !data.countryCode) {
+            return NextResponse.json(
+                { message: 'El nombre y el código de país son obligatorios' },
+                { status: 400 }
+            );
+        }
+
         const cityUpdate = await prisma.city.update({
             where: {
                 id: Number(params.id),
@@ -24,8 +33,20 @@ export async function PUT(request, { params }) {
         });
         return NextResponse.json(cityUpdate);
     } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: 'Failed to update city' }, { status: 500 });
+        console.error('Error al actualizar la ciudad:', error);
+
+        // Verificar errores específicos de Prisma
+        if (error.code === 'P2002') {
+            return NextResponse.json(
+                { message: 'Ya existe una ciudad con este nombre en el país' },
+                { status: 400 }
+            );
+        }
+
+        return NextResponse.json(
+            { message: 'Ocurrió un error al actualizar la ciudad' },
+            { status: 500 }
+        );
     }
 }
 
