@@ -13,12 +13,11 @@ import {
 } from '@/components/ui/dialog';
 
 import { getCountries } from '@/services/countryService';
-import { getShippingPortById, updateShippingPort } from '@/services/shippingPortService';
+import { getAirportById, updateAirport } from '@/services/airportService';
 
-import { MapsComponent } from '@/components/Maps/MapsComponent';
 import { EditMapsComponent } from '@/components/Maps/EditMapsComponents';
 
-export default function EditShippingPortModal({ id, refresh, open, onClose }) {
+export default function EditAirportModal({ id, refresh, open, onClose }) {
     const [countries, setCountries] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState('');
 
@@ -41,22 +40,25 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
     }, []);
 
     useEffect(() => {
-        const fetchShippingPort = async () => {
+        const fetchAirport = async () => {
             if (id) {
-                const shippingPortsData = await getShippingPortById(id);
-                if (shippingPortsData) {
-                    setSelectedCountry(shippingPortsData.codeCountry);
-                    setValue('unCode', shippingPortsData.unCode || '');
-                    setValue('name', shippingPortsData.name || '');
-                    setValue('latitude', shippingPortsData.latitude || '');
-                    setValue('longitude', shippingPortsData.longitude || '');
-                    setLatitude(shippingPortsData.latitude || '');
-                    setLongitude(shippingPortsData.longitude || '');
+                const airportData = await getAirportById(id);
+                console.log('Airport data fetched:', airportData);
+                if (airportData) {
+                    setSelectedCountry(airportData.codeCountry);
+                    setValue('name', airportData.name);
+                    setValue('gcdiata', airportData.gcdiata || '');
+                    setValue('gcdicao', airportData.gcdicao || '');
+                    setValue('geocode', airportData.geocode || '');
+                    setValue('latitude', airportData.latitude || '');
+                    setValue('longitude', airportData.longitude || '');
+                    setLatitude(airportData.latitude || '');
+                    setLongitude(airportData.longitude || '');
                 }
             }
         };
         if (open) {
-            fetchShippingPort();
+            fetchAirport();
         }
     }, [id, open, setValue]);
 
@@ -67,7 +69,7 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
 
     const onSubmit = handleSubmit(async (data) => {
         try {
-            const response = await updateShippingPort(id, {
+            const response = await updateAirport(id, {
                 ...data,
                 latitude: parseFloat(latitude),
                 longitude: parseFloat(longitude),
@@ -81,23 +83,24 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
                 console.error('No se pudo actualizar la data');
             }
         } catch (error) {
-            console.error('Error submitting form:', error);
+            console.error('Error al enviar el formulario:', error);
         }
     });
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[800px]">
+            <DialogContent className="sm:max-w-[1000px]">
                 <DialogHeader>
-                    <DialogTitle>Editar Puerto</DialogTitle>
+                    <DialogTitle>Editar Airport</DialogTitle>
                     <DialogDescription>
-                        Edita el nombre y actualiza los datos relacionados al puerto. Asegúrate de
-                        que los cambios reflejen correctamente la información antes de guardar.
+                        Edita el nombre y actualiza los datos relacionados con este airport.
+                        Asegúrate de que los cambios reflejen correctamente la información antes de
+                        guardar.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={onSubmit}>
-                    <div className="grid grid-cols-2">
-                        <div className="col-span-1 pr-[15px]">
+                    <div className="mb-[15px] grid grid-cols-2">
+                        <div className="col-span-1 pr-[10px]">
                             <div className="mb-[15px] grid grid-cols-1">
                                 <select
                                     id="country"
@@ -115,37 +118,63 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
                                     ))}
                                 </select>
                             </div>
-                            <div className="mb-[15px] grid grid-cols-1">
-                                <label
-                                    htmlFor="unCode"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
-                                    Código del Puerto
-                                </label>
-                                <input
-                                    type="text"
-                                    id="unCode"
-                                    placeholder="Código del Puerto"
-                                    className="custom-input"
-                                    {...register('unCode')}
-                                />
-                            </div>
-                            <div className="mb-[15px] grid grid-cols-1">
+                            <div className="mb-[15px]">
                                 <label
                                     htmlFor="name"
-                                    className="mb-1 px-[15px] text-[13px] font-normal text-[#646464]"
+                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
                                 >
-                                    Nombre del Puerto
+                                    Nombre Aeropuerto
                                 </label>
                                 <input
                                     type="text"
                                     id="name"
-                                    placeholder="Nombre del puerto"
                                     className="custom-input"
                                     {...register('name')}
                                 />
                             </div>
-                            <div className="mb-[15px] grid grid-cols-1">
+                            <div className="mb-[15px]">
+                                <label
+                                    htmlFor="gcdiata"
+                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                >
+                                    GCDIATA
+                                </label>
+                                <input
+                                    type="text"
+                                    id="gcdiata"
+                                    className="custom-input"
+                                    {...register('gcdiata')}
+                                />
+                            </div>
+                            <div className="mb-[15px]">
+                                <label
+                                    htmlFor="gcdicao"
+                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                >
+                                    GCDICAO
+                                </label>
+                                <input
+                                    type="text"
+                                    id="gcdicao"
+                                    className="custom-input"
+                                    {...register('gcdicao')}
+                                />
+                            </div>
+                            <div className="mb-[15px]">
+                                <label
+                                    htmlFor="geocode"
+                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                >
+                                    GEOCODE
+                                </label>
+                                <input
+                                    type="text"
+                                    id="geocode"
+                                    className="custom-input"
+                                    {...register('geocode')}
+                                />
+                            </div>
+                            <div className="mb-[15px]">
                                 <label
                                     htmlFor="latitude"
                                     className="px-[15px] text-[13px] font-normal text-[#646464]"
@@ -162,7 +191,7 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
                                     onChange={(e) => setLatitude(e.target.value)}
                                 />
                             </div>
-                            <div className="mb-[15px] grid grid-cols-1">
+                            <div className="mb-[15px]">
                                 <label
                                     htmlFor="longitude"
                                     className="px-[15px] text-[13px] font-normal text-[#646464]"
@@ -180,22 +209,16 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
                                 />
                             </div>
                         </div>
-                        <div className="">
-                            {latitude && longitude && (
-                                <EditMapsComponent
-                                    lng={parseFloat(longitude)}
-                                    lat={parseFloat(latitude)}
-                                    onLocationChange={handleLocationChange}
-                                />
-                            )}
+                        <div className="col-span-1 pr-[10px]">
+                            <EditMapsComponent
+                                lat={latitude}
+                                lng={longitude}
+                                onLocationChange={handleLocationChange}
+                            />
                         </div>
                     </div>
-
                     <DialogFooter>
-                        <button
-                            type="submit"
-                            className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
-                        >
+                        <button type="submit" className="custom-button">
                             Actualizar
                         </button>
                     </DialogFooter>

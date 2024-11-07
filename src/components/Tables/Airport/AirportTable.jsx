@@ -1,25 +1,98 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useSettingContext } from '@/context/SettingContext';
-
+import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
+import dynamic from 'next/dynamic';
+
+import { deleteAirport, getAirports } from '@/services/airportService';
+import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
+import { NewAirportModal } from '@/components/Modal/Airport/NewAirportModal';
 
 import Swal from 'sweetalert2';
-import { Trash2, ArrowUpDown, FilePenLine } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
 
+const DynamicEditAirportModal = dynamic(
+    () => import('@/components/Modal/Airport/EditAirportModal'),
+    { ssr: false }
+);
+
 export default function AirportTable() {
-    const { airportData, refreshAirport } = useSettingContext();
+    const [airportData, setAirportData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        if (airportData && airportData.length > 0) {
+    const [openEdit, setOpenEdit] = useState(false);
+    const [selectedAirportId, setSelectedAirportId] = useState(null);
+
+    // GET DATA
+    const fetchAirports = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const data = await getAirports();
+            setAirportData(data);
+        } catch (error) {
+            console.error('Error fetching airports:', error);
+            // Podrías mostrar un mensaje de error al usuario aquí
+        } finally {
             setIsLoading(false);
         }
-    }, [airportData]);
+    }, []);
 
+    useEffect(() => {
+        fetchAirports();
+    }, [fetchAirports]);
+
+    // REFRESH TABLE BEFORE UPDATE
+    const refreshTable = useCallback(async () => {
+        const data = await getAirports();
+        setAirportData(data);
+    }, []);
+
+    // DIALOG OPEN AND CLOSE
+    const handleEditOpenModal = (id) => {
+        setOpenEdit(true);
+        setSelectedAirportId(id);
+    };
+    const handleEditCloseModal = () => {
+        setOpenEdit(false);
+        setSelectedAirportId(null);
+    };
+
+    // ELIMINAR AIRPORT
+    async function handleDelete(id) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¡No podrás revertir esta acción!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const success = await deleteAirport(id);
+                if (success) {
+                    await refreshTable();
+                    Swal.fire({
+                        title: '¡Eliminado!',
+                        text: 'La ciudad ha sido eliminado.',
+                        icon: 'success',
+                    });
+                } else {
+                    console.error('Error deleting city');
+                }
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire({
+                    title: 'Cancelado',
+                    text: 'El aeropuerto está a salvo :)',
+                    icon: 'error',
+                });
+            }
+        });
+    }
+
+    // COLUMNAS
     const columns = [
         {
             accessorKey: 'gcdiata',
@@ -38,7 +111,7 @@ export default function AirportTable() {
                 return (
                     <Button
                         variant="ghost"
-                        className="text-[12px] font-normal leading-[13px] text-[#8D8989] 2xl:text-[13px]"
+                        className="text-[12px] font-medium leading-[13px] text-[#8D8989]"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Nombre Aeropuerto
@@ -62,30 +135,30 @@ export default function AirportTable() {
             header: 'Acciones',
             cell: ({ row }) => (
                 <div className="flex items-center justify-center space-x-3">
-                    <FilePenLine className="h-[18px] w-[18px] hover:text-verde" />
-                    <Trash2 className="h-[18px] w-[18px] hover:text-verde" />
+                    <BtnEditTable onClick={() => handleEditOpenModal(row.original.id)} />
+
+                    <BtnDeleteTable onClick={() => handleDelete(row.original.id)} />
                 </div>
             ),
         },
     ];
 
-    // Exportación de Archivo Excel
     const exportToExcel = async () => {
         try {
-            const dataToExport = airportData.map((airports) => ({
-                airportCode: airports.gcdiata,
-                airportGeocode: airports.geocode,
-                airportGcdicao: airports.gcdicao,
-                airportName: airports.name,
-                airportLatitude: airports.latitude,
-                airportLongitude: airports.longitude,
-                countryCode: airports.country.code,
-                countryName: airports.country.name,
+            const combinedData = airportData.map((airport) => ({
+                geocode: airport.geocode,
+                name: airport.name,
+                gcdiata: airport.gcdiata,
+                gcdicao: airport.gcdicao,
+                latitude: airport.longitude,
+                longitude: airport.longitude,
+                countryCode: airport.countryCode,
             }));
-            console.log(dataToExport);
-            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            // Crear hoja de trabajo a partir de los datos combinados
+            const worksheet = XLSX.utils.json_to_sheet(combinedData);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'airports');
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Airports');
+            // Exportar archivo Excel
             XLSX.writeFile(workbook, 'airports_export.xlsx');
         } catch (error) {
             console.error('Error exporting to Excel:', error);
@@ -93,11 +166,34 @@ export default function AirportTable() {
     };
 
     return (
-        <GenericTable
-            columns={columns}
-            data={airportData}
-            loading={isLoading}
-            exportToExcel={exportToExcel}
-        />
+        <>
+            <div className="flex h-auto w-full justify-between">
+                <div>
+                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">
+                        Listado de puertos
+                    </h5>
+                    <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
+                </div>
+                <div>
+                    <NewAirportModal refresh={refreshTable} />
+                </div>
+            </div>
+            <div className="mt-[20px] flex">
+                <GenericTable
+                    columns={columns}
+                    data={airportData}
+                    loading={isLoading}
+                    exportToExcel={exportToExcel}
+                />
+            </div>
+            {openEdit && setSelectedAirportId && (
+                <DynamicEditAirportModal
+                    id={selectedAirportId}
+                    refresh={refreshTable}
+                    open={openEdit}
+                    onClose={handleEditCloseModal}
+                />
+            )}
+        </>
     );
 }

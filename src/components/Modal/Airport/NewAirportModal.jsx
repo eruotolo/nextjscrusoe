@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSettingContext } from '@/context/SettingContext';
+
 import { getCountries } from '@/services/countryService';
 import { createAirport } from '@/services/airportService';
+import { MapsComponent } from '@/components/Maps/MapsComponent';
 
-import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
@@ -16,20 +16,10 @@ import {
     DialogFooter,
     DialogClose,
 } from '@/components/ui/dialog';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { Plus } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 
-export function NewAirportModal() {
-    const { refreshAirport } = useSettingContext();
+import { Plus } from 'lucide-react';
+
+export function NewAirportModal({ refresh }) {
     const [countries, setCountries] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState('');
 
@@ -49,16 +39,30 @@ export function NewAirportModal() {
     const handleCreateAirport = async (e) => {
         e.preventDefault();
         const airportData = {
-            code: airportCode,
+            gcdiata: airportCode,
             name: airportName,
+            latitude: parseFloat(latitude),
+            longitude: parseFloat(longitude),
             codeCountry: selectedCountry,
-            latitude: latitude,
-            longitude: longitude,
         };
         const createdAirport = await createAirport(airportData);
         if (createdAirport) {
-            refreshAirport();
+            await refresh();
+            resetForm();
         }
+    };
+
+    const handleLocationChange = (lng, lat) => {
+        setLongitude(lng);
+        setLatitude(lat);
+    };
+
+    const resetForm = () => {
+        setSelectedCountry('');
+        setAirportName('');
+        setAirportCode('');
+        setLatitude('');
+        setLongitude('');
     };
 
     return (
@@ -78,74 +82,73 @@ export function NewAirportModal() {
                     <div className="grid grid-cols-2">
                         <div className="col-span-1 pr-[10px]">
                             <div className="mb-[15px] grid grid-cols-1">
-                                <Select
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                <select
                                     value={selectedCountry}
-                                    onValueChange={setSelectedCountry}
+                                    onChange={(e) => setSelectedCountry(e.target.value)}
+                                    className="custom-select"
                                 >
-                                    <SelectTrigger className="w-full border-0 bg-grisclaro text-[#8D8989]">
-                                        <SelectValue placeholder="Seleccionar el País" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>País</SelectLabel>
-                                            {countries.map((country) => (
-                                                <SelectItem key={country.code} value={country.code}>
-                                                    {country.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
+                                    <option value="" disabled>
+                                        Seleccionar el País
+                                    </option>
+                                    {countries.map((country) => (
+                                        <option key={country.code} value={country.code}>
+                                            {country.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div className="mb-[15px] grid grid-cols-1">
-                                <Input
-                                    text="text"
+                                <input
+                                    type="text"
                                     value={airportCode}
                                     onChange={(e) => setAirportCode(e.target.value)}
                                     placeholder="Codigo del airport"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px] grid grid-cols-1">
-                                <Input
-                                    text="text"
+                                <input
+                                    type="text"
                                     value={airportName}
                                     onChange={(e) => setAirportName(e.target.value)}
                                     placeholder="Nombre del airport"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px] grid grid-cols-1">
-                                <Input
-                                    text="text"
-                                    vale={latitude}
+                                <input
+                                    type="number"
+                                    step="any"
+                                    value={latitude}
                                     onChange={(e) => setLatitude(e.target.value)}
                                     placeholder="Ingresar Latitud"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px] grid grid-cols-1">
-                                <Input
-                                    text="text"
-                                    vale={longitude}
+                                <input
+                                    type="number"
+                                    step="any"
+                                    value={longitude}
                                     onChange={(e) => setLongitude(e.target.value)}
                                     placeholder="Ingresar Longitud"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                         </div>
-                        <div className="col-span-1 pl-[10px]">2</div>
+                        <div className="col-span-1 pl-[10px]">
+                            <MapsComponent
+                                lat={latitude}
+                                lng={longitude}
+                                onLocationChange={handleLocationChange}
+                            />
+                        </div>
                     </div>
-
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button
-                                type="submit"
-                                className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
-                            >
+                            <button type="submit" className="custom-button">
                                 Crear Airport
-                            </Button>
+                            </button>
                         </DialogClose>
                     </DialogFooter>
                 </form>

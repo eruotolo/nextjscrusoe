@@ -4,7 +4,7 @@ import prisma from '@/lib/db';
 export async function GET(request, { params }) {
     const viewShippingPort = await prisma.shippingPorts.findUnique({
         where: {
-            id: Number(params.id),
+            id: params.id,
         },
         include: {
             country: true,
@@ -16,22 +16,22 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
     try {
         const data = await request.json();
-        const { countryCode, ...rest } = data;
+        const { codeCountry, ...res } = data;
 
-        const shippingPortsUpdated = await prisma.shippingPorts.update({
+        const updateShippingPort = await prisma.shippingPorts.update({
             where: {
-                id: Number(params.id),
+                id: params.id,
             },
             data: {
-                ...rest,
+                ...res,
                 country: {
                     connect: {
-                        code: countryCode,
+                        code: codeCountry,
                     },
                 },
             },
         });
-        return NextResponse.json(shippingPortsUpdated);
+        return NextResponse.json(updateShippingPort);
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: 'Failed to update shippingport' }, { status: 500 });
@@ -39,10 +39,20 @@ export async function PUT(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
-    const removeShippingPort = await prisma.shippingPorts.delete({
-        where: {
-            id: Number(params.id),
-        },
-    });
-    return NextResponse.json(removeShippingPort);
+    try {
+        const removeShippingPort = await prisma.shippingPorts.delete({
+            where: {
+                id: params.id,
+            },
+        });
+        return NextResponse.json(removeShippingPort);
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json(
+            { error: 'Failed to delete' },
+            {
+                status: 500,
+            }
+        );
+    }
 }

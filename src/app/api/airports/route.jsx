@@ -29,9 +29,17 @@ export async function POST(request) {
         const data = await request.json();
         console.log('Received data:', data);
 
+        // Validar los datos de entrada
+        if (!data.gcdiata || !data.name || !data.latitude || !data.longitude || !data.codeCountry) {
+            return NextResponse.json(
+                { message: 'Todos los campos son obligatorios.' },
+                { status: 400 }
+            );
+        }
+
         const newAirport = await prisma.airports.create({
             data: {
-                code: data.code,
+                gcdiata: data.gcdiata,
                 name: data.name,
                 latitude: data.latitude,
                 longitude: data.longitude,
@@ -40,6 +48,8 @@ export async function POST(request) {
         });
 
         console.log('Created new Airport:', newAirport);
+        // REVALIDATE PATH
+
         return NextResponse.json(newAirport);
     } catch (error) {
         console.error('Error creating shipping port:', error); // Log the error

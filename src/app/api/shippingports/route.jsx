@@ -26,6 +26,15 @@ export async function POST(request) {
     try {
         const data = await request.json();
         console.log('Received data:', data); // Log the received data
+
+        // VALIDATE DATA
+        if (!data.name || !data.unCode || !data.latitude || !data.longitude || !data.codeCountry) {
+            return NextResponse.json(
+                { message: 'Todos los campos son obligatorios.' },
+                { status: 400 }
+            );
+        }
+
         const newShippingPort = await prisma.shippingPorts.create({
             data: {
                 unCode: data.unCode,

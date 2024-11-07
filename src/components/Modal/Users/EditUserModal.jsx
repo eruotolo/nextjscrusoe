@@ -3,21 +3,16 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
-import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
     DialogFooter,
-    DialogClose,
 } from '@/components/ui/dialog';
 
-import { Input } from '@/components/ui/input';
 import { FilePenLine } from 'lucide-react';
-import { Label } from '@/components/ui/label';
 
 export default function EditUserModal({ id, refresh, open, onClose }) {
     const [formData, setFormData] = useState({
@@ -70,6 +65,10 @@ export default function EditUserModal({ id, refresh, open, onClose }) {
         }
     };
 
+    const handleCustomFileButtonClick = () => {
+        fileInputRef.current?.click();
+    };
+
     const onSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -115,79 +114,125 @@ export default function EditUserModal({ id, refresh, open, onClose }) {
                 <form onSubmit={onSubmit}>
                     <div className="grid grid-cols-3">
                         <div className="col-span-2">
-                            <div className="mb-[15px] flex">
-                                <Input
-                                    id="name"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleInputChange}
-                                    type="text"
-                                    placeholder="Nombre"
-                                    className="mr-[10px] rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
-                                />
-                                <Input
-                                    id="lastName"
-                                    name="lastName"
-                                    value={formData.lastName}
-                                    onChange={handleInputChange}
-                                    type="text"
-                                    placeholder="Apellido"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
-                                />
+                            <div className="mb-[15px] grid grid-cols-2">
+                                <div className="col-span-1 mr-[5px] flex flex-col">
+                                    <label
+                                        for="name"
+                                        className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                    >
+                                        Nombre
+                                    </label>
+                                    <input
+                                        className="custom-input"
+                                        id="name"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleInputChange}
+                                        type="text"
+                                        placeholder="Nombre"
+                                    />
+                                </div>
+                                <div className="col-span-1 ml-[5px] flex flex-col">
+                                    <label
+                                        for="lastName"
+                                        className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                    >
+                                        Apellido
+                                    </label>
+                                    <input
+                                        className="custom-input"
+                                        id="lastName"
+                                        name="lastName"
+                                        value={formData.lastName}
+                                        onChange={handleInputChange}
+                                        type="text"
+                                        placeholder="Apellido"
+                                    />
+                                </div>
                             </div>
                             <div className="mb-[15px]">
-                                <Input
+                                <label
+                                    for="email"
+                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                >
+                                    Correo Electrónico
+                                </label>
+                                <input
                                     id="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleInputChange}
                                     type="email"
                                     placeholder="Correo Electrónico"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <Input
+                                <label
+                                    for="phone"
+                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                >
+                                    Correo Electrónico
+                                </label>
+                                <input
                                     id="phone"
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleInputChange}
                                     type="text"
                                     placeholder="Teléfono"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <Input
+                                <label
+                                    for="address"
+                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                >
+                                    Dirección
+                                </label>
+                                <input
                                     id="address"
                                     name="address"
                                     value={formData.address}
                                     onChange={handleInputChange}
                                     type="text"
                                     placeholder="Dirección"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <Input
+                                <label
+                                    for="city"
+                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                >
+                                    Dirección
+                                </label>
+                                <input
                                     id="city"
                                     name="city"
                                     value={formData.city}
                                     onChange={handleInputChange}
                                     type="text"
                                     placeholder="Ciudad"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <Input
+                                <label
+                                    for="city"
+                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                >
+                                    Contraseña
+                                </label>
+                                <input
                                     id="password"
                                     name="password"
                                     value={formData.password}
                                     onChange={handleInputChange}
                                     type="password"
-                                    placeholder="Ingrese su contraseña"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    placeholder="*******"
+                                    className="custom-input"
                                 />
                             </div>
                         </div>
@@ -217,25 +262,33 @@ export default function EditUserModal({ id, refresh, open, onClose }) {
                                     />
                                 </div>
                             ) : null}
-                            <Label htmlFor="file" className="mb-[10px] mt-[34px] block">
-                                Foto de perfil
-                            </Label>
-                            <Input
+
+                            <input
                                 id="file"
                                 type="file"
                                 ref={fileInputRef}
                                 onChange={handleFileChange}
-                                className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                className="hidden"
                             />
+                            <button
+                                type="button"
+                                onClick={handleCustomFileButtonClick}
+                                className="mt-[34px] flex w-full items-center justify-center rounded-md bg-gris px-4 py-2 text-[12px] font-medium text-white hover:bg-grisclaro hover:text-gris focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            >
+                                <FilePenLine className="mr-2 h-5 w-5" />
+                                Cambiar foto de perfil
+                            </button>
+                            {file && (
+                                <p className="mt-2 text-sm text-gray-600">
+                                    Archivo seleccionado: {file.name}
+                                </p>
+                            )}
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button
-                            type="submit"
-                            className="h-[36px] w-[100px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]"
-                        >
+                        <button type="submit" className="custom-button w-[140px]">
                             Actualizar
-                        </Button>
+                        </button>
                     </DialogFooter>
                 </form>
             </DialogContent>

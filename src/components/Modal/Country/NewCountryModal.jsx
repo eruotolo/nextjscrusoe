@@ -57,7 +57,7 @@ export default function NewCountryModal({ refresh }) {
                 Nuevo
                 <Plus className="ml-[5px] h-3 w-3" />
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[400px]">
+            <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
                     <DialogTitle>Crear Nuevo País</DialogTitle>
                     <DialogDescription>
@@ -65,24 +65,27 @@ export default function NewCountryModal({ refresh }) {
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleCreateCountry}>
-                    <div className="mb-[15px] grid grid-cols-1">
-                        <input
-                            type="text"
-                            placeholder="Codigo País"
-                            value={code}
-                            onChange={(e) => setCode(e.target.value)}
-                            className="custom-input"
-                        />
+                    <div className="grid grid-cols-3">
+                        <div className="col-span-1 mb-[15px] mr-[5px]">
+                            <input
+                                type="text"
+                                placeholder="Codigo País"
+                                value={code}
+                                onChange={(e) => setCode(e.target.value)}
+                                className="custom-input"
+                            />
+                        </div>
+                        <div className="col-span-2 mb-[15px] ml-[5px]">
+                            <input
+                                type="text"
+                                placeholder="Nombre País"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="custom-input"
+                            />
+                        </div>
                     </div>
-                    <div className="mb-[15px] grid grid-cols-1">
-                        <input
-                            type="text"
-                            placeholder="Nombre País"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="custom-input"
-                        />
-                    </div>
+
                     {error && <div className="mt-2 text-sm text-red-500">{error}</div>}
                     <DialogFooter>
                         <DialogClose asChild>

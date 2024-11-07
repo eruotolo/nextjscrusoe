@@ -55,15 +55,21 @@ export default function NewCityModal({ refresh }) {
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleCreateCity}>
-                    <div className="mb-[15px] grid grid-cols-1">
+                    <div className="mb-[15px] grid grid-cols-3">
+                        <label
+                            htmlFor="name"
+                            className="col-span-1 mr-[10px] px-[15px] pt-[15px] text-[15px] font-light text-[#646464]"
+                        >
+                            ASIGNAR PAIS
+                        </label>
                         <select
                             id="country"
                             value={selectedCountry}
                             onChange={(e) => setSelectedCountry(e.target.value)}
-                            className="custom-select"
+                            className="custom-select col-span-2"
                         >
-                            <option value="" disabled>
-                                Seleccionar el País
+                            <option value="" disabled className="text-[15px] font-light">
+                                SELECCIONAR EL PAÍS
                             </option>
                             {countries.map((country) => (
                                 <option key={country.code} value={country.code}>

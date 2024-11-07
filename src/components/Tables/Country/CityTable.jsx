@@ -71,21 +71,10 @@ export default function CityTable() {
             if (result.isConfirmed) {
                 const success = await deleteCity(id);
                 if (success) {
-                    setCitiesData((prevData) => ({
-                        ...prevData,
-                        data: prevData.data.filter((city) => city.id !== id),
-                        meta: {
-                            ...prevData.meta,
-                            total: prevData.meta.total - 1,
-                            totalPages: Math.ceil(
-                                (prevData.meta.total - 1) / prevData.meta.pageSize
-                            ),
-                        },
-                    }));
-
+                    await refreshTable();
                     Swal.fire({
                         title: '¡Eliminado!',
-                        text: 'La ciudad ha sido eliminada.',
+                        text: 'La ciudad ha sido eliminado.',
                         icon: 'success',
                     });
                 } else {

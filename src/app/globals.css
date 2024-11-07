@@ -159,8 +159,11 @@ div:where(.swal2-icon).swal2-warning{
 }
 .custom-select {
     padding-right: 2.5rem; /* Adjust this value as needed */
-    background-image: url('/chevron-down.svg'); /* Path to your arrow down icon */
+    background-image: url('/sort-down.svg'); /* Path to your arrow down icon */
     background-repeat: no-repeat;
     background-position: right 0.75rem center; /* Adjust this value as needed */
-    background-size: 0.75rem; /* Adjust this value as needed */
+    background-size: 1.2rem; /* Adjust this value as needed */
+}
+.mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left{
+    display: none;
 }

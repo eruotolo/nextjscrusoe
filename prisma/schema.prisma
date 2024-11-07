@@ -62,12 +62,12 @@ model City {
 
 model Airports {
   id          String   @id @default(uuid())
-  geocode     String
+  geocode     String?
   name        String
   gcdiata     String
-  gcdicao     String
-  latitude    String?
-  longitude   String?
+  gcdicao     String?
+  latitude    Float?
+  longitude   Float?
   codeCountry String?
   country     Country? @relation(fields: [codeCountry], references: [code], onDelete: Cascade, onUpdate: Cascade)
   createdAt   DateTime @default(now())
@@ -78,11 +78,11 @@ model Airports {
 
 model ShippingPorts {
   id          String   @id @default(uuid())
-  unCode      String
+  unCode      String?
   name        String
+  latitude    Float?
+  longitude   Float?
   codeCountry String?
-  latitude    String?
-  longitude   String?
   country     Country? @relation(fields: [codeCountry], references: [code], onDelete: Cascade, onUpdate: Cascade)
   createdAt   DateTime @default(now())
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
+
 import {
     Dialog,
     DialogContent,
@@ -11,7 +11,6 @@ import {
     DialogTitle,
     DialogFooter,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 
 export default function ChangeUserPassModal({ id, refresh, open, onClose }) {
     const [password, setPassword] = useState('');
@@ -69,10 +68,17 @@ export default function ChangeUserPassModal({ id, refresh, open, onClose }) {
                 <form onSubmit={onSubmit}>
                     <div className="mb-[15px] grid grid-cols-1">
                         <div className="mb-[15px]">
-                            <Input
-                                id="password"
+                            <label
+                                for="password"
+                                className="px-[15px] text-[13px] font-normal text-[#646464]"
+                            >
+                                Ingrese Contraseña
+                            </label>
+                            <input
                                 type="password"
-                                className="block w-full rounded-md border-0 px-[10px] py-[4px] text-[#4B5563] ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-[15px] sm:leading-6"
+                                id="password"
+                                className="custom-input"
+                                placeholder="**********"
                                 {...register('password', {
                                     required: {
                                         value: true,
@@ -85,10 +91,17 @@ export default function ChangeUserPassModal({ id, refresh, open, onClose }) {
                             {errors.password && <p>{errors.password.message}</p>}
                         </div>
                         <div className="mb-[15px]">
-                            <Input
+                            <label
+                                for="confirmPassword"
+                                className="px-[15px] text-[13px] font-normal text-[#646464]"
+                            >
+                                Confirmar Contraseña
+                            </label>
+                            <input
                                 id="confirmPassword"
                                 type="password"
-                                className="block w-full rounded-md border-0 px-[10px] py-[4px] text-[#4B5563] ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-[15px] sm:leading-6"
+                                className="custom-input"
+                                placeholder="**********"
                                 {...register('confirmPassword', {
                                     required: {
                                         value: true,
@@ -103,13 +116,9 @@ export default function ChangeUserPassModal({ id, refresh, open, onClose }) {
                     </div>
 
                     <DialogFooter>
-                        <Button
-                            type="submit"
-                            disabled={isDisabled}
-                            className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
-                        >
+                        <button type="submit" disabled={isDisabled} className="custom-button">
                             Actualizar
-                        </Button>
+                        </button>
                     </DialogFooter>
                 </form>
             </DialogContent>

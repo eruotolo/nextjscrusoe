@@ -1,32 +1,35 @@
-export const getAirports = async () => {
+import { cache } from 'react';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+
+export const getAirports = cache(async () => {
     try {
-        const response = await fetch(`/api/airports`);
+        const response = await fetch(`${API_URL}/api/airports`, {
+            next: { revalidate: 3600 },
+        });
 
         if (!response.ok) {
-            console.error(`Error fetching airports: ${response.status} - ${response.statusText}`);
-            return [];
+            console.error(`Error al obtener: ${response.status} - ${response.statusText}`);
+            return null;
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
-        console.log(error);
-        return { data: [], meta: { total: 0, page: 1, pageSize: 100, totalPages: 1 } };
+        console.error('Error fetching airports:', error);
+        return [];
     }
-};
+});
 
 export const deleteAirport = async (id) => {
     try {
-        const response = await fetch(`/api/airports/${id}`, {
+        const response = await fetch(`${API_URL}/api/airports/${id}`, {
             method: 'DELETE',
         });
         if (!response.ok) {
-            console.error(
-                `Error deleting Shipping Port: ${response.status} - ${response.statusText}`
-            );
+            console.error(`Error deleting Airports: ${response.status} - ${response.statusText}`);
             return false;
         }
-        return true;
+        return await response.json();
     } catch (error) {
         console.error('Error deleting Shipping Port'.error);
         return false;
@@ -35,7 +38,8 @@ export const deleteAirport = async (id) => {
 
 export const createAirport = async (airportData) => {
     try {
-        const response = await fetch(`/api/airports`, {
+        console.log('Actualizando los datos:', airportData);
+        const response = await fetch(`${API_URL}/api/airports`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -44,40 +48,39 @@ export const createAirport = async (airportData) => {
         });
 
         if (!response.ok) {
-            console.error(
-                `Error creating Shipping Port: ${response.status} - ${response.statusText}`
-            );
+            console.error(`Error creating Airport: ${response.status} - ${response.statusText}`);
             return null;
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
-        console.log('Error creating country:', error);
+        console.log('Error creating:', error);
         return null;
     }
 };
 
-export const getAirportBtId = async (id) => {
+export const getAirportById = cache(async (id) => {
     try {
-        const response = await fetch(`/api/airports/${id}`);
+        const response = await fetch(`${API_URL}/api/airports/${id}`, {
+            next: { revalidate: 3600 },
+        });
 
         if (!response.ok) {
-            console.error(`Error fetching Airport: ${response.status} - ${response.statusText}`);
+            console.error(`Error fetching: ${response.status} - ${response.statusText}`);
             return null;
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.error('Error fetching Shipping Port:', error);
         return null;
     }
-};
+});
 
 export const updateAirport = async (id, airportData) => {
     try {
-        const response = await fetch(`/api/airports/${id}`, {
+        console.log('Actualizando los datos:', airportData);
+        const response = await fetch(`${API_URL}/api/airports/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -86,14 +89,13 @@ export const updateAirport = async (id, airportData) => {
         });
 
         if (!response.ok) {
-            console.error(`Error updating country: ${response.status} - ${response.statusText}`);
+            console.error(`Error updating: ${response.status} - ${response.statusText}`);
             return null;
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
-        console.error('Error updating country:', error);
+        console.error('Error updating:', error);
         return null;
     }
 };

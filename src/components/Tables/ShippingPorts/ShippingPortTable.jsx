@@ -1,21 +1,17 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import dynamic from 'next/dynamic';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
+import dynamic from 'next/dynamic';
+
 import { deleteShippingPort, getShippingPorts } from '@/services/shippingPortService';
+import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
+import NewShippingPortModal from '@/components/Modal/ShippingPorts/NewShippingPortModal';
+
 import Swal from 'sweetalert2';
-import { Trash2, ArrowUpDown, Plus, FilePenLine } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
-
-const DynamicNewShippingPortModal = dynamic(
-    () => import('@/components/Modal/ShippingPorts/NewShippingPortModal'),
-    {
-        ssr: false,
-        loading: () => <p>Cargando...</p>,
-    }
-);
 
 const DynamicEditShippingPortModal = dynamic(
     () => import('@/components/Modal/ShippingPorts/EditShippingPortModal'),
@@ -29,7 +25,6 @@ export default function ShippingPortTable() {
     const [shippingPortData, setShippingPortData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const [openNew, setOpenNew] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [selectedPortId, setSelectedPortId] = useState(null);
 
@@ -58,10 +53,6 @@ export default function ShippingPortTable() {
     }, []);
 
     // DIALOG OPEN CLOSE
-
-    const handleNewOpenModal = () => setOpenNew(true);
-    const handleNewCloseModal = () => setOpenNew(false);
-
     const handleEditOpenModal = (id) => {
         setSelectedPortId(id);
         setOpenEdit(true);
@@ -142,14 +133,8 @@ export default function ShippingPortTable() {
             header: 'Acciones',
             cell: ({ row }) => (
                 <div className="flex items-center justify-center space-x-3">
-                    <FilePenLine
-                        onClick={() => handleEditOpenModal(row.original.id)}
-                        className="h-[18px] w-[18px] cursor-pointer hover:text-verde"
-                    />
-                    <Trash2
-                        className="h-[18px] w-[18px] cursor-pointer hover:text-verde"
-                        onClick={() => handleDelete(row.original.id)}
-                    />
+                    <BtnEditTable onClick={() => handleEditOpenModal(row.original.id)} />
+                    <BtnDeleteTable onClick={() => handleDelete(row.original.id)} />
                 </div>
             ),
         },
@@ -186,12 +171,7 @@ export default function ShippingPortTable() {
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
                 <div>
-                    <button
-                        onClick={handleNewOpenModal}
-                        className="flex h-[36px] w-[100px] items-center justify-center rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]"
-                    >
-                        Nuevo <Plus className="ml-[5px] h-3 w-3" />
-                    </button>
+                    <NewShippingPortModal refresh={refreshTable} />
                 </div>
             </div>
             <div className="mt-[20px] flex">
@@ -202,13 +182,6 @@ export default function ShippingPortTable() {
                     exportToExcel={exportToExcel}
                 />
             </div>
-            {openNew && (
-                <DynamicNewShippingPortModal
-                    open={openNew}
-                    onClose={handleNewCloseModal}
-                    refresh={refreshTable}
-                />
-            )}
             {openEdit && selectedPortId && (
                 <DynamicEditShippingPortModal
                     id={selectedPortId}
