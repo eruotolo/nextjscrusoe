@@ -13,13 +13,17 @@ import {
 } from '@/components/ui/dialog';
 
 import { getCountries } from '@/services/countryService';
-import { getShippingPortById, updateShippingPort } from '@/services/shippingPortService';
+import { getCitiesCountry } from '@/services/cityService';
+import { getPlacesById, updatePlace } from '@/services/placesService';
 
 import { EditMapsComponent } from '@/components/Maps/EditMapsComponents';
 
-export default function EditShippingPortModal({ id, refresh, open, onClose }) {
+export default function EditPlacesModal({ id, refresh, open, onClose }) {
     const [countries, setCountries] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState('');
+
+    const [cities, setCities] = useState([]);
+    const [selectedCity, setSelectedCity] = useState('');
 
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
@@ -39,23 +43,50 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
         fetchCountries();
     }, []);
 
+    // Cargar las ciudades cuando cambia el país seleccionado
     useEffect(() => {
-        const fetchShippingPort = async () => {
-            if (id) {
-                const shippingPortsData = await getShippingPortById(id);
-                if (shippingPortsData) {
-                    setSelectedCountry(shippingPortsData.codeCountry);
-                    setValue('unCode', shippingPortsData.unCode || '');
-                    setValue('name', shippingPortsData.name || '');
-                    setValue('latitude', shippingPortsData.latitude || '');
-                    setValue('longitude', shippingPortsData.longitude || '');
-                    setLatitude(shippingPortsData.latitude || '');
-                    setLongitude(shippingPortsData.longitude || '');
+        const fetchCities = async () => {
+            if (selectedCountry) {
+                const cityData = await getCitiesCountry(selectedCountry);
+                setCities(cityData);
+
+                // Solo resetea la ciudad si el país fue cambiado manualmente, no durante la carga inicial
+                if (!id) {
+                    setSelectedCity(''); // Resetea la ciudad seleccionada si el país fue cambiado manualmente
                 }
+            } else {
+                setCities([]);
+                setSelectedCity(''); // Resetea la ciudad seleccionada si no hay país seleccionado
             }
         };
+        fetchCities();
+    }, [selectedCountry, id]);
+
+    useEffect(() => {
+        const fetchPlaces = async () => {
+            if (id) {
+                const placesData = await getPlacesById(id);
+                if (placesData) {
+                    setSelectedCountry(placesData.codeCountry);
+
+                    // Carga las ciudades del país seleccionado para luego establecer la ciudad seleccionada
+                    const cityData = await getCitiesCountry(placesData.codeCountry);
+                    setCities(cityData);
+                    setSelectedCity(placesData.codeCity); // Establece la ciudad seleccionada
+
+                    setValue('name', placesData.name || '');
+                    setValue('address', placesData.address || '');
+                    setValue('latitude', placesData.latitude || '');
+                    setValue('longitude', placesData.longitude || '');
+                    setLatitude(placesData.latitude || '');
+                    setLongitude(placesData.longitude || '');
+                }
+                console.log('PlacesData:', placesData);
+            }
+        };
+
         if (open) {
-            fetchShippingPort();
+            fetchPlaces();
         }
     }, [id, open, setValue]);
 
@@ -66,11 +97,12 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
 
     const onSubmit = handleSubmit(async (data) => {
         try {
-            const response = await updateShippingPort(id, {
+            const response = await updatePlace(id, {
                 ...data,
                 latitude: parseFloat(latitude),
                 longitude: parseFloat(longitude),
                 codeCountry: selectedCountry,
+                codeCity: parseInt(selectedCity, 10),
             });
             console.log(response);
             if (response) {
@@ -86,26 +118,32 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[800px]">
+            <DialogContent className="sm:max-w-[1100px]">
                 <DialogHeader>
-                    <DialogTitle>Editar Puerto</DialogTitle>
+                    <DialogTitle>Editar Lugar</DialogTitle>
                     <DialogDescription>
-                        Edita el nombre y actualiza los datos relacionados al puerto. Asegúrate de
+                        Edita el nombre y actualiza los datos relacionados al lugar. Asegúrate de
                         que los cambios reflejen correctamente la información antes de guardar.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={onSubmit}>
                     <div className="grid grid-cols-2">
-                        <div className="col-span-1 pr-[15px]">
-                            <div className="mb-[15px] grid grid-cols-1">
+                        <div className="col-span-1 flex flex-col justify-center pr-[10px]">
+                            <div className="mb-[15px] grid grid-cols-3">
+                                <label
+                                    htmlFor="name"
+                                    className="col-span-1 mr-[10px] px-[15px] pt-[15px] text-[15px] font-light text-[#646464]"
+                                >
+                                    ASIGNAR PAÍS
+                                </label>
                                 <select
                                     id="country"
                                     value={selectedCountry}
                                     onChange={(e) => setSelectedCountry(e.target.value)}
-                                    className="custom-select"
+                                    className="custom-select col-span-2"
                                 >
-                                    <option value="" disabled>
-                                        Seleccionar el País
+                                    <option value="" disabled className="text-[15px] font-light">
+                                        SELECCIONAR EL PAÍS
                                     </option>
                                     {countries.map((country) => (
                                         <option key={country.code} value={country.code}>
@@ -114,19 +152,42 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
                                     ))}
                                 </select>
                             </div>
+                            <div className="mb-[15px] grid grid-cols-3">
+                                <label
+                                    htmlFor="name"
+                                    className="col-span-1 mr-[10px] px-[15px] pt-[15px] text-[15px] font-light text-[#646464]"
+                                >
+                                    ASIGNAR CIUDAD
+                                </label>
+                                <select
+                                    id="city"
+                                    value={selectedCity}
+                                    onChange={(e) => setSelectedCity(e.target.value)}
+                                    className="custom-select col-span-2"
+                                >
+                                    <option value="" disabled className="text-[15px] font-light">
+                                        SELECCIONAR LA CIUDAD
+                                    </option>
+                                    {cities.map((city) => (
+                                        <option key={city.id} value={city.id}>
+                                            {city.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                             <div className="mb-[15px] grid grid-cols-1">
                                 <label
-                                    htmlFor="unCode"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                    htmlFor="name"
+                                    className="mb-1 px-[15px] text-[13px] font-normal text-[#646464]"
                                 >
-                                    Código del Puerto
+                                    Nombre del Lugar
                                 </label>
                                 <input
                                     type="text"
-                                    id="unCode"
-                                    placeholder="Código del Puerto"
+                                    id="name"
+                                    placeholder="Nombre del lugar"
                                     className="custom-input"
-                                    {...register('unCode')}
+                                    {...register('name')}
                                 />
                             </div>
                             <div className="mb-[15px] grid grid-cols-1">
@@ -134,14 +195,14 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
                                     htmlFor="name"
                                     className="mb-1 px-[15px] text-[13px] font-normal text-[#646464]"
                                 >
-                                    Nombre del Puerto
+                                    Dirección
                                 </label>
                                 <input
                                     type="text"
-                                    id="name"
-                                    placeholder="Nombre del puerto"
+                                    id="address"
+                                    placeholder="Dirección del lugar"
                                     className="custom-input"
-                                    {...register('name')}
+                                    {...register('address')}
                                 />
                             </div>
                             <div className="mb-[15px] grid grid-cols-1">
@@ -179,7 +240,7 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
                                 />
                             </div>
                         </div>
-                        <div className="">
+                        <div className="col-span-1 pl-[10px]">
                             {latitude && longitude && (
                                 <EditMapsComponent
                                     lng={parseFloat(longitude)}
@@ -191,10 +252,7 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
                     </div>
 
                     <DialogFooter>
-                        <button
-                            type="submit"
-                            className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
-                        >
+                        <button type="submit" className="custom-button">
                             Actualizar
                         </button>
                     </DialogFooter>

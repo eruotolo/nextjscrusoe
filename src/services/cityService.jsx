@@ -20,6 +20,23 @@ export const getCities = cache(async () => {
     }
 });
 
+export const getCitiesCountry = cache(async (countryCode) => {
+    try {
+        const response = await fetch(`${API_URL}/api/city?country=${countryCode}`, {
+            next: { revalidate: 3600 },
+        });
+        if (!response.ok) {
+            console.error(`Error al obtener: ${response.status} - ${response.statusText}`);
+            return null;
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching cities:', error);
+        return [];
+    }
+});
+
 export const createCity = async (cityData) => {
     try {
         const response = await fetch(`${API_URL}/api/city`, {

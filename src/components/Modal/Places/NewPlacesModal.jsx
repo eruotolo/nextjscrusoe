@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 
 import { getCountries } from '@/services/countryService';
-import { createShippingPort } from '@/services/shippingPortService';
+import { getCitiesCountry, getCityById } from '@/services/cityService';
+import { createPlaces } from '@/services/placesService';
 import { MapsComponent } from '@/components/Maps/MapsComponent';
 
 import {
@@ -19,12 +20,15 @@ import {
 
 import { Plus } from 'lucide-react';
 
-export default function NewShippingPortModal({ refresh }) {
+export default function NewPlacesModal({ refresh }) {
     const [countries, setCountries] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState('');
 
-    const [shippingPortName, setShippingPortName] = useState('');
-    const [shippingPortunCode, setShippingPortunCode] = useState('');
+    const [cities, setCities] = useState([]);
+    const [selectedCity, setSelectedCity] = useState('');
+
+    const [placesName, setPlacesName] = useState('');
+    const [placesAddress, setPlacesAddress] = useState('');
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
 
@@ -36,22 +40,37 @@ export default function NewShippingPortModal({ refresh }) {
         fetchCountries();
     }, []);
 
-    const handleCreateShippingPort = async (e) => {
+    useEffect(() => {
+        const fetchCities = async () => {
+            if (selectedCountry) {
+                const cityData = await getCitiesCountry(selectedCountry);
+                setCities(cityData);
+                setSelectedCity(''); // Resetea la ciudad seleccionada cuando cambia el país
+            } else {
+                setCities([]);
+                setSelectedCity(''); // Resetea la ciudad seleccionada si no hay país seleccionado
+            }
+        };
+        fetchCities();
+    }, [selectedCountry]);
+
+    const handleCreatePlaces = async (e) => {
         e.preventDefault();
-        const shippingPortData = {
-            unCode: shippingPortunCode,
-            name: shippingPortName,
+        const placesData = {
             codeCountry: selectedCountry,
+            codeCity: parseInt(selectedCity, 10),
+            name: placesName,
+            address: placesAddress,
             latitude: parseFloat(latitude),
             longitude: parseFloat(longitude),
         };
-
-        const createdShippingPort = await createShippingPort(shippingPortData);
-        if (createdShippingPort) {
+        //console.log('Datos', placesData);
+        const createdPlaces = await createPlaces(placesData);
+        if (createdPlaces) {
             resetForm();
-            refresh();
+            await refresh();
         } else {
-            console.error('No se pudo crear el puerto. Por favor, intente nuevamente.');
+            console.error('No se pudo crear el lugar');
         }
     };
 
@@ -62,14 +81,17 @@ export default function NewShippingPortModal({ refresh }) {
 
     const resetForm = () => {
         setSelectedCountry('');
-        setShippingPortName('');
-        setShippingPortunCode('');
+        setSelectedCity('');
+        setPlacesName('');
+        setPlacesAddress('');
         setLatitude('');
         setLongitude('');
     };
 
     const isFormValid = () => {
-        return selectedCountry && shippingPortName && shippingPortunCode && latitude && longitude;
+        return (
+            selectedCountry && selectedCity && placesName && placesAddress && latitude && longitude
+        );
     };
 
     return (
@@ -78,24 +100,31 @@ export default function NewShippingPortModal({ refresh }) {
                 Nuevo
                 <Plus className="ml-[5px] h-3 w-3" />
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[800px]">
+            <DialogContent className="sm:max-w-[1100px]">
                 <DialogHeader>
-                    <DialogTitle>Crear Nuevo Puerto</DialogTitle>
+                    <DialogTitle>Crear Nuevo Lugar</DialogTitle>
                     <DialogDescription>
-                        Introduce el nombre del nuevo puerto que deseas crear.
+                        Introduce el nombre del nuevo lugar que deseas crear.
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleCreateShippingPort}>
+                <form onSubmit={handleCreatePlaces}>
                     <div className="grid grid-cols-2">
-                        <div className="col-span-1 pr-[10px]">
-                            <div className="mb-[15px] grid grid-cols-1">
+                        <div className="col-span-1 flex flex-col justify-center pr-[10px]">
+                            <div className="mb-[15px] grid grid-cols-3">
+                                <label
+                                    htmlFor="name"
+                                    className="col-span-1 mr-[10px] px-[15px] pt-[15px] text-[15px] font-light text-[#646464]"
+                                >
+                                    ASIGNAR PAÍS
+                                </label>
                                 <select
+                                    id="country"
                                     value={selectedCountry}
                                     onChange={(e) => setSelectedCountry(e.target.value)}
-                                    className="custom-select"
+                                    className="custom-select col-span-2"
                                 >
-                                    <option value="" disabled>
-                                        Seleccionar el País
+                                    <option value="" disabled className="text-[15px] font-light">
+                                        SELECCIONAR EL PAÍS
                                     </option>
                                     {countries.map((country) => (
                                         <option key={country.code} value={country.code}>
@@ -104,25 +133,48 @@ export default function NewShippingPortModal({ refresh }) {
                                     ))}
                                 </select>
                             </div>
-                            <div className="mb-[15px] grid grid-cols-1">
+                            <div className="mb-[15px] grid grid-cols-3">
+                                <label
+                                    htmlFor="name"
+                                    className="col-span-1 mr-[10px] px-[15px] pt-[15px] text-[15px] font-light text-[#646464]"
+                                >
+                                    ASIGNAR CIUDAD
+                                </label>
+                                <select
+                                    id="city"
+                                    value={selectedCity}
+                                    onChange={(e) => setSelectedCity(e.target.value)}
+                                    className="custom-select col-span-2"
+                                >
+                                    <option value="" disabled className="text-[15px] font-light">
+                                        SELECCIONAR LA CIUDAD
+                                    </option>
+                                    {cities.map((city) => (
+                                        <option key={city.id} value={city.id}>
+                                            {city.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-[15px]">
                                 <input
                                     type="text"
-                                    value={shippingPortunCode}
-                                    onChange={(e) => setShippingPortunCode(e.target.value)}
-                                    placeholder="Codigo del puerto"
+                                    placeholder="Nombre del Lugar"
+                                    value={placesName}
+                                    onChange={(e) => setPlacesName(e.target.value)}
                                     className="custom-input"
                                 />
                             </div>
-                            <div className="mb-[15px] grid grid-cols-1">
+                            <div className="mb-[15px]">
                                 <input
                                     type="text"
-                                    value={shippingPortName}
-                                    onChange={(e) => setShippingPortName(e.target.value)}
-                                    placeholder="Nombre del puerto"
+                                    placeholder="Dirección"
+                                    value={placesAddress}
+                                    onChange={(e) => setPlacesAddress(e.target.value)}
                                     className="custom-input"
                                 />
                             </div>
-                            <div className="mb-[15px] grid grid-cols-1">
+                            <div className="mb-[15px]">
                                 <input
                                     type="number"
                                     step="any"
@@ -154,11 +206,11 @@ export default function NewShippingPortModal({ refresh }) {
                     <DialogFooter>
                         <DialogClose asChild>
                             <button
-                                type="submit"
                                 disabled={!isFormValid()}
-                                className="custom-button disabled:opacity-50"
+                                type="submit"
+                                className="custom-button"
                             >
-                                Crear Puerto
+                                Crear Lugar
                             </button>
                         </DialogClose>
                     </DialogFooter>

@@ -2,23 +2,24 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 
 export async function GET(request, { params }) {
-    const viewShippingPort = await prisma.shippingPorts.findUnique({
+    const viewPlaces = await prisma.places.findUnique({
         where: {
             id: params.id,
         },
         include: {
             country: true,
+            city: true,
         },
     });
-    return NextResponse.json(viewShippingPort);
+    return NextResponse.json(viewPlaces);
 }
 
 export async function PUT(request, { params }) {
     try {
         const data = await request.json();
-        const { codeCountry, ...res } = data;
+        const { codeCountry, codeCity, ...res } = data;
 
-        const updateShippingPort = await prisma.shippingPorts.update({
+        const updatePlaces = await prisma.places.update({
             where: {
                 id: params.id,
             },
@@ -29,9 +30,14 @@ export async function PUT(request, { params }) {
                         code: codeCountry,
                     },
                 },
+                city: {
+                    connect: {
+                        id: codeCity,
+                    },
+                },
             },
         });
-        return NextResponse.json(updateShippingPort);
+        return NextResponse.json(updatePlaces);
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
@@ -40,12 +46,12 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
     try {
-        const removeShippingPort = await prisma.shippingPorts.delete({
+        const removePlace = await prisma.places.delete({
             where: {
                 id: params.id,
             },
         });
-        return NextResponse.json(removeShippingPort);
+        return NextResponse.json(removePlace);
     } catch (error) {
         console.error(error);
         return NextResponse.json(
