@@ -135,6 +135,28 @@ export default function PlacesTable() {
         },
     ];
 
+    const exportToExcel = async () => {
+        try {
+            const combinedData = placesData.map((places) => ({
+                name: places.name,
+                address: places.address,
+                cityName: places.city.name,
+                codeCountry: places.codeCountry,
+                countryName: places.country.name,
+                latitude: places.latitude,
+                longitude: places.longitude,
+            }));
+            // Crear hoja de trabajo a partir de los datos combinados
+            const worksheet = XLSX.utils.json_to_sheet(combinedData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Places');
+            // Exportar archivo Excel
+            XLSX.writeFile(workbook, 'places_export.xlsx');
+        } catch (error) {
+            console.error('Error exporting to Excel:', error);
+        }
+    };
+
     return (
         <>
             <div className="flex h-auto w-full justify-between">
@@ -149,7 +171,12 @@ export default function PlacesTable() {
                 </div>
             </div>
             <div className="mt-[20px] flex">
-                <GenericTable columns={columns} data={placesData} loading={isLoading} />
+                <GenericTable
+                    columns={columns}
+                    data={placesData}
+                    loading={isLoading}
+                    exportToExcel={exportToExcel}
+                />
             </div>
             {openEdit && selectedPlacesId && (
                 <DynamicEditPlacesModal

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import { getCountries } from '@/services/countryService';
-import { getCitiesCountry, getCityById } from '@/services/cityService';
+import { getCitiesCountry } from '@/services/cityService';
 import { createPlaces } from '@/services/placesService';
 import { MapsComponent } from '@/components/Maps/MapsComponent';
 
