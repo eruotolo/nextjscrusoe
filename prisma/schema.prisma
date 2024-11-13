@@ -93,16 +93,20 @@ model ShippingPorts {
 }
 
 model Places {
-  id          String   @id @default(uuid())
-  name        String
-  address     String?
-  latitude    Float?
-  longitude   Float?
-  codeCountry String?
-  country     Country? @relation(fields: [codeCountry], references: [code], onDelete: Cascade, onUpdate: Cascade)
-  codeCity    Int?
-  city        City?    @relation(fields: [codeCity], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  createdAt   DateTime @default(now())
+  id           String   @id @default(uuid())
+  name         String
+  address      String?
+  zipCode      String?
+  latitude     Float?
+  longitude    Float?
+  codeCountry  String?
+  country      Country? @relation(fields: [codeCountry], references: [code], onDelete: Cascade, onUpdate: Cascade)
+  codeCity     Int?
+  city         City?    @relation(fields: [codeCity], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  contactName  String?
+  contactEmail String?
+  contactPhone String?
+  createdAt    DateTime @default(now())
 
   @@index([name])
   @@index([codeCountry])

@@ -76,6 +76,10 @@ export default function EditPlacesModal({ id, refresh, open, onClose }) {
 
                     setValue('name', placesData.name || '');
                     setValue('address', placesData.address || '');
+                    setValue('zipCode', placesData.zipCode || '');
+                    setValue('contactName', placesData.contactName || '');
+                    setValue('contactEmail', placesData.contactEmail || '');
+                    setValue('contactPhone', placesData.contactPhone || '');
                     setValue('latitude', placesData.latitude || '');
                     setValue('longitude', placesData.longitude || '');
                     setLatitude(placesData.latitude || '');
@@ -129,10 +133,10 @@ export default function EditPlacesModal({ id, refresh, open, onClose }) {
                 <form onSubmit={onSubmit}>
                     <div className="grid grid-cols-2">
                         <div className="col-span-1 flex flex-col justify-center pr-[10px]">
-                            <div className="mb-[15px] grid grid-cols-3">
+                            <div className="mb-[10px] grid grid-cols-3">
                                 <label
                                     htmlFor="name"
-                                    className="col-span-1 mr-[10px] px-[15px] pt-[15px] text-[15px] font-light text-[#646464]"
+                                    className="col-span-1 mr-[10px] px-[15px] pt-[13px] text-[14px] font-light text-[#646464]"
                                 >
                                     ASIGNAR PAÍS
                                 </label>
@@ -152,10 +156,10 @@ export default function EditPlacesModal({ id, refresh, open, onClose }) {
                                     ))}
                                 </select>
                             </div>
-                            <div className="mb-[15px] grid grid-cols-3">
+                            <div className="mb-[10px] grid grid-cols-3">
                                 <label
                                     htmlFor="name"
-                                    className="col-span-1 mr-[10px] px-[15px] pt-[15px] text-[15px] font-light text-[#646464]"
+                                    className="col-span-1 mr-[10px] px-[15px] pt-[13px] text-[14px] font-light text-[#646464]"
                                 >
                                     ASIGNAR CIUDAD
                                 </label>
@@ -175,7 +179,7 @@ export default function EditPlacesModal({ id, refresh, open, onClose }) {
                                     ))}
                                 </select>
                             </div>
-                            <div className="mb-[15px] grid grid-cols-1">
+                            <div className="mb-[10px] grid grid-cols-1">
                                 <label
                                     htmlFor="name"
                                     className="mb-1 px-[15px] text-[13px] font-normal text-[#646464]"
@@ -190,7 +194,7 @@ export default function EditPlacesModal({ id, refresh, open, onClose }) {
                                     {...register('name')}
                                 />
                             </div>
-                            <div className="mb-[15px] grid grid-cols-1">
+                            <div className="mb-[10px] grid grid-cols-1">
                                 <label
                                     htmlFor="name"
                                     className="mb-1 px-[15px] text-[13px] font-normal text-[#646464]"
@@ -205,38 +209,98 @@ export default function EditPlacesModal({ id, refresh, open, onClose }) {
                                     {...register('address')}
                                 />
                             </div>
-                            <div className="mb-[15px] grid grid-cols-1">
-                                <label
-                                    htmlFor="latitude"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
-                                    Latitud
-                                </label>
-                                <input
-                                    type="number"
-                                    step="any"
-                                    id="latitude"
-                                    className="custom-input"
-                                    {...register('latitude')}
-                                    value={latitude}
-                                    onChange={(e) => setLatitude(e.target.value)}
-                                />
+                            <div className="grid grid-cols-3">
+                                <div className="col-span-1 mb-[10px] mr-[8px]">
+                                    <label
+                                        htmlFor="latitude"
+                                        className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                    >
+                                        Latitud
+                                    </label>
+                                    <input
+                                        type="number"
+                                        step="any"
+                                        id="latitude"
+                                        className="custom-input"
+                                        {...register('latitude')}
+                                        value={latitude}
+                                        onChange={(e) => setLatitude(e.target.value)}
+                                    />
+                                </div>
+                                <div className="col-span-1 mb-[10px] mr-[8px]">
+                                    <label
+                                        htmlFor="longitude"
+                                        className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                    >
+                                        Longitud
+                                    </label>
+                                    <input
+                                        type="number"
+                                        step="any"
+                                        id="longitude"
+                                        className="custom-input"
+                                        {...register('longitude')}
+                                        value={longitude}
+                                        onChange={(e) => setLongitude(e.target.value)}
+                                    />
+                                </div>
+                                <div className="col-span-1 mb-[10px]">
+                                    <label
+                                        htmlFor="zipCode"
+                                        className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                    >
+                                        Zip Code
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="zipCode"
+                                        className="custom-input"
+                                        {...register('zipCode')}
+                                    />
+                                </div>
                             </div>
-                            <div className="mb-[15px] grid grid-cols-1">
+                            <div className="mb-[10px] grid grid-cols-2">
+                                <div className="col-span-1 mr-[10px]">
+                                    <label
+                                        htmlFor="name"
+                                        className="mb-1 px-[15px] text-[13px] font-normal text-[#646464]"
+                                    >
+                                        Nombre Contacto
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="contactName"
+                                        className="custom-input"
+                                        {...register('contactName')}
+                                    />
+                                </div>
+                                <div className="col-span-1">
+                                    <label
+                                        htmlFor="name"
+                                        className="mb-1 px-[15px] text-[13px] font-normal text-[#646464]"
+                                    >
+                                        Teléfono Contacto
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="contactPhone"
+                                        className="custom-input"
+                                        {...register('contactPhone')}
+                                    />
+                                </div>
+                            </div>
+                            <div className="mb-[10px] grid grid-cols-1">
                                 <label
-                                    htmlFor="longitude"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
+                                    htmlFor="name"
+                                    className="mb-1 px-[15px] text-[13px] font-normal text-[#646464]"
                                 >
-                                    Longitud
+                                    Email Contacto
                                 </label>
                                 <input
-                                    type="number"
-                                    step="any"
-                                    id="longitude"
+                                    type="text"
+                                    id="contactEmail"
                                     className="custom-input"
-                                    {...register('longitude')}
-                                    value={longitude}
-                                    onChange={(e) => setLongitude(e.target.value)}
+                                    {...register('contactEmail')}
                                 />
                             </div>
                         </div>

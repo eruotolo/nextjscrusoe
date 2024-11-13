@@ -5,7 +5,7 @@ import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 
 import { getPlaces, deletePlaces } from '@/services/placesService';
-import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
+import { BtnDeleteTable, BtnEditTable, BtnViewTable } from '@/components/BtnTable/BtnTable';
 import NewPlacesModal from '@/components/Modal/Places/NewPlacesModal';
 
 import Swal from 'sweetalert2';
@@ -17,11 +17,16 @@ const DynamicEditPlacesModal = dynamic(() => import('@/components/Modal/Places/E
     ssr: false,
 });
 
+const DynamicViewPlacesModal = dynamic(() => import('@/components/Modal/Places/ViewPlacesModal'), {
+    ssr: false,
+});
+
 export default function PlacesTable() {
     const [placesData, setPlacesData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [openEdit, setOpenEdit] = useState(false);
+    const [openView, setOpenView] = useState(false);
     const [selectedPlacesId, setSelectedPlacesId] = useState(null);
 
     // GET DATA
@@ -55,6 +60,15 @@ export default function PlacesTable() {
     const handleEditCloseModal = () => {
         setSelectedPlacesId(false);
         setOpenEdit(null);
+    };
+
+    const handleViewOpenModal = (id) => {
+        setSelectedPlacesId(id);
+        setOpenView(true);
+    };
+    const handleViewCloseModal = () => {
+        setSelectedPlacesId(false);
+        setOpenView(null);
     };
 
     // DELETE SHIPPINGPORT
@@ -128,6 +142,7 @@ export default function PlacesTable() {
             header: 'Acciones',
             cell: ({ row }) => (
                 <div className="flex items-center justify-center space-x-3">
+                    <BtnViewTable onClick={() => handleViewOpenModal(row.original.id)} />
                     <BtnEditTable onClick={() => handleEditOpenModal(row.original.id)} />
                     <BtnDeleteTable onClick={() => handleDelete(row.original.id)} />
                 </div>
@@ -184,6 +199,13 @@ export default function PlacesTable() {
                     refresh={refreshTable}
                     open={openEdit}
                     onClose={handleEditCloseModal}
+                />
+            )}
+            {openView && selectedPlacesId && (
+                <DynamicViewPlacesModal
+                    id={selectedPlacesId}
+                    open={openView}
+                    onClose={handleViewCloseModal}
                 />
             )}
         </>

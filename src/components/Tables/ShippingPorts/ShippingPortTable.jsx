@@ -17,7 +17,6 @@ const DynamicEditShippingPortModal = dynamic(
     () => import('@/components/Modal/ShippingPorts/EditShippingPortModal'),
     {
         ssr: false,
-        loading: () => <p>Cargando...</p>,
     }
 );
 
