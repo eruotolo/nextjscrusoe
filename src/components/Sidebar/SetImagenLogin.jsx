@@ -1,10 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { useAppContext } from '@/context/AppContext';
+
+import useAuthStore from '@/store/authStore';
 
 export default function SetImageLogin() {
-    const session = useAppContext();
+    const session = useAuthStore((state) => state.session);
 
     return (
         <>

@@ -1,9 +1,9 @@
 'use client';
 
-import { useAppContext } from '@/context/AppContext';
+import useAuthStore from '@/store/authStore';
 
 export default function SetNameLogin() {
-    const session = useAppContext();
+    const session = useAuthStore((state) => state.session);
 
     return (
         <>

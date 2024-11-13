@@ -18,7 +18,7 @@ export default function LoginPage() {
     const [error, setError] = useState(null);
 
     const onSubmit = handleSubmit(async (data) => {
-        console.log(data);
+        // console.log('Datos Ingresados', data);
 
         const res = await signIn('credentials', {
             email: data.email,
@@ -26,10 +26,10 @@ export default function LoginPage() {
             redirect: false,
         });
 
-        console.log(res);
+        // console.log('Usuario Logueado:', res);
 
         if (res.error) {
-            console.log(`Error: ${res.error}`); // Añadido para depuración
+            // console.log(`Error: ${res.error}`); // Añadido para depuración
             switch (res.error) {
                 case 'No users found':
                     setError('No se encontró un usuario con este correo');
