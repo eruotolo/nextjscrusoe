@@ -112,3 +112,32 @@ model Places {
   @@index([codeCountry])
   @@index([codeCity])
 }
+
+model TransportType {
+  id                String               @id @default(uuid())
+  name              String
+  createdAt         DateTime             @default(now())
+  incotermsRelarion IncotermsTransport[]
+
+  @@index([name])
+}
+
+model Incoterms {
+  id                String               @id @default(uuid())
+  name              String
+  code              String
+  createdAt         DateTime             @default(now())
+  transportRelation IncotermsTransport[]
+
+  @@index([name])
+  @@index([code])
+}
+
+model IncotermsTransport {
+  id              String        @id @default(uuid())
+  incotermsId     String
+  transportTypeId String
+  incoterms       Incoterms     @relation(fields: [incotermsId], references: [id], onDelete: Cascade)
+  transportType   TransportType @relation(fields: [transportTypeId], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+}

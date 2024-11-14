@@ -1,7 +1,7 @@
 import UserTable from '@/components/Tables/Users/UserTable';
 import RoleTable from '@/components/Tables/Users/RoleTable';
 
-export default function User() {
+export default function UserPage() {
     return (
         <>
             <div className="grid grid-cols-3">

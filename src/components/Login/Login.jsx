@@ -3,11 +3,18 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { signIn, getSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { Eye, EyeOff, Mail } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function LoginPage() {
     const [isPasswordHidden, setPasswordHidden] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const {
         register,
         handleSubmit,
@@ -18,151 +25,98 @@ export default function LoginPage() {
     const [error, setError] = useState(null);
 
     const onSubmit = handleSubmit(async (data) => {
-        // console.log('Datos Ingresados', data);
+        setIsLoading(true);
+        setError(null);
 
-        const res = await signIn('credentials', {
-            email: data.email,
-            password: data.password,
-            redirect: false,
-        });
+        try {
+            const res = await signIn('credentials', {
+                email: data.email,
+                password: data.password,
+                redirect: false,
+            });
 
-        // console.log('Usuario Logueado:', res);
-
-        if (res.error) {
-            // console.log(`Error: ${res.error}`); // Añadido para depuración
-            switch (res.error) {
-                case 'No users found':
-                    setError('No se encontró un usuario con este correo');
-                    break;
-                case 'Wrong Password':
-                    setError('La contraseña es incorrecta');
-                    break;
-                // Más casos a manejar...
-                default:
-                    setError('Ha ocurrido un error durante el inicio de sesión');
-            }
-        } else {
-            const session = await getSession();
-            if (session && session.user.state === 1) {
-                router.push('/dashboard');
+            if (res.error) {
+                switch (res.error) {
+                    case 'No users found':
+                        setError('No se encontró un usuario con este correo');
+                        break;
+                    case 'Wrong Password':
+                        setError('La contraseña es incorrecta');
+                        break;
+                    default:
+                        setError('Ha ocurrido un error durante el inicio de sesión');
+                }
             } else {
-                setError('Tu cuenta está inactiva. Contacta al administrador.');
+                // Inicio de sesión exitoso, redirigir al dashboard
+                router.push('/dashboard');
             }
+        } catch (error) {
+            setError('Ha ocurrido un error inesperado. Por favor, intenta de nuevo.');
+        } finally {
+            setIsLoading(false);
         }
     });
 
     return (
-        <form className="grid gap-4" onSubmit={onSubmit}>
-            <div className="grid gap-2">
-                <label htmlFor="email select-none">Email</label>
-                <div className="relative max-w-xl">
-                    <svg
-                        className="absolute inset-y-0 left-3 my-auto h-6 w-6 text-gray-400"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-                        />
-                    </svg>
-                    <input
-                        id={'email'}
+        <form className="mx-auto max-w-sm space-y-6" onSubmit={onSubmit}>
+            <div className="space-y-2">
+                <Label htmlFor="email">Correo electrónico</Label>
+                <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" />
+                    <Input
+                        id="email"
                         type="email"
-                        placeholder="Enter your email"
-                        {...register('email', { required: 'Email is required' })}
-                        className="w-full rounded-[10px] border bg-[#FAF8F8] py-2 pl-12 pr-3 text-gray-500 shadow-sm outline-none focus:border-azul"
+                        placeholder="Ingresa tu correo electrónico"
+                        {...register('email', { required: 'El correo electrónico es requerido' })}
+                        className="w-[350px] pl-10"
                     />
-                    {errors.email && (
-                        <span className="text-sm text-red-500">{errors.email.message}</span>
-                    )}
                 </div>
+                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             </div>
 
-            <div className="grid gap-2">
-                <label className="select-none text-gray-600">Password</label>
-                <div className="relative mt-2 max-w-xl">
-                    <p
-                        className="absolute inset-y-0 right-3 my-auto cursor-pointer pt-[8px] text-gray-400 active:text-gray-600"
+            <div className="space-y-2">
+                <Label htmlFor="password">Contraseña</Label>
+                <div className="relative">
+                    <Input
+                        id="password"
+                        type={isPasswordHidden ? 'password' : 'text'}
+                        placeholder="Ingresa tu contraseña"
+                        {...register('password', {
+                            required: 'La contraseña es requerida',
+                        })}
+                        className="w-[350px] pr-10"
+                    />
+                    <button
+                        type="button"
+                        className="absolute inset-y-0 right-3 flex items-center"
                         onClick={() => setPasswordHidden(!isPasswordHidden)}
                     >
                         {isPasswordHidden ? (
-                            <svg
-                                className="h-6 w-6"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
-                                />
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
-                            </svg>
+                            <Eye className="h-4 w-4 text-gray-400" />
                         ) : (
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="h-6 w-6"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
-                                />
-                            </svg>
+                            <EyeOff className="h-4 w-4 text-gray-400" />
                         )}
-                    </p>
-                    <input
-                        id=" password"
-                        required
-                        //type="password"
-                        type={isPasswordHidden ? 'password' : 'text'}
-                        placeholder=" Enter your password"
-                        {...register('password', {
-                            required: {
-                                value: true,
-                                message: 'Password is required',
-                            },
-                        })}
-                        className="w-full rounded-[10px] border bg-[#FAF8F8] py-2 pl-3 pr-12 text-gray-500 shadow-sm outline-none focus:border-azul"
-                    />
-                    {errors.password && (
-                        <span className="text-sm text-red-500">{errors.password.message}</span>
-                    )}
+                    </button>
                 </div>
-                <Link href="/recovery" className="ml-auto inline-block text-sm underline">
-                    Forgot your password?
+                {errors.password && (
+                    <p className="text-sm text-destructive">{errors.password.message}</p>
+                )}
+                <Link
+                    href="/recovery"
+                    className="block text-right text-sm text-primary hover:underline"
+                >
+                    ¿Olvidaste tu contraseña?
                 </Link>
             </div>
 
-            <button
-                type="submit"
-                className="rounded-[10px] bg-azul from-azul to-verde px-5 py-3 text-white duration-150 hover:bg-gradient-to-r active:bg-gradient-to-r"
-            >
-                Login
-            </button>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+            </Button>
 
             {error && (
-                <div className="mt-[30px] flex justify-center">
-                    <p className="bg-rosa w-[200px] rounded-[10px] py-[4px] text-center text-[16px] text-red-600">
-                        {error}
-                    </p>
-                </div>
+                <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                </Alert>
             )}
         </form>
     );

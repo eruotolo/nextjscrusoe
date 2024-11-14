@@ -1,5 +1,13 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { FilePenLine, PowerOff, KeyRound, View, UserCog, Trash2 } from 'lucide-react';
+import {
+    FilePenLine,
+    PowerOff,
+    KeyRound,
+    View,
+    UserCog,
+    Trash2,
+    CircleFadingPlus,
+} from 'lucide-react';
 
 export function BtnChangeTable({ onClick }) {
     return (
@@ -87,6 +95,21 @@ export function BtnAssignRole({ onClick }) {
                 </TooltipTrigger>
                 <TooltipContent>
                     <p>Asignar Role</p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    );
+}
+
+export function BtnAssign({ onClick }) {
+    return (
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger onClick={onClick}>
+                    <CircleFadingPlus className="h-[16px] w-[16px] cursor-pointer hover:text-verde" />
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Asignar</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>

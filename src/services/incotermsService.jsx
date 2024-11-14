@@ -2,9 +2,9 @@ import { cache } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const getPlaces = cache(async () => {
+export const getIncoterms = cache(async () => {
     try {
-        const response = await fetch(`${API_URL}/api/places`, {
+        const response = await fetch(`${API_URL}/api/incoterms`, {
             next: { revalidate: 3600 },
         });
 
@@ -15,15 +15,16 @@ export const getPlaces = cache(async () => {
 
         return await response.json();
     } catch (error) {
-        console.error('Error fetching places:', error);
-        return [];
+        console.error('Error fetching:', error);
+        throw error; // Re-throw the error for the component to handle
     }
 });
 
-export const deletePlaces = async (id) => {
+export const deleteIncoterms = async (id) => {
     try {
-        const response = await fetch(`${API_URL}/api/places/${id}`, { method: 'DELETE' });
-
+        const response = await fetch(`${API_URL}/api/incoterms/${id}`, {
+            method: 'DELETE',
+        });
         if (!response.ok) {
             console.error(`Error deleting: ${response.status} - ${response.statusText}`);
             return false;
@@ -35,22 +36,20 @@ export const deletePlaces = async (id) => {
     }
 };
 
-export const createPlaces = async (placesData) => {
+export const createIncoterms = async (incotermsData) => {
     try {
-        //console.log('Cargando los datos:', placesData);
-        const response = await fetch(`${API_URL}/api/places`, {
+        const response = await fetch(`${API_URL}/api/incoterms`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(placesData),
+            body: JSON.stringify(incotermsData),
         });
 
         if (!response.ok) {
             console.error(`Error creating: ${response.status} - ${response.statusText}`);
             return null;
         }
-
         return await response.json();
     } catch (error) {
         console.log('Error creating:', error);
@@ -58,9 +57,9 @@ export const createPlaces = async (placesData) => {
     }
 };
 
-export const getPlacesById = cache(async (id) => {
+export const getIncotermsById = cache(async (id) => {
     try {
-        const response = await fetch(`${API_URL}/api/places/${id}`, {
+        const response = await fetch(`${API_URL}/api/incoterms/${id}`, {
             next: { revalidate: 3600 },
         });
 
@@ -71,21 +70,21 @@ export const getPlacesById = cache(async (id) => {
 
         return await response.json();
     } catch (error) {
-        console.error('Error fetching:', error);
+        console.error('Error:', error);
         return null;
     }
 });
 
-export const updatePlace = async (id, placesData) => {
+export const updateIncoterms = async (id, incotermsData) => {
     try {
-        //console.log('Actualizando los datos:', placesData);
-        const response = await fetch(`${API_URL}/api/places/${id}`, {
+        const response = await fetch(`${API_URL}/api/incoterms/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(placesData),
+            body: JSON.stringify(incotermsData),
         });
+
         if (!response.ok) {
             console.error(`Error updating: ${response.status} - ${response.statusText}`);
             return null;

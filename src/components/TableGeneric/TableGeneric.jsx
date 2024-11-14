@@ -80,11 +80,11 @@ export default function GenericTable({ columns, data, exportToExcel, loading = f
                     placeholder="Filtrar..."
                     value={globalFilter}
                     onChange={(e) => setGlobalFilter(e.target.value)}
-                    className="h-[38px] w-[180px] rounded-[10px] border-0 bg-[#faf8f8] px-[15px] py-[4px] text-[12px] text-[#8D8989] focus:ring-azul xl:w-[280px]"
+                    className="h-[38px] w-[50%] rounded-[10px] border-0 bg-[#faf8f8] px-[15px] py-[4px] text-[12px] text-[#8D8989] focus:ring-azul"
                 />
                 <Button
                     onClick={exportToExcel}
-                    className="mb-4 h-[38px] w-[150px] rounded-[10px] bg-verde text-[12px] font-normal hover:bg-gris 2xl:w-[150px]"
+                    className="mb-4 h-[36px] w-[150px] rounded-[10px] bg-verde text-[12px] font-normal hover:bg-gris 2xl:w-[150px]"
                 >
                     Exportar a Excel
                     <FileSpreadsheet className="ml-[5px] h-[20px]" />
