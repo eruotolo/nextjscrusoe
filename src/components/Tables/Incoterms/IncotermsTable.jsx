@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 
-import { getIncoterms } from '@/services/incotermsService';
+import { getIncoterms, deleteIncoterms } from '@/services/incotermsService';
 import { BtnDeleteTable, BtnEditTable, BtnAssign } from '@/components/BtnTable/BtnTable';
 import NewIncotermsModal from '@/components/Modal/Incoterms/NewIncotermsModal';
 
@@ -13,12 +13,23 @@ import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
 
+const DynamicEditIncoterms = dynamic(
+    () => import('@/components/Modal/Incoterms/EditIncotermsModal'),
+    { ssr: false }
+);
+
+const DynamicAssignTransportType = dynamic(
+    () => import('@/components/Modal/Incoterms/AssignTransportIncotermsModal'),
+    { ssr: false }
+);
+
 export default function IncotermsTable() {
     const [incotermsData, setIncotermsData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [openEdit, setOpenEdit] = useState(false);
     const [selectedIncotermsId, setSelectedIncotermsId] = useState(null);
+    const [openAssignTransport, setOpenAssignTransport] = useState(false);
 
     //GET DATA
     const fetchIncoterms = useCallback(async () => {
@@ -41,7 +52,7 @@ export default function IncotermsTable() {
     const refreshTable = useCallback(async () => {
         const data = await getIncoterms();
         setIncotermsData(data);
-    });
+    }, []);
 
     //DIALOG OPEN AND CLOSE
     const handleEditOpenModal = (id) => {
@@ -52,6 +63,48 @@ export default function IncotermsTable() {
         setOpenEdit(false);
         setSelectedIncotermsId(null);
     };
+
+    const handleAssignTransportOpenModal = (id) => {
+        setOpenAssignTransport(true);
+        setSelectedIncotermsId(id);
+    };
+    const handleAssignTransportCloseModal = () => {
+        setOpenAssignTransport(false);
+        setSelectedIncotermsId(null);
+    };
+
+    //DELETE INCORTERMS
+    async function handleDelete(id) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¡No podrás revertir esta acción!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const success = deleteIncoterms(id);
+                if (success) {
+                    await refreshTable();
+                    Swal.fire({
+                        title: '¡Eliminado!',
+                        text: 'El incoterms ha sido eliminado.',
+                        icon: 'success',
+                    });
+                } else {
+                    console.error('Error deleting shipping port');
+                }
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire({
+                    title: 'Cancelado',
+                    text: 'El incoterms está a salvo :)',
+                    icon: 'error',
+                });
+            }
+        });
+    }
 
     // COLUMNS TABLE
     const columns = [
@@ -97,9 +150,9 @@ export default function IncotermsTable() {
             header: 'Acciones',
             cell: ({ row }) => (
                 <div className="flex items-center justify-center space-x-3">
-                    <BtnEditTable />
-                    <BtnAssign />
-                    <BtnDeleteTable />
+                    <BtnEditTable onClick={() => handleEditOpenModal(row.original.id)} />
+                    <BtnAssign onClick={() => handleAssignTransportOpenModal(row.original.id)} />
+                    <BtnDeleteTable onClick={() => handleDelete(row.original.id)} />
                 </div>
             ),
         },
@@ -147,6 +200,22 @@ export default function IncotermsTable() {
                     exportToExcel={exportToExcel}
                 />
             </div>
+            {openEdit && setSelectedIncotermsId && (
+                <DynamicEditIncoterms
+                    id={selectedIncotermsId}
+                    refresh={refreshTable}
+                    open={openEdit}
+                    onClose={handleEditCloseModal}
+                />
+            )}
+            {openAssignTransport && setSelectedIncotermsId && (
+                <DynamicAssignTransportType
+                    id={selectedIncotermsId}
+                    open={openAssignTransport}
+                    refresh={refreshTable}
+                    onClose={handleAssignTransportCloseModal}
+                />
+            )}
         </>
     );
 }

@@ -167,3 +167,9 @@ div:where(.swal2-icon).swal2-warning{
 .mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left{
     display: none;
 }
+[type='checkbox'], [type='radio'] {
+    color: #01E469 !important;
+}
+[type='checkbox']:focus, [type='radio']:focus {
+    --tw-ring-color: #01E469 !important;
+}

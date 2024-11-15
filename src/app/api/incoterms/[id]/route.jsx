@@ -40,11 +40,19 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
     try {
+        // Eliminar relaciones asociadas
+        await prisma.incotermsTransport.deleteMany({
+            where: {
+                incotermsId: params.id,
+            },
+        });
+
         const deleteIncoterms = await prisma.incoterms.delete({
             where: {
                 id: params.id,
             },
         });
+
         return NextResponse.json(deleteIncoterms);
     } catch (error) {
         return NextResponse.json({ error: 'Error deleting incoterms' }, { status: 500 });

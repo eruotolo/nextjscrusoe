@@ -25,6 +25,8 @@ export const deleteIncoterms = async (id) => {
         const response = await fetch(`${API_URL}/api/incoterms/${id}`, {
             method: 'DELETE',
         });
+        //console.log('Eliminado:', response);
+
         if (!response.ok) {
             console.error(`Error deleting: ${response.status} - ${response.statusText}`);
             return false;
