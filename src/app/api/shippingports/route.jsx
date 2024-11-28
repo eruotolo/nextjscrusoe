@@ -6,8 +6,20 @@ export async function GET() {
     //return NextResponse.json({ message: 'Soy Un Moustro' });
     try {
         const getShippingPort = await prisma.shippingPorts.findMany({
-            include: {
-                country: true,
+            select: {
+                id: true,
+                unCode: true,
+                name: true,
+                country: {
+                    select: {
+                        id: true,
+                        code: true,
+                        name: true,
+                    },
+                },
+            },
+            orderBy: {
+                unCode: 'asc',
             },
         });
 

@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { createIncoterms } from '@/services/incotermsService';
+import { createShipOwner } from '@/services/shipOwnerService';
 
 import {
     Dialog,
@@ -17,7 +17,7 @@ import {
 
 import { Plus } from 'lucide-react';
 
-export default function NewIncotermsModal({ refresh }) {
+export default function NewShipOwner({ refresh }) {
     const {
         register,
         handleSubmit,
@@ -29,14 +29,14 @@ export default function NewIncotermsModal({ refresh }) {
     const onSubmit = async (data) => {
         setError('');
         try {
-            const createdIncoterms = await createIncoterms(data);
-            if (createdIncoterms) {
+            const createdShipOwner = await createShipOwner(data);
+            if (createdShipOwner) {
                 await refresh();
                 reset();
             }
         } catch (error) {
-            setError('Error de red al crear el incoterms');
-            console.error('Error creating transport type', error);
+            setError('Error de red al crear el ShipOwner');
+            console.error('Error creating ShipOwner', error);
         }
     };
 
@@ -48,9 +48,9 @@ export default function NewIncotermsModal({ refresh }) {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Crear Nuevo Incoterms</DialogTitle>
+                    <DialogTitle>Crear Nuevo Armador/Shipowner</DialogTitle>
                     <DialogDescription>
-                        Introduce el nombre del nuevo Incoterms que deseas crear.
+                        Introduce el nombre del nuevo armador que deseas crear.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -58,7 +58,7 @@ export default function NewIncotermsModal({ refresh }) {
                         <div className="col-span-1 mb-[15px] mr-[5px]">
                             <input
                                 type="text"
-                                placeholder="Código Incoterms"
+                                placeholder="Código Armador"
                                 className="custom-input"
                                 {...register('code', { required: true })}
                             />
@@ -67,9 +67,9 @@ export default function NewIncotermsModal({ refresh }) {
                         <div className="col-span-2 mb-[15px] ml-[5px]">
                             <input
                                 type="text"
-                                placeholder="Nombre del Incoterms"
-                                {...register('name', { required: true })}
+                                placeholder="Nombre del Armador"
                                 className="custom-input"
+                                {...register('name', { required: true })}
                             />
                             {errors.name && <span>Este campo es obligatorio</span>}
                         </div>

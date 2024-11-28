@@ -6,9 +6,27 @@ export async function GET() {
     //return NextResponse.json({ message: 'Soy Un Moustro' });
     try {
         const getPlaces = await prisma.places.findMany({
-            include: {
-                country: true,
-                city: true,
+            select: {
+                id: true,
+                name: true,
+                address: true,
+                country: {
+                    select: {
+                        id: true,
+                        code: true,
+                        name: true,
+                    },
+                },
+                city: {
+                    select: {
+                        id: true,
+                        name: true,
+                        countryCode: true,
+                    },
+                },
+            },
+            orderBy: {
+                name: 'asc',
             },
         });
 

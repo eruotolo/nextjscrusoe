@@ -9,12 +9,30 @@ export async function GET() {
     //return NextResponse.json({ message: 'Soy Un Moustro' });
     try {
         const users = await prisma.user.findMany({
-            include: {
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                lastName: true,
+                phone: true,
+                state: true,
                 roles: {
-                    include: {
-                        role: true,
+                    select: {
+                        id: true,
+                        userId: true,
+                        roleId: true,
+                        role: {
+                            select: {
+                                id: true,
+                                name: true,
+                                state: true,
+                            },
+                        },
                     },
                 },
+            },
+            orderBy: {
+                name: 'asc',
             },
         });
         return NextResponse.json(users);

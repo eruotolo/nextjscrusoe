@@ -4,7 +4,16 @@ import { revalidatePath } from 'next/cache';
 
 export async function GET() {
     try {
-        const countries = await prisma.country.findMany();
+        const countries = await prisma.country.findMany({
+            select: {
+                id: true,
+                code: true,
+                name: true,
+            },
+            orderBy: {
+                code: 'asc',
+            },
+        });
 
         // Revalidate the path
         revalidatePath('/api/country');

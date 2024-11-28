@@ -6,8 +6,21 @@ export async function GET() {
     //return NextResponse.json({ message: 'Soy Un Moustro' });
     try {
         const getAirports = await prisma.airports.findMany({
-            include: {
-                country: true,
+            select: {
+                id: true,
+                geocode: true,
+                gcdiata: true,
+                name: true,
+                country: {
+                    select: {
+                        id: true,
+                        code: true,
+                        name: true,
+                    },
+                },
+            },
+            orderBy: {
+                name: 'asc',
             },
         });
         // Revalidate the path

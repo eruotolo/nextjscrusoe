@@ -4,35 +4,32 @@ import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 
-import { getTransportType, deleteTransporteType } from '@/services/transportTypeService';
+import { getShipOwner, deleteShipOwner } from '@/services/shipOwnerService';
 import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
-import NewTransportType from '@/components/Modal/TransportType/NewTransportType';
+import NewShipOwner from '@/components/Modal/Ships/NewShipOwner';
 
 import Swal from 'sweetalert2';
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
 
-const DynamicEditTransportType = dynamic(
-    () => import('@/components/Modal/TransportType/EditTransportType'),
-    {
-        ssr: false,
-    }
-);
+const DynamicEditShipOwner = dynamic(() => import('@/components/Modal/Ships/EditShipOwner'), {
+    ssr: false,
+});
 
-export default function TransportTypeTable() {
-    const [transportData, setTransportData] = useState([]);
+export default function ShipOwnerTable() {
+    const [shipOwnerData, setShipOwnerData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [openEdit, setOpenEdit] = useState(false);
-    const [selectedTransportTypeId, setSelectedTransportTypeId] = useState(null);
+    const [seletedShipOwnerId, setSeletedShipOwnerId] = useState(null);
 
-    // GET DATA
-    const fetchTransportType = useCallback(async () => {
+    //GET DATA
+    const fetchShipOwner = useCallback(async () => {
         setIsLoading(true);
         try {
-            const data = await getTransportType();
-            setTransportData(data);
+            const data = await getShipOwner();
+            setShipOwnerData(data);
         } catch (error) {
             console.error('Error fetching:', error);
         } finally {
@@ -41,23 +38,24 @@ export default function TransportTypeTable() {
     }, []);
 
     useEffect(() => {
-        fetchTransportType();
-    }, [fetchTransportType]);
+        fetchShipOwner();
+    }, [fetchShipOwner]);
 
-    // REFRESH TABLE BEFORE UPDATE
+    //REFRESH TABLE BEFORE UPDATE
     const refreshTable = useCallback(async () => {
-        const data = await getTransportType();
-        setTransportData(data);
+        const data = await getShipOwner();
+        setShipOwnerData(data);
     }, []);
 
-    // DIALOG OPEN AND CLOSE
+    //DIALOG OPEN AND CLOSE
+
     const handleEditOpenModal = (id) => {
         setOpenEdit(true);
-        setSelectedTransportTypeId(id);
+        setSeletedShipOwnerId(id);
     };
     const handleEditCloseModal = () => {
         setOpenEdit(false);
-        setSelectedTransportTypeId(null);
+        setSeletedShipOwnerId(null);
     };
 
     // DELETE SHIPPINGPORT
@@ -72,21 +70,21 @@ export default function TransportTypeTable() {
             reverseButtons: true,
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const success = await deleteTransporteType(id);
+                const success = await deleteShipOwner(id);
                 if (success) {
                     await refreshTable();
                     Swal.fire({
                         title: '¡Eliminado!',
-                        text: 'El tipo de transporte ha sido eliminado.',
+                        text: 'El ShipOwner ha sido eliminado.',
                         icon: 'success',
                     });
                 } else {
-                    console.error('Error deleting shipping port');
+                    console.error('Error deleting ShipOwner');
                 }
             } else if (result.dismiss === Swal.DismissReason.cancel) {
                 Swal.fire({
                     title: 'Cancelado',
-                    text: 'El tipo de transporte está a salvo :)',
+                    text: 'El ShipOwner está a salvo :)',
                     icon: 'error',
                 });
             }
@@ -95,6 +93,11 @@ export default function TransportTypeTable() {
 
     // COLUMNS TABLE
     const columns = [
+        {
+            accessorKey: 'code',
+            size: 50,
+            header: 'Código',
+        },
         {
             accessorKey: 'name',
             size: 300,
@@ -105,7 +108,7 @@ export default function TransportTypeTable() {
                         className="text-[12px] font-medium leading-[13px] text-[#8D8989]"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
-                        Tipo de Transporte
+                        Armador/Shipowner
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                 );
@@ -126,14 +129,15 @@ export default function TransportTypeTable() {
     // EXPORT TO EXCEL
     const exportToExcel = async () => {
         try {
-            const dataToExport = transportData.map((transportType) => ({
-                name: transportType.name,
+            const dataToExport = shipOwnerData.map((shipOwner) => ({
+                code: shipOwner.code,
+                name: shipOwner.name,
             }));
             console.log(dataToExport);
             const worksheet = XLSX.utils.json_to_sheet(dataToExport);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'TransportType');
-            XLSX.writeFile(workbook, 'transporttype_export.xlsx');
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'ShipOwner');
+            XLSX.writeFile(workbook, 'shipowner_export.xlsx');
         } catch (error) {
             console.error('Error exporting to Excel:', error);
         }
@@ -143,26 +147,28 @@ export default function TransportTypeTable() {
         <>
             <div className="flex h-auto w-full justify-between">
                 <div>
-                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">Transporte</h5>
+                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">
+                        Armadores/Shipowner
+                    </h5>
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
                 <div>
-                    <NewTransportType refresh={refreshTable} />
+                    <NewShipOwner refresh={refreshTable} />
                 </div>
             </div>
             <div className="mt-[20px] flex">
                 <GenericTable
                     columns={columns}
-                    data={transportData}
+                    data={shipOwnerData}
                     loading={isLoading}
                     exportToExcel={exportToExcel}
                 />
             </div>
-            {openEdit && setSelectedTransportTypeId && (
-                <DynamicEditTransportType
-                    id={selectedTransportTypeId}
-                    refresh={refreshTable}
+            {openEdit && setSeletedShipOwnerId && (
+                <DynamicEditShipOwner
+                    id={seletedShipOwnerId}
                     open={openEdit}
+                    refresh={refreshTable}
                     onClose={handleEditCloseModal}
                 />
             )}

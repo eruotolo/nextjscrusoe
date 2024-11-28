@@ -1,14 +1,31 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { notFound } from 'next/navigation';
 
 export async function GET(request, { params }) {
     try {
+        const { id } = params;
+
+        if (!id || typeof id !== 'string') {
+            return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+        }
+
         const viewTransportType = await prisma.transportType.findUnique({
-            where: {
-                id: params.id,
+            where: { id },
+            select: {
+                id: true,
+                name: true,
             },
         });
-        return NextResponse.json(viewTransportType);
+
+        if (!viewTransportType) {
+            notFound();
+        }
+
+        const response = NextResponse.json(viewTransportType);
+        response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+
+        return response;
     } catch (error) {
         return NextResponse.json({ error: 'Error fetching transport type' }, { status: 500 });
     }

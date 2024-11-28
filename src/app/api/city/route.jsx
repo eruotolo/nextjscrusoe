@@ -21,8 +21,20 @@ export async function GET(request) {
         } else {
             // Si no se proporciona el parámetro `country`, devolver todas las ciudades
             cities = await prisma.city.findMany({
-                include: {
-                    country: true,
+                select: {
+                    id: true,
+                    countryCode: true,
+                    name: true,
+                    country: {
+                        select: {
+                            id: true,
+                            code: true,
+                            name: true,
+                        },
+                    },
+                },
+                orderBy: {
+                    name: 'asc',
                 },
             });
         }

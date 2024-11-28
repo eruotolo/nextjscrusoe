@@ -185,9 +185,7 @@ export default function IncotermsTable() {
         <>
             <div className="flex h-auto w-full justify-between">
                 <div>
-                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">
-                        Listado de tipo de Incoterms
-                    </h5>
+                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">Incoterms</h5>
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
                 <div>
