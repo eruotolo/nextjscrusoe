@@ -110,12 +110,12 @@ export default function IncotermsTable() {
     const columns = [
         {
             accessorKey: 'code',
-            size: 120,
+            size: 50,
             header: 'Código',
         },
         {
             accessorKey: 'name',
-            size: 300,
+            size: 320,
             header: ({ column }) => {
                 return (
                     <Button
@@ -131,6 +131,7 @@ export default function IncotermsTable() {
         },
         {
             accessorKey: 'transportType',
+            size: 100,
             header: 'Tipo de transporte',
             cell: ({ row }) => (
                 <div>
@@ -147,6 +148,7 @@ export default function IncotermsTable() {
         },
         {
             accessorKey: 'action',
+            size: 50,
             header: 'Acciones',
             cell: ({ row }) => (
                 <div className="flex items-center justify-center space-x-3">
@@ -184,7 +186,7 @@ export default function IncotermsTable() {
             <div className="flex h-auto w-full justify-between">
                 <div>
                     <h5 className="mb-[5px] font-medium leading-none tracking-tight">
-                        Listado de tipo de incoterms
+                        Listado de tipo de Incoterms
                     </h5>
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
