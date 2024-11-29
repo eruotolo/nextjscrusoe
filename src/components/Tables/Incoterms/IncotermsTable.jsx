@@ -124,7 +124,7 @@ export default function IncotermsTable() {
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Nombre Incoterms
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                        <ArrowUpDown className="ml-2 h-[14px] w-[14px]" />
                     </Button>
                 );
             },

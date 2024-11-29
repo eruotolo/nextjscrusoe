@@ -106,7 +106,7 @@ export default function TransportTypeTable() {
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Tipo de Transporte
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                        <ArrowUpDown className="ml-2 h-[14px] w-[14px]" />
                     </Button>
                 );
             },

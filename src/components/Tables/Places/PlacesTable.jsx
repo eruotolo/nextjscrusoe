@@ -71,7 +71,7 @@ export default function PlacesTable() {
         setOpenView(null);
     };
 
-    // DELETE SHIPPINGPORT
+    // DELETE
     async function handleDelete(id) {
         Swal.fire({
             title: '¿Estás seguro?',
@@ -117,7 +117,7 @@ export default function PlacesTable() {
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Nombre del Lugar
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                        <ArrowUpDown className="ml-2 h-[14px] w-[14px]" />
                     </Button>
                 );
             },
@@ -176,9 +176,7 @@ export default function PlacesTable() {
         <>
             <div className="flex h-auto w-full justify-between">
                 <div>
-                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">
-                        Listado de lugares
-                    </h5>
+                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">Lugares</h5>
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
                 <div>

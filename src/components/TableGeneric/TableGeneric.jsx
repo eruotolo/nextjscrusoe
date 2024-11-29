@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 
 import {
     flexRender,
@@ -117,26 +117,39 @@ export default function GenericTable({ columns, data, exportToExcel, loading = f
                     ))}
                 </TableHeader>
                 <TableBody>
-                    {loading ? (
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="text-center">
-                                <Loading />
-                            </TableCell>
-                        </TableRow>
-                    ) : (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow key={row.id} className="border-0">
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell
-                                        key={cell.id}
-                                        className="px-4 py-3 text-[12px] font-light leading-[13px] 2xl:text-[12px] 2xl:font-normal"
-                                    >
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </TableCell>
-                                ))}
+                    <Suspense
+                        fallback={
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="text-center">
+                                    <Loading />
+                                </TableCell>
                             </TableRow>
-                        ))
-                    )}
+                        }
+                    >
+                        {loading ? (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="text-center">
+                                    <Loading />
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow key={row.id} className="border-0">
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell
+                                            key={cell.id}
+                                            className="px-4 py-3 text-[12px] font-light leading-[13px] 2xl:text-[12px] 2xl:font-normal"
+                                        >
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        )}
+                    </Suspense>
                 </TableBody>
             </Table>
 

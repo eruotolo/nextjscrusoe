@@ -98,7 +98,7 @@ export default function RoleTable() {
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Nombre Puerto
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                        <ArrowUpDown className="ml-2 h-[14px] w-[14px]" />
                     </Button>
                 );
             },
@@ -149,9 +149,7 @@ export default function RoleTable() {
         <>
             <div className="flex h-auto w-full justify-between">
                 <div>
-                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">
-                        Listado de roles
-                    </h5>
+                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">Roles</h5>
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
                 <div>
