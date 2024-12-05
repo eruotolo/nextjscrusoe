@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+
 import {
     Dialog,
     DialogContent,
@@ -10,8 +10,6 @@ import {
     DialogTitle,
     DialogFooter,
 } from '@/components/ui/dialog';
-
-import { Input } from '@/components/ui/input';
 
 export default function NewRoleModal({ open, onClose, refresh }) {
     const [roleName, setRoleName] = useState('');
@@ -63,23 +61,19 @@ export default function NewRoleModal({ open, onClose, refresh }) {
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-[15px] grid grid-cols-1">
-                        <Input
+                        <input
                             type="text"
                             value={roleName}
                             onChange={(e) => setRoleName(e.target.value)}
-                            placeholder="Nombre del rol"
-                            className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                            placeholder="Nombre del Rol"
+                            className="custom-input"
                         />
                         {error && <div className="mt-2 text-sm text-red-500">{error}</div>}
                     </div>
                     <DialogFooter>
-                        <Button
-                            type="submit"
-                            disabled={!isFormValid()}
-                            className="h-[36px] w-[120px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px]"
-                        >
+                        <button type="submit" disabled={!isFormValid()} className="custom-button">
                             Crear Rol
-                        </Button>
+                        </button>
                     </DialogFooter>
                 </form>
             </DialogContent>

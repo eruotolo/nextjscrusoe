@@ -48,7 +48,7 @@ export default function EditTransportType({ id, refresh, open, onClose }) {
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[400px]">
+            <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
                     <DialogTitle>Editar Tipo de Transporte</DialogTitle>
                     <DialogDescription>
@@ -59,7 +59,11 @@ export default function EditTransportType({ id, refresh, open, onClose }) {
                 </DialogHeader>
                 <form onSubmit={onSubmit}>
                     <div className="mb-[15px] grid grid-cols-1">
+                        <label htmlFor="name" className="custom-label">
+                            Nombre
+                        </label>
                         <input
+                            id="name"
                             type="text"
                             placeholder="Nombre Tipo de Transporte"
                             {...register('name', { required: 'Este campo es requerido' })}

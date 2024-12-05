@@ -66,11 +66,23 @@ export default function EditIncotermsModal({ id, refresh, open, onClose }) {
                 <form onSubmit={onSubmit}>
                     <div className="grid grid-cols-3">
                         <div className="col-span-1 mb-[15px] mr-[5px]">
-                            <input type="text" className="custom-input" {...register('code')} />
+                            <label htmlFor="code" className="custom-label">
+                                Código
+                            </label>
+                            <input
+                                id="code"
+                                type="text"
+                                className="custom-input"
+                                {...register('code')}
+                            />
                             {errors.code && <span>{errors.code.message}</span>}
                         </div>
                         <div className="col-span-2 mb-[15px] ml-[5px]">
+                            <label htmlFor="name" className="custom-label">
+                                Nombre
+                            </label>
                             <input
+                                id="name"
                                 type="text"
                                 {...register('name', { required: 'Este campo es requerido' })}
                                 className="custom-input"

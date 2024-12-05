@@ -37,7 +37,7 @@ export async function GET() {
 export async function POST(request) {
     try {
         const data = await request.json();
-        console.log('Received data:', data); // Log the received data
+        //console.log('Received data:', data); // Log the received data
 
         // VALIDATE DATA
         if (!data.name || !data.unCode || !data.latitude || !data.longitude || !data.codeCountry) {

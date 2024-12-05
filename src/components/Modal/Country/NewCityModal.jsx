@@ -68,8 +68,12 @@ export default function NewCityModal({ refresh }) {
                             onChange={(e) => setSelectedCountry(e.target.value)}
                             className="custom-select col-span-2"
                         >
-                            <option value="" disabled className="text-[15px] font-light">
-                                SELECCIONAR EL PAÍS
+                            <option
+                                value=""
+                                disabled
+                                className="text-[14px] font-light text-muted-foreground"
+                            >
+                                Seleccionar el país
                             </option>
                             {countries.map((country) => (
                                 <option key={country.code} value={country.code}>

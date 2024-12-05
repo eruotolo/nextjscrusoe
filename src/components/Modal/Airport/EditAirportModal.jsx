@@ -102,6 +102,9 @@ export default function EditAirportModal({ id, refresh, open, onClose }) {
                     <div className="mb-[15px] grid grid-cols-2">
                         <div className="col-span-1 pr-[10px]">
                             <div className="mb-[15px] grid grid-cols-1">
+                                <label htmlFor="country" className="custom-label">
+                                    País
+                                </label>
                                 <select
                                     id="country"
                                     value={selectedCountry}
@@ -119,10 +122,7 @@ export default function EditAirportModal({ id, refresh, open, onClose }) {
                                 </select>
                             </div>
                             <div className="mb-[15px]">
-                                <label
-                                    htmlFor="name"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
+                                <label htmlFor="name" className="custom-label">
                                     Nombre Aeropuerto
                                 </label>
                                 <input
@@ -133,10 +133,7 @@ export default function EditAirportModal({ id, refresh, open, onClose }) {
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <label
-                                    htmlFor="gcdiata"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
+                                <label htmlFor="gcdiata" className="custom-label">
                                     GCDIATA
                                 </label>
                                 <input
@@ -147,10 +144,7 @@ export default function EditAirportModal({ id, refresh, open, onClose }) {
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <label
-                                    htmlFor="gcdicao"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
+                                <label htmlFor="gcdicao" className="custom-label">
                                     GCDICAO
                                 </label>
                                 <input
@@ -161,10 +155,7 @@ export default function EditAirportModal({ id, refresh, open, onClose }) {
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <label
-                                    htmlFor="geocode"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
+                                <label htmlFor="geocode" className="custom-label">
                                     GEOCODE
                                 </label>
                                 <input
@@ -175,10 +166,7 @@ export default function EditAirportModal({ id, refresh, open, onClose }) {
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <label
-                                    htmlFor="latitude"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
+                                <label htmlFor="latitude" className="custom-label">
                                     Latitud
                                 </label>
                                 <input
@@ -192,10 +180,7 @@ export default function EditAirportModal({ id, refresh, open, onClose }) {
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <label
-                                    htmlFor="longitude"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
+                                <label htmlFor="longitude" className="custom-label">
                                     Longitud
                                 </label>
                                 <input

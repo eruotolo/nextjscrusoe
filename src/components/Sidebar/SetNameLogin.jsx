@@ -13,7 +13,7 @@ export default function SetNameLogin() {
                         ? session.user.name + ' ' + session.user.lastName
                         : 'Cargando...'}
                 </span>
-                <p className="text-[13px] leading-[13px]">
+                <p className="text-[12px] leading-[12px]">
                     {session && session.user && session.user.roles && session.user.roles.length > 0
                         ? session.user.roles.join(', ')
                         : 'Cargando...'}

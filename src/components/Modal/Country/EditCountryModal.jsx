@@ -49,7 +49,7 @@ export default function EditCountryModal({ id, refresh, open, onClose }) {
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[400px]">
+            <DialogContent className="sm:max-w-[550px]">
                 <DialogHeader>
                     <DialogTitle>Editar País</DialogTitle>
                     <DialogDescription>
@@ -58,27 +58,35 @@ export default function EditCountryModal({ id, refresh, open, onClose }) {
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={onSubmit}>
-                    <div className="mb-[15px] grid grid-cols-1">
-                        <input
-                            id="code"
-                            type="text"
-                            className="custom-input"
-                            {...register('code', {
-                                required: 'Este campo es requerido',
-                            })}
-                        />
-                        {errors.code && <p>{errors.code.message}</p>}
-                    </div>
-                    <div className="mb-[15px] grid grid-cols-1">
-                        <input
-                            id="name"
-                            type="text"
-                            className="custom-input"
-                            {...register('name', {
-                                required: 'Este campo es requerido',
-                            })}
-                        />
-                        {errors.name && <p>{errors.name.message}</p>}
+                    <div className="grid grid-cols-3">
+                        <div className="col-span-1 mb-[15px] mr-[5px]">
+                            <label htmlFor="code" className="custom-label">
+                                Código
+                            </label>
+                            <input
+                                id="code"
+                                type="text"
+                                className="custom-input"
+                                {...register('code', {
+                                    required: 'Este campo es requerido',
+                                })}
+                            />
+                            {errors.code && <p>{errors.code.message}</p>}
+                        </div>
+                        <div className="col-span-2 mb-[15px] ml-[5px]">
+                            <label htmlFor="name" className="custom-label">
+                                Nombre
+                            </label>
+                            <input
+                                id="name"
+                                type="text"
+                                className="custom-input"
+                                {...register('name', {
+                                    required: 'Este campo es requerido',
+                                })}
+                            />
+                            {errors.name && <p>{errors.name.message}</p>}
+                        </div>
                     </div>
                     <DialogFooter>
                         <button type="submit" className="custom-button">

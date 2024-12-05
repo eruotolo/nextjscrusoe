@@ -59,6 +59,24 @@ export const createShips = async (shipsData) => {
     }
 };
 
+export const getShipsById = cache(async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/api/ships/${id}`, {
+            next: { revalidate: 3600 },
+        });
+
+        if (!response.ok) {
+            console.error(`Error fetching: ${response.status} - ${response.statusText}`);
+            return null;
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching:', error);
+        return null;
+    }
+});
+
 export const updateShips = async (id, shipsData) => {
     try {
         const response = await fetch(`${API_URL}/api/ships/${id}`, {

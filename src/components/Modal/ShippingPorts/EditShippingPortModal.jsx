@@ -179,14 +179,12 @@ export default function EditShippingPortModal({ id, refresh, open, onClose }) {
                                 />
                             </div>
                         </div>
-                        <div className="">
-                            {latitude && longitude && (
-                                <EditMapsComponent
-                                    lng={parseFloat(longitude)}
-                                    lat={parseFloat(latitude)}
-                                    onLocationChange={handleLocationChange}
-                                />
-                            )}
+                        <div className="col-span-1 pr-[10px]">
+                            <EditMapsComponent
+                                lat={latitude}
+                                lng={longitude}
+                                onLocationChange={handleLocationChange}
+                            />
                         </div>
                     </div>
 

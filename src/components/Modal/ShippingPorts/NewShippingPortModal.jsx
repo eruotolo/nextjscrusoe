@@ -94,7 +94,11 @@ export default function NewShippingPortModal({ refresh }) {
                                     onChange={(e) => setSelectedCountry(e.target.value)}
                                     className="custom-select"
                                 >
-                                    <option value="" disabled>
+                                    <option
+                                        value=""
+                                        disabled
+                                        className="text-[14px] font-light text-muted-foreground"
+                                    >
                                         Seleccionar el País
                                     </option>
                                     {countries.map((country) => (

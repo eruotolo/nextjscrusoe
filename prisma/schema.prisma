@@ -47,8 +47,8 @@ model Country {
   airports      Airports[]
   shippingPorts ShippingPorts[]
   places        Places[]
-  createdAt     DateTime        @default(now())
   Ships         Ships[]
+  createdAt     DateTime        @default(now())
 }
 
 model City {
@@ -169,4 +169,28 @@ model ShipsType {
   name      String
   Ships     Ships[]
   createdAt DateTime @default(now())
+}
+
+model CommoditiesSection {
+  id          String        @id @default(uuid())
+  name        String
+  commodities Commodities[]
+  createdAt   DateTime      @default(now())
+
+  @@index([name])
+}
+
+model Commodities {
+  id                   String              @id @default(uuid())
+  name                 String
+  nameEnglish          String?
+  dangerous            Boolean?
+  perishable           Boolean?
+  tariffPositional     String?
+  commoditiesSectionId String?
+  commoditiesSection   CommoditiesSection? @relation(fields: [commoditiesSectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt            DateTime            @default(now())
+
+  @@index([name])
+  @@index([nameEnglish])
 }

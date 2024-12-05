@@ -1,16 +1,43 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { notFound } from 'next/navigation';
 
 export async function GET(request, { params }) {
-    const viewAirport = await prisma.airports.findUnique({
-        where: {
-            id: params.id,
-        },
-        include: {
-            country: true,
-        },
-    });
-    return NextResponse.json(viewAirport);
+    try {
+        const { id } = params;
+
+        if (!id || typeof id !== 'string') {
+            return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+        }
+
+        const viewAirport = await prisma.airports.findUnique({
+            where: { id },
+
+            select: {
+                id: true,
+                geocode: true,
+                name: true,
+                gcdiata: true,
+                gcdicao: true,
+                latitude: true,
+                longitude: true,
+                codeCountry: true,
+            },
+        });
+
+        if (!viewAirport) {
+            notFound();
+        }
+
+        const response = NextResponse.json(viewAirport);
+
+        response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+
+        return response;
+    } catch (error) {
+        console.error('Error aeroport:', error);
+        return NextResponse.json({ error: 'Error aeroport' }, { status: 500 });
+    }
 }
 
 export async function PUT(request, { params }) {

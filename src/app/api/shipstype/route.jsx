@@ -14,8 +14,6 @@ export async function GET() {
             },
         });
 
-        revalidatePath('/api/shipstype');
-
         const response = NextResponse.json(shipsType);
         response.headers.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
 

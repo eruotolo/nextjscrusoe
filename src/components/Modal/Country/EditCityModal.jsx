@@ -38,7 +38,7 @@ export default function EditCityModal({ id, refresh, open, onClose }) {
         const fetchCity = async () => {
             if (id) {
                 const cityData = await getCityById(id);
-                console.log('City data fetched:', cityData);
+                //console.log('City data fetched:', cityData);
                 if (cityData) {
                     setValue('name', cityData.name);
                     setSelectedCountry(cityData.countryCode);
@@ -80,6 +80,9 @@ export default function EditCityModal({ id, refresh, open, onClose }) {
                 </DialogHeader>
                 <form onSubmit={onSubmit}>
                     <div className="mb-[15px] grid grid-cols-1">
+                        <label htmlFor="country" className="custom-label">
+                            Páis
+                        </label>
                         <select
                             id="country"
                             value={selectedCountry}
@@ -97,6 +100,9 @@ export default function EditCityModal({ id, refresh, open, onClose }) {
                         </select>
                     </div>
                     <div className="mb-[15px] grid grid-cols-1">
+                        <label htmlFor="name" className="custom-label">
+                            Ciudad
+                        </label>
                         <input
                             className="custom-input"
                             type="text"

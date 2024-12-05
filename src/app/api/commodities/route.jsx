@@ -4,39 +4,24 @@ import { revalidatePath } from 'next/cache';
 
 export async function GET() {
     try {
-        const ships = await prisma.ships.findMany({
+        const commodities = await prisma.commodities.findMany({
             select: {
                 id: true,
                 name: true,
-                code: true,
-                country: {
+                nameEnglish: true,
+                commoditiesSection: {
                     select: {
                         id: true,
                         name: true,
                     },
                 },
-                shipsType: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-                shipowner: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-            orderBy: {
-                name: 'asc',
             },
         });
 
         // Revalidate the path
-        revalidatePath('/api/ships');
+        revalidatePath('/api/commodities');
 
-        const response = NextResponse.json(ships);
+        const response = NextResponse.json(commodities);
         response.headers.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
 
         return response;
@@ -49,14 +34,14 @@ export async function GET() {
 export async function POST(request) {
     try {
         const data = await request.json();
-        // console.log('Recibe los datos:', data);
 
         if (
             !data.name ||
-            !data.code ||
-            !data.shipownerId ||
-            !data.codeCountry ||
-            !data.shipsTypeId
+            !data.nameEnglish ||
+            !data.dangerous ||
+            !data.perishable ||
+            !data.tariffPositional ||
+            !data.commoditiesSectionId
         ) {
             return NextResponse.json(
                 { message: 'Todos los campos son obligatorios.' },
@@ -64,18 +49,19 @@ export async function POST(request) {
             );
         }
 
-        const newShips = await prisma.ships.create({
+        const newCommodities = await prisma.commodities.create({
             data: {
                 name: data.name,
-                code: data.code,
-                shipownerId: data.shipownerId,
-                codeCountry: data.codeCountry,
-                shipsTypeId: data.shipsTypeId,
+                nameEnglish: data.nameEnglish,
+                dangerous: data.dangerous,
+                perishable: data.perishable,
+                tariffPositional: data.tariffPositional,
+                commoditiesSectionId: data.commoditiesSectionId,
             },
         });
 
-        revalidatePath('/api/ships');
-        return NextResponse.json(newShips, { status: 201 });
+        revalidatePath('/api/commodities');
+        return NextResponse.json(newCommodities, { status: 201 });
     } catch (error) {
         console.error('Error creating:', error);
         if (error.code === 'P2002') {

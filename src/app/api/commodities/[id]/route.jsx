@@ -10,27 +10,28 @@ export async function GET(request, { params }) {
             return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
         }
 
-        const viewShips = await prisma.ships.findUnique({
+        const viewCommodities = await prisma.commodities.findUnique({
             where: { id },
 
             select: {
                 id: true,
                 name: true,
-                code: true,
-                shipownerId: true,
-                codeCountry: true,
-                shipsTypeId: true,
+                nameEnglish: true,
+                dangerous: true,
+                perishable: true,
+                tariffPositional: true,
+                commoditiesSectionId: true,
             },
         });
 
-        if (!viewShips) {
+        if (!viewCommodities) {
             return notFound();
         }
 
-        return NextResponse.json(viewShips);
+        return NextResponse.json(viewCommodities);
     } catch (error) {
-        console.error('Error fetching ship:', error);
-        return NextResponse.json({ error: 'Error fetching ship' }, { status: 500 });
+        console.error('Error fetching:', error);
+        return NextResponse.json({ error: 'Error fetching:' }, { status: 500 });
     }
 }
 
@@ -38,14 +39,14 @@ export async function PUT(request, { params }) {
     try {
         const data = await request.json();
         const { id } = params;
-        const updateShips = await prisma.ships.update({
+        const updateCommodities = await prisma.commodities.update({
             where: { id },
             data: data,
         });
 
-        return NextResponse.json(updateShips);
+        return NextResponse.json(updateCommodities);
     } catch (error) {
-        return NextResponse.json({ error: 'Error updating ships' }, { status: 500 });
+        return NextResponse.json({ error: 'Error updating:' }, { status: 500 });
     }
 }
 
@@ -53,12 +54,12 @@ export async function DELETE(request, { params }) {
     try {
         const { id } = params;
 
-        const deleteShips = await prisma.ships.delete({
+        const deleteCommodities = await prisma.commodities.delete({
             where: { id },
         });
 
-        return NextResponse.json(deleteShips);
+        return NextResponse.json(deleteCommodities);
     } catch (error) {
-        return NextResponse.json({ error: 'Error deleting ships' }, { status: 500 });
+        return NextResponse.json({ error: 'Error deleting:' }, { status: 500 });
     }
 }

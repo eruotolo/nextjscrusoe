@@ -7,7 +7,11 @@ export async function GET(request, { params: { id } }) {
             where: { incotermsId: id },
             include: { transportType: true },
         });
-        return NextResponse.json(incotermsTransport);
+
+        const response = NextResponse.json(incotermsTransport);
+        response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+
+        return response;
     } catch (error) {
         return NextResponse.json(
             { error: 'Error fetching incoterms transport relations' },

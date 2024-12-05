@@ -10,61 +10,52 @@ export async function GET(request, { params }) {
             return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
         }
 
-        const viewIncoterms = await prisma.incoterms.findUnique({
+        const viewCommoditiesSection = await prisma.commoditiesSection.findMany({
             where: { id },
             select: {
                 id: true,
                 name: true,
-                code: true,
             },
         });
 
-        if (!viewIncoterms) {
+        if (!viewCommoditiesSection) {
             notFound();
         }
 
-        const response = NextResponse.json(viewIncoterms);
+        const response = NextResponse.json(viewCommoditiesSection);
         response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
 
         return response;
     } catch (error) {
-        return NextResponse.json({ error: 'Error fetching' }, { status: 500 });
+        return NextResponse.json({ error: 'Error fetching:' }, { status: 500 });
     }
 }
 
 export async function PUT(request, { params }) {
     try {
         const data = await request.json();
-        const updateIncoterms = await prisma.incoterms.update({
+        const updateCommoditiesSection = await prisma.commoditiesSection.update({
             where: {
                 id: params.id,
             },
             data: data,
         });
 
-        return NextResponse.json(updateIncoterms);
+        return NextResponse.json(updateCommoditiesSection);
     } catch (error) {
-        return NextResponse.json({ error: 'Error updating incoterms' }, { status: 500 });
+        return NextResponse.json({ error: 'Error updating:' }, { status: 500 });
     }
 }
 
 export async function DELETE(request, { params }) {
     try {
-        // Eliminar relaciones asociadas
-        await prisma.incotermsTransport.deleteMany({
-            where: {
-                incotermsId: params.id,
-            },
-        });
-
-        const deleteIncoterms = await prisma.incoterms.delete({
+        const deleteCommoditiesService = await prisma.commoditiesSection.delete({
             where: {
                 id: params.id,
             },
         });
-
-        return NextResponse.json(deleteIncoterms);
+        return NextResponse.json(deleteCommoditiesService);
     } catch (error) {
-        return NextResponse.json({ error: 'Error deleting incoterms' }, { status: 500 });
+        return NextResponse.json({ error: 'Error deleting:' }, { status: 500 });
     }
 }

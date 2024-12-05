@@ -3,7 +3,6 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 
-import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
@@ -12,8 +11,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 export default function NewUserModal({ open, onClose, refresh }) {
     const [formData, setFormData] = useState({
@@ -105,78 +102,78 @@ export default function NewUserModal({ open, onClose, refresh }) {
                     <div className="grid grid-cols-3">
                         <div className="col-span-2">
                             <div className="mb-[15px] flex">
-                                <Input
+                                <input
                                     id="name"
                                     name="name"
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     type="text"
                                     placeholder="Nombre"
-                                    className="mr-[10px] rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input mr-[10px]"
                                 />
-                                <Input
+                                <input
                                     id="lastName"
                                     name="lastName"
                                     value={formData.lastName}
                                     onChange={handleInputChange}
                                     type="text"
                                     placeholder="Apellido"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <Input
+                                <input
                                     id="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleInputChange}
                                     type="email"
                                     placeholder="Correo Electrónico"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <Input
+                                <input
                                     id="phone"
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleInputChange}
                                     type="text"
                                     placeholder="Teléfono"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <Input
+                                <input
                                     id="address"
                                     name="address"
                                     value={formData.address}
                                     onChange={handleInputChange}
                                     type="text"
                                     placeholder="Dirección"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <Input
+                                <input
                                     id="city"
                                     name="city"
                                     value={formData.city}
                                     onChange={handleInputChange}
                                     type="text"
                                     placeholder="Ciudad"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <Input
+                                <input
                                     id="password"
                                     name="password"
                                     value={formData.password}
                                     onChange={handleInputChange}
                                     type="password"
                                     placeholder="Ingrese su contraseña"
-                                    className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                    className="custom-input"
                                 />
                             </div>
                         </div>
@@ -192,26 +189,22 @@ export default function NewUserModal({ open, onClose, refresh }) {
                                     />
                                 </div>
                             )}
-                            <Label htmlFor="file" className="mb-[10px] mt-[34px] block">
+                            <label htmlFor="file" className="mb-[10px] mt-[34px] block">
                                 Foto de perfil
-                            </Label>
-                            <Input
+                            </label>
+                            <input
                                 id="file"
                                 type="file"
                                 ref={fileInputRef}
                                 onChange={handleFileChange}
-                                className="rounded-[10px] border-0 bg-grisclaro px-[15px] text-[#8D8989] focus:ring-azul"
+                                className="custom-input"
                             />
                         </div>
                     </div>
                     <DialogFooter className="mt-6">
-                        <Button
-                            type="submit"
-                            disabled={!isFormValid()}
-                            className="h-[36px] w-[100px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]"
-                        >
+                        <button type="submit" disabled={!isFormValid()} className="custom-button">
                             Crear
-                        </Button>
+                        </button>
                     </DialogFooter>
                 </form>
             </DialogContent>

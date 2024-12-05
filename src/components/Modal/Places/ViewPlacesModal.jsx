@@ -29,6 +29,8 @@ export default function ViewPlacesModal({ id, open, onClose }) {
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
     const [zipCode, setZipCode] = useState('');
+    const [contactName, setContactName] = useState('');
+    const [contactPhone, setContactPhone] = useState('');
     const [contactEmail, setContactEmail] = useState('');
 
     useEffect(() => {
@@ -66,6 +68,8 @@ export default function ViewPlacesModal({ id, open, onClose }) {
                     setName(placesData.name || '');
                     setAddress(placesData.address || '');
                     setZipCode(placesData.zipCode || '');
+                    setContactName(placesData.contactName || '');
+                    setContactPhone(placesData.contactPhone || '');
                     setContactEmail(placesData.contactEmail || '');
                 }
             }
@@ -210,6 +214,38 @@ export default function ViewPlacesModal({ id, open, onClose }) {
                                     id="zipCode"
                                     className="custom-input"
                                     value={zipCode}
+                                    disabled
+                                />
+                            </div>
+                        </div>
+                        <div className="mb-[10px] grid grid-cols-2">
+                            <div className="col-span-1 mr-[10px]">
+                                <label
+                                    htmlFor="name"
+                                    className="mb-1 px-[15px] text-[13px] font-normal text-[#646464]"
+                                >
+                                    Nombre Contacto
+                                </label>
+                                <input
+                                    type="text"
+                                    id="contactName"
+                                    className="custom-input"
+                                    value={contactName}
+                                    disabled
+                                />
+                            </div>
+                            <div className="col-span-1">
+                                <label
+                                    htmlFor="name"
+                                    className="mb-1 px-[15px] text-[13px] font-normal text-[#646464]"
+                                >
+                                    Teléfono Contacto
+                                </label>
+                                <input
+                                    type="text"
+                                    id="contactPhone"
+                                    className="custom-input"
+                                    value={contactPhone}
                                     disabled
                                 />
                             </div>

@@ -1,13 +1,32 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { notFound } from 'next/navigation';
 
 export async function GET(request, { params }) {
-    const cityView = await prisma.city.findUnique({
-        where: {
-            id: Number(params.id),
-        },
-    });
-    return NextResponse.json(cityView);
+    try {
+        const viewCity = await prisma.city.findUnique({
+            where: {
+                id: Number(params.id),
+            },
+            select: {
+                id: true,
+                name: true,
+                countryCode: true,
+            },
+        });
+
+        if (!viewCity) {
+            notFound();
+        }
+
+        const response = NextResponse.json(viewCity);
+        response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+
+        return response;
+    } catch (error) {
+        console.error('Error fetching :', error);
+        return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
+    }
 }
 
 export async function PUT(request, { params }) {

@@ -5,13 +5,18 @@ import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 
 import { getShips, deleteShips } from '@/services/shipsService';
-import { BtnDeleteTable, BtnEditTable, BtnViewTable } from '@/components/BtnTable/BtnTable';
+import { BtnEditTable, BtnViewTable } from '@/components/BtnTable/BtnTable';
 import DeleteConfirmationSweet from '@/components/DeleteConfirmationSweet/DeleteConfirmationSweet';
 
-import Swal from 'sweetalert2';
+import NewShips from '@/components/Modal/Ships/NewShips';
+
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
+
+const DynamicEditShips = dynamic(() => import('@/components/Modal/Ships/EditShips'), {
+    ssr: false,
+});
 
 export default function ShipsTable() {
     const [shipsData, setShipsData] = useState([]);
@@ -111,11 +116,21 @@ export default function ShipsTable() {
                     <h5 className="mb-[5px] font-medium leading-none tracking-tight">Buques</h5>
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
-                <div>Nuevo +</div>
+                <div>
+                    <NewShips refresh={refreshTable} />
+                </div>
             </div>
             <div className="mt-[20px] flex">
                 <GenericTable columns={columns} data={shipsData} loading={isLoading} />
             </div>
+            {openEdit && setSelectedShipsId && (
+                <DynamicEditShips
+                    id={selectedShipsId}
+                    refresh={refreshTable}
+                    open={openEdit}
+                    onClose={handleEditCloseModal}
+                />
+            )}
         </>
     );
 }

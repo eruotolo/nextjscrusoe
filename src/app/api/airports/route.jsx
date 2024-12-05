@@ -40,7 +40,7 @@ export async function GET() {
 export async function POST(request) {
     try {
         const data = await request.json();
-        console.log('Received data:', data);
+        //console.log('Received data:', data);
 
         // Validar los datos de entrada
         if (!data.gcdiata || !data.name || !data.latitude || !data.longitude || !data.codeCountry) {
