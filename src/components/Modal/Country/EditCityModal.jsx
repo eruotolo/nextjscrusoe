@@ -12,8 +12,8 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 
-import { getCityById, updateCity } from '@/services/cityService';
-import { getCountries } from '@/services/countryService';
+import { getCityById, updateCity } from '@/services/setting/cityService';
+import { getCountries } from '@/services/setting/countryService';
 
 export default function EditCityModal({ id, refresh, open, onClose }) {
     const [countries, setCountries] = useState([]);

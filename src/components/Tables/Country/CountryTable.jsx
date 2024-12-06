@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { deleteCountry, getCountries } from '@/services/countryService';
+import { deleteCountry, getCountries } from '@/services/setting/countryService';
 import dynamic from 'next/dynamic';
 
 import GenericTable from '@/components/TableGeneric/TableGeneric';

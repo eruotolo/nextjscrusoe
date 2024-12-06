@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
-import { getCountries } from '@/services/countryService';
-import { createShippingPort } from '@/services/shippingPortService';
+import { getCountries } from '@/services/setting/countryService';
+import { createShippingPort } from '@/services/setting/shippingPortService';
 import { MapsComponent } from '@/components/Maps/MapsComponent';
 
 import {

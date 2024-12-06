@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getUsers } from '@/services/userService';
+import { getUsers } from '@/services/setting/userService';
 import dynamic from 'next/dynamic';
 
 import GenericTable from '@/components/TableGeneric/TableGeneric';

@@ -12,8 +12,8 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 
-import { getCountries } from '@/services/countryService';
-import { getShippingPortById, updateShippingPort } from '@/services/shippingPortService';
+import { getCountries } from '@/services/setting/countryService';
+import { getShippingPortById, updateShippingPort } from '@/services/setting/shippingPortService';
 
 import { EditMapsComponent } from '@/components/Maps/EditMapsComponents';
 

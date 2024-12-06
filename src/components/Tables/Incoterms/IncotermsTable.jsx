@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 
-import { getIncoterms, deleteIncoterms } from '@/services/incotermsService';
+import { getIncoterms, deleteIncoterms } from '@/services/setting/incotermsService';
 import { BtnDeleteTable, BtnEditTable, BtnAssign } from '@/components/BtnTable/BtnTable';
 import NewIncotermsModal from '@/components/Modal/Incoterms/NewIncotermsModal';
 

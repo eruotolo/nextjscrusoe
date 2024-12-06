@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 
-import { deleteAirport, getAirports } from '@/services/airportService';
+import { deleteAirport, getAirports } from '@/services/setting/airportService';
 import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
 import { NewAirportModal } from '@/components/Modal/Airport/NewAirportModal';
 

@@ -12,7 +12,7 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 
-import { getCountryById, updateCountry } from '@/services/countryService';
+import { getCountryById, updateCountry } from '@/services/setting/countryService';
 
 export default function EditCountryModal({ id, refresh, open, onClose }) {
     const {

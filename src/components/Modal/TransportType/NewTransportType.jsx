@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { createTransportType } from '@/services/transportTypeService';
+import { createTransportType } from '@/services/setting/transportTypeService';
 
 import {
     Dialog,

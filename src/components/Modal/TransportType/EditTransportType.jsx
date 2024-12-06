@@ -12,7 +12,7 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 
-import { getTransportTypeById, updateTransportType } from '@/services/transportTypeService';
+import { getTransportTypeById, updateTransportType } from '@/services/setting/transportTypeService';
 
 export default function EditTransportType({ id, refresh, open, onClose }) {
     const {

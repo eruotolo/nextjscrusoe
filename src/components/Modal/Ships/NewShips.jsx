@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { getCountries } from '@/services/countryService';
-import { getShipOwner } from '@/services/shipOwnerService';
-import { getShipsType } from '@/services/shipsTypeService';
-import { createShips } from '@/services/shipsService';
+import { getCountries } from '@/services/setting/countryService';
+import { getShipOwner } from '@/services/setting/shipOwnerService';
+import { getShipsType } from '@/services/setting/shipsTypeService';
+import { createShips } from '@/services/setting/shipsService';
 
 import {
     Dialog,

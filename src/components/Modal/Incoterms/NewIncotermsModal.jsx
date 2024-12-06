@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { createIncoterms } from '@/services/incotermsService';
+import { createIncoterms } from '@/services/setting/incotermsService';
 
 import {
     Dialog,

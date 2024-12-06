@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { createShipOwner } from '@/services/shipOwnerService';
+import { createShipOwner } from '@/services/setting/shipOwnerService';
 
 import {
     Dialog,

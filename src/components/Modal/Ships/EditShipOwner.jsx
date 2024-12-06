@@ -12,7 +12,7 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 
-import { getShipOwnerById, updateShipOwner } from '@/services/shipOwnerService';
+import { getShipOwnerById, updateShipOwner } from '@/services/setting/shipOwnerService';
 
 export default function EditShipOwner({ id, refresh, open, onClose }) {
     const {

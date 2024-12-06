@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 
-import { getCountries } from '@/services/countryService';
-import { getCitiesCountry } from '@/services/cityService';
-import { createPlaces } from '@/services/placesService';
+import { getCountries } from '@/services/setting/countryService';
+import { getCitiesCountry } from '@/services/setting/cityService';
+import { createPlaces } from '@/services/setting/placesService';
 import { MapsComponent } from '@/components/Maps/MapsComponent';
 
 import {

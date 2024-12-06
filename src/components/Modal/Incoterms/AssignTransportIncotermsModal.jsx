@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getTransportType } from '@/services/transportTypeService';
+import { getTransportType } from '@/services/setting/transportTypeService';
 
 import {
     Dialog,

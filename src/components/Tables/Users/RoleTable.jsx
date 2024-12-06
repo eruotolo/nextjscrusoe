@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { getRoles, changeStateRole } from '@/services/roleService';
+import { getRoles, changeStateRole } from '@/services/setting/roleService';
 import dynamic from 'next/dynamic';
 
 import GenericTable from '@/components/TableGeneric/TableGeneric';

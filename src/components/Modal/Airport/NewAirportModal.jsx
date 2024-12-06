@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
-import { getCountries } from '@/services/countryService';
-import { createAirport } from '@/services/airportService';
+import { getCountries } from '@/services/setting/countryService';
+import { createAirport } from '@/services/setting/airportService';
 import { MapsComponent } from '@/components/Maps/MapsComponent';
 
 import {

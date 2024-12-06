@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 
-import { getShipOwner, deleteShipOwner } from '@/services/shipOwnerService';
+import { getShipOwner, deleteShipOwner } from '@/services/setting/shipOwnerService';
 import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
 import NewShipOwner from '@/components/Modal/Ships/NewShipOwner';
 

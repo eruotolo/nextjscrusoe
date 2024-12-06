@@ -12,9 +12,9 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 
-import { getCountries } from '@/services/countryService';
-import { getCitiesCountry } from '@/services/cityService';
-import { getPlacesById, updatePlace } from '@/services/placesService';
+import { getCountries } from '@/services/setting/countryService';
+import { getCitiesCountry } from '@/services/setting/cityService';
+import { getPlacesById, updatePlace } from '@/services/setting/placesService';
 
 import { EditMapsComponent } from '@/components/Maps/EditMapsComponents';
 

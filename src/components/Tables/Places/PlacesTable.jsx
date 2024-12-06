@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 
-import { getPlaces, deletePlaces } from '@/services/placesService';
+import { getPlaces, deletePlaces } from '@/services/setting/placesService';
 import { BtnDeleteTable, BtnEditTable, BtnViewTable } from '@/components/BtnTable/BtnTable';
 import NewPlacesModal from '@/components/Modal/Places/NewPlacesModal';
 

@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 
-import { getTransportType, deleteTransporteType } from '@/services/transportTypeService';
+import { getTransportType, deleteTransporteType } from '@/services/setting/transportTypeService';
 import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
 import NewTransportType from '@/components/Modal/TransportType/NewTransportType';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { createCountry } from '@/services/countryService';
+import { createCountry } from '@/services/setting/countryService';
 
 import {
     Dialog,

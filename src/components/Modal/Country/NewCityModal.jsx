@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
-import { getCountries } from '@/services/countryService'; // Asegúrate de tener esta función en tu servicio
-import { createCity } from '@/services/cityService';
+import { getCountries } from '@/services/setting/countryService'; // Asegúrate de tener esta función en tu servicio
+import { createCity } from '@/services/setting/cityService';
 
 import {
     Dialog,

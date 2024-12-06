@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 
-import { deleteShippingPort, getShippingPorts } from '@/services/shippingPortService';
+import { deleteShippingPort, getShippingPorts } from '@/services/setting/shippingPortService';
 import { BtnDeleteTable, BtnEditTable } from '@/components/BtnTable/BtnTable';
 import NewShippingPortModal from '@/components/Modal/ShippingPorts/NewShippingPortModal';
 

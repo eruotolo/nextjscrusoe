@@ -12,7 +12,7 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 
-import { getIncotermsById, updateIncoterms } from '@/services/incotermsService';
+import { getIncotermsById, updateIncoterms } from '@/services/setting/incotermsService';
 
 export default function EditIncotermsModal({ id, refresh, open, onClose }) {
     const {

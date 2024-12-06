@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getRoles } from '@/services/roleService';
+import { getRoles } from '@/services/setting/roleService';
 
 import { Button } from '@/components/ui/button';
 import {
