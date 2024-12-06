@@ -1,8 +1,6 @@
-import { cache } from 'react';
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const getIncoterms = cache(async () => {
+export const getIncoterms = async () => {
     try {
         const response = await fetch(`${API_URL}/api/incoterms`, {
             next: { revalidate: 3600 },
@@ -18,7 +16,7 @@ export const getIncoterms = cache(async () => {
         console.error('Error fetching:', error);
         throw error; // Re-throw the error for the component to handle
     }
-});
+};
 
 export const deleteIncoterms = async (id) => {
     try {
@@ -59,7 +57,7 @@ export const createIncoterms = async (incotermsData) => {
     }
 };
 
-export const getIncotermsById = cache(async (id) => {
+export const getIncotermsById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/incoterms/${id}`, {
             next: { revalidate: 3600 },
@@ -75,7 +73,7 @@ export const getIncotermsById = cache(async (id) => {
         console.error('Error:', error);
         return null;
     }
-});
+};
 
 export const updateIncoterms = async (id, incotermsData) => {
     try {

@@ -1,10 +1,8 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const getPlaces = async () => {
+export const getCommodities = async () => {
     try {
-        const response = await fetch(`${API_URL}/api/places`, {
-            next: { revalidate: 3600 },
-        });
+        const response = await fetch(`${API_URL}/api/commodities`, { next: { revalidate: 3600 } });
 
         if (!response.ok) {
             console.error(`Error al obtener: ${response.status} - ${response.statusText}`);
@@ -13,14 +11,14 @@ export const getPlaces = async () => {
 
         return await response.json();
     } catch (error) {
-        console.error('Error fetching places:', error);
+        console.error('Error fetching:', error);
         return [];
     }
 };
 
-export const deletePlaces = async (id) => {
+export const deleteCommodities = async (id) => {
     try {
-        const response = await fetch(`${API_URL}/api/places/${id}`, { method: 'DELETE' });
+        const response = await fetch(`${API_URL}/api/commodities/${id}`, { method: 'DELETE' });
 
         if (!response.ok) {
             console.error(`Error deleting: ${response.status} - ${response.statusText}`);
@@ -33,15 +31,14 @@ export const deletePlaces = async (id) => {
     }
 };
 
-export const createPlaces = async (placesData) => {
+export const createCommodities = async (commoditiesData) => {
     try {
-        //console.log('Cargando los datos:', placesData);
-        const response = await fetch(`${API_URL}/api/places`, {
+        const response = await fetch(`${API_URL}/api/commodities`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(placesData),
+            body: JSON.stringify(commoditiesData),
         });
 
         if (!response.ok) {
@@ -56,9 +53,9 @@ export const createPlaces = async (placesData) => {
     }
 };
 
-export const getPlacesById = async (id) => {
+export const getCommoditiesId = async (id) => {
     try {
-        const response = await fetch(`${API_URL}/api/places/${id}`, {
+        const response = await fetch(`${API_URL}/api/commodities/${id}`, {
             next: { revalidate: 3600 },
         });
 
@@ -74,16 +71,16 @@ export const getPlacesById = async (id) => {
     }
 };
 
-export const updatePlace = async (id, placesData) => {
+export const updateCommodities = async (id, commoditiesData) => {
     try {
-        //console.log('Actualizando los datos:', placesData);
-        const response = await fetch(`${API_URL}/api/places/${id}`, {
+        const response = await fetch(`${API_URL}/api/commodities/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(placesData),
+            body: JSON.stringify(commoditiesData),
         });
+
         if (!response.ok) {
             console.error(`Error updating: ${response.status} - ${response.statusText}`);
             return null;

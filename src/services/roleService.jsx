@@ -1,8 +1,6 @@
-import { cache } from 'react';
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const getRoles = cache(async () => {
+export const getRoles = async () => {
     try {
         const response = await fetch(`${API_URL}/api/roles`, {
             next: { revalidate: 60 },
@@ -17,9 +15,9 @@ export const getRoles = cache(async () => {
         console.error('Error fetching roles:', error);
         throw error; // Re-throw the error for the component to handle
     }
-});
+};
 
-export const getRoleById = cache(async (id) => {
+export const getRoleById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/roles/${id}`, {
             next: { revalidate: 3600 },
@@ -33,7 +31,7 @@ export const getRoleById = cache(async (id) => {
         console.error('Error:', error);
         return null;
     }
-});
+};
 
 export const changeStateRole = async (id) => {
     try {

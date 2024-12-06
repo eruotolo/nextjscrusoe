@@ -1,8 +1,6 @@
-import { cache } from 'react';
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const getAirports = cache(async () => {
+export const getAirports = async () => {
     try {
         const response = await fetch(`${API_URL}/api/airports`, {
             next: { revalidate: 3600 },
@@ -18,7 +16,7 @@ export const getAirports = cache(async () => {
         console.error('Error fetching airports:', error);
         return [];
     }
-});
+};
 
 export const deleteAirport = async (id) => {
     try {
@@ -59,7 +57,7 @@ export const createAirport = async (airportData) => {
     }
 };
 
-export const getAirportById = cache(async (id) => {
+export const getAirportById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/airports/${id}`, {
             next: { revalidate: 3600 },
@@ -75,7 +73,7 @@ export const getAirportById = cache(async (id) => {
         console.error('Error fetching Shipping Port:', error);
         return null;
     }
-});
+};
 
 export const updateAirport = async (id, airportData) => {
     try {

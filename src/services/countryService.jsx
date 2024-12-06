@@ -1,8 +1,6 @@
-import { cache } from 'react';
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const getCountries = cache(async () => {
+export const getCountries = async () => {
     try {
         const response = await fetch(`${API_URL}/api/country`, {
             next: { revalidate: 3600 },
@@ -18,7 +16,7 @@ export const getCountries = cache(async () => {
         console.error('Error fetching countries:', error);
         return [];
     }
-});
+};
 
 export const createCountry = async (countryData) => {
     try {

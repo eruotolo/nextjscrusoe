@@ -1,8 +1,6 @@
-import { cache } from 'react';
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const getShipOwner = cache(async () => {
+export const getShipOwner = async () => {
     try {
         const response = await fetch(`${API_URL}/api/shipowner`, {
             next: { revalidate: 3600 },
@@ -18,7 +16,7 @@ export const getShipOwner = cache(async () => {
         console.error('Error fetching:', error);
         throw error; // Re-throw the error for the component to handle
     }
-});
+};
 
 export const deleteShipOwner = async (id) => {
     try {
@@ -57,7 +55,7 @@ export const createShipOwner = async (shipOwnerData) => {
     }
 };
 
-export const getShipOwnerById = cache(async (id) => {
+export const getShipOwnerById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/shipowner/${id}`, {
             next: { revalidate: 3600 },
@@ -72,7 +70,7 @@ export const getShipOwnerById = cache(async (id) => {
         console.error('Error:', error);
         return null;
     }
-});
+};
 
 export const updateShipOwner = async (id, shipOwnerData) => {
     try {

@@ -1,8 +1,6 @@
-import { cache } from 'react';
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const getShips = cache(async () => {
+export const getShips = async () => {
     try {
         const response = await fetch(`${API_URL}/api/ships`, {
             next: { revalidate: 3600 },
@@ -18,7 +16,7 @@ export const getShips = cache(async () => {
         console.error('Error fetching Ships:', error);
         return [];
     }
-});
+};
 
 export const deleteShips = async (id) => {
     try {
@@ -59,7 +57,7 @@ export const createShips = async (shipsData) => {
     }
 };
 
-export const getShipsById = cache(async (id) => {
+export const getShipsById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/ships/${id}`, {
             next: { revalidate: 3600 },
@@ -75,7 +73,7 @@ export const getShipsById = cache(async (id) => {
         console.error('Error fetching:', error);
         return null;
     }
-});
+};
 
 export const updateShips = async (id, shipsData) => {
     try {

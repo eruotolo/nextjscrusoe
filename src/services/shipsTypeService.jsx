@@ -1,8 +1,6 @@
-import { cache } from 'react';
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const getShipsType = cache(async () => {
+export const getShipsType = async () => {
     try {
         const response = await fetch(`${API_URL}/api/shipstype`, {
             next: { revalidate: 3600 },
@@ -18,4 +16,4 @@ export const getShipsType = cache(async () => {
         console.error('Error fetching:', error);
         throw error; // Re-throw the error for the component to handle
     }
-});
+};

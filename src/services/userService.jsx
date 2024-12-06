@@ -1,8 +1,6 @@
-import { cache } from 'react';
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const getUsers = cache(async () => {
+export const getUsers = async () => {
     try {
         const response = await fetch(`${API_URL}/api/users`, {
             next: { revalidate: 60 }, // Revalidate every 60 seconds
@@ -18,7 +16,7 @@ export const getUsers = cache(async () => {
         console.error('Error fetching users:', error);
         throw error; // Re-throw the error for the component to handle
     }
-});
+};
 
 export const disableUser = async (id) => {
     try {

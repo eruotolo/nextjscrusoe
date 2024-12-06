@@ -1,8 +1,6 @@
-import { cache } from 'react';
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const getShippingPorts = cache(async () => {
+export const getShippingPorts = async () => {
     try {
         const response = await fetch(`${API_URL}/api/shippingports`, {
             next: { revalidate: 3600 },
@@ -18,7 +16,7 @@ export const getShippingPorts = cache(async () => {
         console.error('Error fetching shippingports:', error);
         return [];
     }
-});
+};
 
 export const deleteShippingPort = async (id) => {
     try {
@@ -62,7 +60,7 @@ export const createShippingPort = async (shippingPortData) => {
     }
 };
 
-export const getShippingPortById = cache(async (id) => {
+export const getShippingPortById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/shippingports/${id}`, {
             next: { revalidate: 3600 },
@@ -78,7 +76,7 @@ export const getShippingPortById = cache(async (id) => {
         console.error('Error fetching:', error);
         return null;
     }
-});
+};
 
 export const updateShippingPort = async (id, shippingPortData) => {
     try {
