@@ -9,6 +9,9 @@ export async function GET() {
                 id: true,
                 name: true,
                 nameEnglish: true,
+                dangerous: true,
+                perishable: true,
+                tariffPositional: true,
                 commoditiesSection: {
                     select: {
                         id: true,

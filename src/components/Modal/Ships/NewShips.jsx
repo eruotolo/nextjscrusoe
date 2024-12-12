@@ -27,9 +27,6 @@ export default function NewShips({ refresh }) {
     const [shipsType, setShipsType] = useState([]);
     const [error, setError] = useState('');
 
-    const [shipsName, setShipsName] = useState('');
-    const [shipsCode, setShipsCode] = useState('');
-
     const {
         register,
         handleSubmit,

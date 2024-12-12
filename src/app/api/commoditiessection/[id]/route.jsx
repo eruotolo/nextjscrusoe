@@ -10,7 +10,7 @@ export async function GET(request, { params }) {
             return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
         }
 
-        const viewCommoditiesSection = await prisma.commoditiesSection.findMany({
+        const viewCommoditiesSection = await prisma.commoditiesSection.findUnique({
             where: { id },
             select: {
                 id: true,

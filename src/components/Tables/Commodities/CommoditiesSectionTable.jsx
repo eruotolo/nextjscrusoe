@@ -4,33 +4,38 @@ import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 
-import { getShips, deleteShips } from '@/services/setting/shipsService';
+import {
+    getCommoditiesSection,
+    deleteCommoditiesSection,
+} from '@/services/setting/commoditiesSectionService';
 import { BtnEditTable } from '@/components/BtnTable/BtnTable';
 import DeleteConfirmationSweet from '@/components/DeleteConfirmationSweet/DeleteConfirmationSweet';
-
-import NewShips from '@/components/Modal/Ships/NewShips';
+import NewCommoditiesSection from '@/components/Modal/Commodities/NewCommoditiesSection';
 
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
 
-const DynamicEditShips = dynamic(() => import('@/components/Modal/Ships/EditShips'), {
-    ssr: false,
-});
+const DynamicEditCommoditiesSection = dynamic(
+    () => import('@/components/Modal/Commodities/EditCommoditiesSection'),
+    {
+        ssr: false,
+    }
+);
 
-export default function ShipsTable() {
-    const [shipsData, setShipsData] = useState([]);
+export default function CommoditiesSectionTable() {
+    const [commoditiesSectionData, setCommoditiesSectionData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [openEdit, setOpenEdit] = useState(false);
-    const [selectedShipsId, setSelectedShipsId] = useState(null);
+    const [selectedCommoditiesSectionId, setSelectedCommoditiesSectionId] = useState(null);
 
     // GET DATA
-    const fetchShips = useCallback(async () => {
+    const fetchCommoditiesSection = useCallback(async () => {
         setIsLoading(true);
         try {
-            const data = await getShips();
-            setShipsData(data);
+            const data = await getCommoditiesSection();
+            setCommoditiesSectionData(data);
         } catch (error) {
             console.error('Error fetching:', error);
         } finally {
@@ -39,23 +44,23 @@ export default function ShipsTable() {
     }, []);
 
     useEffect(() => {
-        fetchShips();
-    }, [fetchShips]);
+        fetchCommoditiesSection();
+    }, [fetchCommoditiesSection]);
 
     // REFRESH TABLE BEFORE UPDATE
     const refreshTable = useCallback(async () => {
-        const data = await getShips();
-        setShipsData(data);
+        const data = await getCommoditiesSection();
+        setCommoditiesSectionData(data);
     }, []);
 
-    // DIALOG OPEN CLOSE
+    // DIALOG OPEN AND CLOSE
     const handleEditOpenModal = (id) => {
-        setSelectedShipsId(id);
         setOpenEdit(true);
+        setSelectedCommoditiesSectionId(id);
     };
     const handleEditCloseModal = () => {
-        setSelectedShipsId(null);
         setOpenEdit(false);
+        setSelectedCommoditiesSectionId(null);
     };
 
     // COLUMNAS
@@ -70,26 +75,11 @@ export default function ShipsTable() {
                         className="text-[12px] font-medium leading-[13px] text-[#8D8989]"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
-                        Nombre del Buque
+                        Sector
                         <ArrowUpDown className="ml-2 h-[14px] w-[14px]" />
                     </Button>
                 );
             },
-        },
-        {
-            accessorKey: 'shipowner.name',
-            size: 150,
-            header: 'Armador',
-        },
-        {
-            accessorKey: 'country.name',
-            size: 140,
-            header: 'Bandera',
-        },
-        {
-            accessorKey: 'shipsType.name',
-            size: 140,
-            header: 'Tipo',
         },
         {
             accessorKey: 'action',
@@ -100,9 +90,9 @@ export default function ShipsTable() {
                     <BtnEditTable onClick={() => handleEditOpenModal(row.original.id)} />
                     <DeleteConfirmationSweet
                         id={row.original.id}
-                        deleteFunction={deleteShips}
+                        deleteFunction={deleteCommoditiesSection}
                         refreshFunction={refreshTable}
-                        itemName="Ships"
+                        itemName="Sector"
                     />
                 </div>
             ),
@@ -112,17 +102,14 @@ export default function ShipsTable() {
     // EXPORT TO EXCEL
     const exportToExcel = async () => {
         try {
-            const dataToExport = shipsData.map((ships) => ({
-                name: ships.name,
-                code: ships.code,
-                shipowner: ships.shipowner.name,
-                country: ships.country.name,
-                shipsType: ships.shipsType.name,
+            const dataToExport = commoditiesSectionData.map((commoditiesSection) => ({
+                name: commoditiesSection.name,
             }));
+            console.log(dataToExport);
             const worksheet = XLSX.utils.json_to_sheet(dataToExport);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Ships');
-            XLSX.writeFile(workbook, 'ships_export.xlsx');
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'CommoditiesSection');
+            XLSX.writeFile(workbook, 'commoditiesSection_export.xlsx');
         } catch (error) {
             console.error('Error exporting to Excel:', error);
         }
@@ -132,24 +119,24 @@ export default function ShipsTable() {
         <>
             <div className="flex h-auto w-full justify-between">
                 <div>
-                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">Buques</h5>
+                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">Sectores</h5>
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
                 <div>
-                    <NewShips refresh={refreshTable} />
+                    <NewCommoditiesSection refresh={refreshTable} />
                 </div>
             </div>
             <div className="mt-[20px] flex">
                 <GenericTable
                     columns={columns}
-                    data={shipsData}
-                    loading={isLoading}
+                    data={commoditiesSectionData}
+                    isLoading={isLoading}
                     exportToExcel={exportToExcel}
                 />
             </div>
-            {openEdit && setSelectedShipsId && (
-                <DynamicEditShips
-                    id={selectedShipsId}
+            {openEdit && setSelectedCommoditiesSectionId && (
+                <DynamicEditCommoditiesSection
+                    id={selectedCommoditiesSectionId}
                     refresh={refreshTable}
                     open={openEdit}
                     onClose={handleEditCloseModal}
