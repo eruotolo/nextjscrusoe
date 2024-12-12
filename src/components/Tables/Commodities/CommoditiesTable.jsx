@@ -8,6 +8,8 @@ import { getCommodities, deleteCommodities } from '@/services/setting/commoditie
 import { BtnEditTable } from '@/components/BtnTable/BtnTable';
 import DeleteConfirmationSweet from '@/components/DeleteConfirmationSweet/DeleteConfirmationSweet';
 
+import NewCommodities from '@/components/Modal/Commodities/NewCommodities';
+
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
@@ -154,7 +156,9 @@ export default function CommoditiesTable() {
                     </h5>
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
-                <div>Nuevo +</div>
+                <div>
+                    <NewCommodities refresh={refreshTable} />
+                </div>
             </div>
             <div className="mt-[20px] flex">
                 <GenericTable

@@ -38,20 +38,6 @@ export async function POST(request) {
     try {
         const data = await request.json();
 
-        if (
-            !data.name ||
-            !data.nameEnglish ||
-            !data.dangerous ||
-            !data.perishable ||
-            !data.tariffPositional ||
-            !data.commoditiesSectionId
-        ) {
-            return NextResponse.json(
-                { message: 'Todos los campos son obligatorios.' },
-                { status: 400 }
-            );
-        }
-
         const newCommodities = await prisma.commodities.create({
             data: {
                 name: data.name,
