@@ -61,8 +61,13 @@ export default function ShipsTable() {
     // COLUMNAS
     const columns = [
         {
+            accessorKey: 'code',
+            size: 150,
+            header: 'Código de Barco',
+        },
+        {
             accessorKey: 'name',
-            size: 280,
+            size: 200,
             header: ({ column }) => {
                 return (
                     <Button

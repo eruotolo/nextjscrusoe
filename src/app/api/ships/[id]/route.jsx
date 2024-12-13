@@ -37,6 +37,9 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
     try {
         const data = await request.json();
+
+        //console.log('Datos:', data);
+
         const { id } = params;
         const updateShips = await prisma.ships.update({
             where: { id },

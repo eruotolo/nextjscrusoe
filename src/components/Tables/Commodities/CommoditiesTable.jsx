@@ -14,6 +14,11 @@ import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
 
+const DynamicEditCommodities = dynamic(
+    () => import('@/components/Modal/Commodities/EditCommodities'),
+    { ssr: false }
+);
+
 export default function CommoditiesTable() {
     const [commoditiesData, setCommoditiesData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -168,6 +173,14 @@ export default function CommoditiesTable() {
                     exportToExcel={exportToExcel}
                 />
             </div>
+            {openEdit && setSelectedCommoditiesId && (
+                <DynamicEditCommodities
+                    id={selectedCommoditiesId}
+                    refresh={refreshTable}
+                    open={openEdit}
+                    onClose={handleEditCloseModal}
+                />
+            )}
         </>
     );
 }

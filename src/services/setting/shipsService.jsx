@@ -77,6 +77,7 @@ export const getShipsById = async (id) => {
 
 export const updateShips = async (id, shipsData) => {
     try {
+        console.log('Actualizando los datos:', shipsData);
         const response = await fetch(`${API_URL}/api/ships/${id}`, {
             method: 'PUT',
             headers: {
@@ -84,6 +85,8 @@ export const updateShips = async (id, shipsData) => {
             },
             body: JSON.stringify(shipsData),
         });
+
+        console.log('Respuesta del servidor:', response);
 
         if (!response.ok) {
             console.error(`Error updating: ${response.status} - ${response.statusText}`);
