@@ -197,12 +197,14 @@ model Commodities {
 }
 
 model Traffics {
-    id          String   @id @default(uuid())
+    id          String    @id @default(uuid())
     name        String?
     nameEnglish String?
+    code        String?
     modifiedBy  Int?
-    user        User?    @relation(fields: [modifiedBy], references: [id])
-    createdAt   DateTime @default(now())
+    user        User?     @relation(fields: [modifiedBy], references: [id])
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime? @updatedAt
 
     @@index([name])
     @@index([nameEnglish])

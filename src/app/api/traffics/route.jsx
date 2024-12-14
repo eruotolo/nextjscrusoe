@@ -9,6 +9,9 @@ export async function GET() {
                 id: true,
                 name: true,
                 nameEnglish: true,
+                code: true,
+                createdAt: true,
+                updatedAt: true,
                 user: {
                     select: {
                         id: true,
@@ -41,6 +44,7 @@ export async function POST(request) {
             data: {
                 name: data.name,
                 nameEnglish: data.nameEnglish,
+                code: data.code,
                 modifiedBy: data.modifiedBy,
             },
         });

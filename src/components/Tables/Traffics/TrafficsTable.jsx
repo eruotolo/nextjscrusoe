@@ -4,34 +4,27 @@ import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 
-import { getCommodities, deleteCommodities } from '@/services/setting/commoditiesService';
+import { getTraffics, deleteTraffics } from '@/services/setting/trafficsService';
 import { BtnEditTable } from '@/components/BtnTable/BtnTable';
 import DeleteConfirmationSweet from '@/components/DeleteConfirmationSweet/DeleteConfirmationSweet';
-
-import NewCommodities from '@/components/Modal/Commodities/NewCommodities';
 
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
 
-const DynamicEditCommodities = dynamic(
-    () => import('@/components/Modal/Commodities/EditCommodities'),
-    { ssr: false }
-);
-
-export default function CommoditiesTable() {
-    const [commoditiesData, setCommoditiesData] = useState([]);
+export default function TrafficsTable() {
+    const [trafficsData, setTrafficsData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [openEdit, setOpenEdit] = useState(false);
-    const [selectedCommoditiesId, setSelectedCommoditiesId] = useState(null);
+    const [selectedTrafficsId, setSelectedTrafficsId] = useState(null);
 
     // GET DATA
-    const fetchCommodities = useCallback(async () => {
+    const fetchTraffics = useCallback(async () => {
         setIsLoading(true);
         try {
-            const data = await getCommodities();
-            setCommoditiesData(data);
+            const data = await getTraffics();
+            setTrafficsData(data);
         } catch (error) {
             console.error('Error fetching:', error);
         } finally {
@@ -40,27 +33,33 @@ export default function CommoditiesTable() {
     }, []);
 
     useEffect(() => {
-        fetchCommodities();
-    }, [fetchCommodities]);
+        fetchTraffics();
+    }, [fetchTraffics]);
 
     // REFRESH TABLE BEFORE UPDATE
     const refreshTable = useCallback(async () => {
-        const data = await getCommodities();
-        setCommoditiesData(data);
+        const data = await getTraffics();
+        setTrafficsData(data);
     }, []);
 
-    // DIALOG OPEN CLOSE
+    // DIALOG OPEN AND CLOSE
     const handleEditOpenModal = (id) => {
-        setSelectedCommoditiesId(id);
         setOpenEdit(true);
+        setSelectedTrafficsId(id);
     };
     const handleEditCloseModal = () => {
-        setSelectedCommoditiesId(null);
         setOpenEdit(false);
+        setSelectedTrafficsId(null);
     };
 
     // COLUMNS TABLE
     const columns = [
+        {
+            accessorKey: 'code',
+            size: '100',
+            header: 'Código',
+            cell: ({ row }) => (row.original.code ? row.original.code : 'S/N'),
+        },
         {
             accessorKey: 'name',
             size: 200,
@@ -94,26 +93,34 @@ export default function CommoditiesTable() {
             },
         },
         {
-            accessorKey: 'dangerous',
-            size: '100',
-            header: 'Peligroso',
-            cell: ({ row }) => (row.original.dangerous ? 'Sí' : 'No'),
+            accessorKey: 'updatedAt',
+            size: 100,
+            header: 'Ultima Edición',
+            cell: ({ row }) => {
+                const date = row.original.updatedAt || row.original.createdAt;
+                if (date) {
+                    // Asegurarse de que la fecha sea un objeto Date válido
+                    const dateObject = new Date(date);
+                    if (isNaN(dateObject.getTime())) {
+                        return 'Fecha inválida';
+                    }
+                    return dateObject.toLocaleString('es-ES', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    });
+                }
+                return 'Fecha no disponible';
+            },
         },
         {
-            accessorKey: 'perishable',
-            size: '100',
-            header: 'Perecedero',
-            cell: ({ row }) => (row.original.perishable ? 'Sí' : 'No'),
-        },
-        {
-            accessorKey: 'commoditiesSection.name',
-            size: '100',
-            header: 'Sector',
-        },
-        {
-            accessorKey: 'tariffPositional',
-            size: '100',
-            header: 'Posición Arancelaria',
+            accessorKey: 'user',
+            size: 100,
+            header: 'Editado por...',
+            cell: ({ row }) =>
+                `${row.original.user?.name || ''} ${row.original.user?.lastName || ''}`,
         },
         {
             accessorKey: 'action',
@@ -124,7 +131,7 @@ export default function CommoditiesTable() {
 
                     <DeleteConfirmationSweet
                         id={row.original.id}
-                        deleteFunction={deleteCommodities}
+                        deleteFunction={deleteTraffics}
                         refreshFunction={refreshTable}
                         itemName="Ships"
                     />
@@ -133,55 +140,18 @@ export default function CommoditiesTable() {
         },
     ];
 
-    // EXPORT TO EXCEL
-    const exportToExcel = () => {
-        try {
-            const dataToExport = commoditiesData.map((commodities) => ({
-                name: commodities.name,
-                nameIngles: commodities.nameEnglish,
-                dangerous: commodities.dangerous,
-                perishable: commodities.perishable,
-                tariffPositional: commodities.tariffPositional,
-                commoditiesSection: commodities.commoditiesSection.name,
-            }));
-            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Commodities');
-            XLSX.writeFile(workbook, 'commodities_export.xlsx');
-        } catch (error) {
-            console.error('Error exporting to Excel:', error);
-        }
-    };
-
     return (
         <>
             <div className="flex h-auto w-full justify-between">
                 <div>
-                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">
-                        Commodities
-                    </h5>
+                    <h5 className="mb-[5px] font-medium leading-none tracking-tight">Trafico</h5>
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
-                <div>
-                    <NewCommodities refresh={refreshTable} />
-                </div>
+                <div>Nuevo +</div>
             </div>
             <div className="mt-[20px] flex">
-                <GenericTable
-                    columns={columns}
-                    data={commoditiesData}
-                    loading={isLoading}
-                    exportToExcel={exportToExcel}
-                />
+                <GenericTable columns={columns} data={trafficsData} loading={isLoading} />
             </div>
-            {openEdit && setSelectedCommoditiesId && (
-                <DynamicEditCommodities
-                    id={selectedCommoditiesId}
-                    refresh={refreshTable}
-                    open={openEdit}
-                    onClose={handleEditCloseModal}
-                />
-            )}
         </>
     );
 }

@@ -19,7 +19,7 @@ export default function MenuSettingInternal() {
 
             <ButtonSubMenu titleButton="Buques" urlButton="/setting/ships" />
 
-            <ButtonSubMenu titleButton="Tráficos" urlButton="/setting/traffic" />
+            <ButtonSubMenu titleButton="Tráficos" urlButton="/setting/traffics" />
 
             <ButtonSubMenu titleButton="Incoterms" urlButton="/setting/incoterms" />
         </>
