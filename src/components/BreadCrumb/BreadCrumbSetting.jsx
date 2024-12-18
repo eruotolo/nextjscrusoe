@@ -1,3 +1,8 @@
+'use client';
+
+import React from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -8,9 +13,14 @@ import {
 
 import { House } from 'lucide-react';
 
-export default function BreadCrumbSetting() {
+export default function BreadCrumbSetting({ title }) {
+    const pathname = usePathname();
+    const pathSegments = pathname.split('/').filter((segment) => segment);
+
+    const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
     return (
-        <Breadcrumb>
+        <Breadcrumb className="mb-[10px]">
             <BreadcrumbList>
                 <BreadcrumbItem>
                     <House className="h-[16px] 2xl:h-[18px]" />
@@ -18,12 +28,23 @@ export default function BreadCrumbSetting() {
                         Principal
                     </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator className="text-[14px]" />
-                <BreadcrumbItem>
-                    <BreadcrumbLink href="/setting/users" className="text-[14px]">
-                        Configuración
-                    </BreadcrumbLink>
-                </BreadcrumbItem>
+                {pathSegments.map((segment, index) => (
+                    <React.Fragment key={index}>
+                        <BreadcrumbSeparator className="text-[14px]" />
+                        <BreadcrumbItem>
+                            {index === pathSegments.length - 1 ? (
+                                <span className="text-[14px]">{capitalize(title)}</span>
+                            ) : (
+                                <BreadcrumbLink
+                                    href={`/${pathSegments.slice(0, index + 1).join('/')}`}
+                                    className="text-[14px]"
+                                >
+                                    {capitalize(segment)}
+                                </BreadcrumbLink>
+                            )}
+                        </BreadcrumbItem>
+                    </React.Fragment>
+                ))}
             </BreadcrumbList>
         </Breadcrumb>
     );

@@ -7,10 +7,15 @@ import dynamic from 'next/dynamic';
 import { getTraffics, deleteTraffics } from '@/services/setting/trafficsService';
 import { BtnEditTable } from '@/components/BtnTable/BtnTable';
 import DeleteConfirmationSweet from '@/components/DeleteConfirmationSweet/DeleteConfirmationSweet';
+import NewTraffics from '@/components/Modal/Traffics/NewTraffics';
 
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
+
+const DynamicEditTraffics = dynamic(() => import('@/components/Modal/Traffics/EditTraffics'), {
+    ssr: false,
+});
 
 export default function TrafficsTable() {
     const [trafficsData, setTrafficsData] = useState([]);
@@ -140,6 +145,26 @@ export default function TrafficsTable() {
         },
     ];
 
+    // EXPORT TO EXCEL
+    const exportToExcel = async () => {
+        try {
+            const dataToExport = trafficsData.map((traffics) => ({
+                code: traffics.code,
+                name: traffics.name,
+                nameEnglish: traffics.nameEnglish,
+                userName: traffics.user.name,
+                userLastName: traffics.user.lastName,
+            }));
+            console.log(dataToExport);
+            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Traffics');
+            XLSX.writeFile(workbook, 'traffics_export.xlsx');
+        } catch (error) {
+            console.error('Error exporting to Excel:', error);
+        }
+    };
+
     return (
         <>
             <div className="flex h-auto w-full justify-between">
@@ -147,11 +172,26 @@ export default function TrafficsTable() {
                     <h5 className="mb-[5px] font-medium leading-none tracking-tight">Trafico</h5>
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
-                <div>Nuevo +</div>
+                <div>
+                    <NewTraffics refresh={refreshTable} />
+                </div>
             </div>
             <div className="mt-[20px] flex">
-                <GenericTable columns={columns} data={trafficsData} loading={isLoading} />
+                <GenericTable
+                    columns={columns}
+                    data={trafficsData}
+                    loading={isLoading}
+                    exportToExcel={exportToExcel}
+                />
             </div>
+            {openEdit && setSelectedTrafficsId && (
+                <DynamicEditTraffics
+                    id={selectedTrafficsId}
+                    refresh={refreshTable}
+                    open={openEdit}
+                    onClose={handleEditCloseModal}
+                />
+            )}
         </>
     );
 }

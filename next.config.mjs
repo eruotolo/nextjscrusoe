@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    async redirects() {
+        return [
+            {
+                source: '/setting', // URL de origen
+                destination: '/setting/users', // URL de destino
+                permanent: true, // true si es una redirección 301, false para 302
+            },
+        ];
+    },
     webpack: (config, { isServer }) => {
         // Configuración para el cliente (navegador)
         if (!isServer) {

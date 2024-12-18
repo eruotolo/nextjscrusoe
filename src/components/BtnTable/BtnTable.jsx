@@ -7,6 +7,8 @@ import {
     UserCog,
     Trash2,
     CircleFadingPlus,
+    CreditCard,
+    ContactRound,
 } from 'lucide-react';
 
 export function BtnChangeTable({ onClick }) {
@@ -110,6 +112,36 @@ export function BtnAssign({ onClick }) {
                 </TooltipTrigger>
                 <TooltipContent>
                     <p>Asignar</p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    );
+}
+
+export function BtnCredit({ onClick }) {
+    return (
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger onClick={onClick}>
+                    <CreditCard className="h-[16px] w-[16px] cursor-pointer hover:text-verde" />
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Crédito</p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    );
+}
+
+export function BtnContact({ onClick }) {
+    return (
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger onClick={onClick}>
+                    <ContactRound className="h-[16px] w-[16px] cursor-pointer hover:text-verde" />
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Contactos</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>

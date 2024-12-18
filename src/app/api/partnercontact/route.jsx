@@ -1,33 +1,17 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
-import { revalidatePath } from 'next/cache';
 
 export async function GET() {
     try {
-        const getTraffics = await prisma.traffics.findMany({
+        const getPartnerContact = await prisma.partnerContact.findMany({
             select: {
                 id: true,
-                name: true,
-                nameEnglish: true,
-                code: true,
-                createdAt: true,
-                updatedAt: true,
-                user: {
-                    select: {
-                        id: true,
-                        name: true,
-                        lastName: true,
-                    },
-                },
-            },
-            orderBy: {
-                name: 'asc',
+                contactId: true,
+                partnerId: true,
             },
         });
 
-        revalidatePath('/api/traffics');
-
-        const response = NextResponse.json(getTraffics);
+        const response = NextResponse.json(getPartnerContact);
         response.headers.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
 
         return response;
@@ -37,19 +21,16 @@ export async function GET() {
     }
 }
 
-export async function POST(request) {
+export async function PUT(request) {
     try {
         const data = await request.json();
-        const newTraffics = await prisma.traffics.create({
+        const newPartnerContact = await prisma.partnerContact.create({
             data: {
-                code: data.code,
-                name: data.name,
-                nameEnglish: data.nameEnglish,
-                modifiedBy: data.modifiedBy,
+                contactId: data.contactId,
+                partnerId: data.partnerId,
             },
         });
-
-        return NextResponse.json(newTraffics);
+        return NextResponse.json(newPartnerContact);
     } catch (error) {
         if (error.code === 'P2002') {
             return NextResponse.json(

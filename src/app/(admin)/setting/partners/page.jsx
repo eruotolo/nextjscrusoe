@@ -1,3 +1,17 @@
-export default function Nombre() {
-    return <h1>Pagina de Socios</h1>;
+import PartnerTable from '@/components/Tables/Partner/partnerTable';
+import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
+
+export default function Partner() {
+    return (
+        <>
+            <div>
+                <BreadCrumbSetting title="Partnes" />
+            </div>
+            <div className="grid grid-cols-1">
+                <div className="mr-[15px] rounded-[10px] bg-[#ffffff] p-[30px] shadow-lg">
+                    <PartnerTable />
+                </div>
+            </div>
+        </>
+    );
 }
