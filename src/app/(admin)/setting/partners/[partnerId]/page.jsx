@@ -1,4 +1,5 @@
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
+import UniquePartner from '@/components/Partner/uniquePartner';
 
 export default function PartnerDetail({ params }) {
     return (
@@ -8,8 +9,7 @@ export default function PartnerDetail({ params }) {
             </div>
             <div className="grid grid-cols-2">
                 <div className="col-span-1 mr-[15px] rounded-[10px] bg-[#ffffff] p-[30px] shadow-lg">
-                    <h1>Detalles del Socio</h1>
-                    <p>ID del Socio: {params.partnerId}</p>
+                    <UniquePartner id={params.partnerId} />
                 </div>
                 <div className="col-span-1">
                     <div className="mr-[15px] rounded-[10px] bg-[#ffffff] p-[30px] shadow-lg"></div>

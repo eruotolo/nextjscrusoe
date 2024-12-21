@@ -117,11 +117,11 @@ export default function PartnerTable() {
             header: 'Acciones',
             cell: ({ row }) => (
                 <div className="flex items-center justify-center space-x-3">
-                    <BtnViewTable />
-
                     <Link href={`/setting/partners/${row.original.id}`}>
-                        <BtnEditTable />
+                        <BtnViewTable />
                     </Link>
+
+                    <BtnEditTable />
 
                     <BtnCredit />
 

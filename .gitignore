@@ -40,3 +40,4 @@ next-env.d.ts
 /sql
 /postgres-data
 .jetclient
+request.http

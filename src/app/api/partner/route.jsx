@@ -39,3 +39,32 @@ export async function GET() {
         return NextResponse.json({ error: 'No se pudieron obtener:' }, { status: 500 });
     }
 }
+
+export async function POST(request) {
+    try {
+        const data = await request.json();
+        const newPostgres = await prisma.partner.create({
+            data: {
+                partnerTypeId: data.partnerTypeId,
+                name: data.name,
+                socialReazon: data.socialReazon,
+                rut: data.rut,
+                address: data.address,
+                zipCode: data.zipCode,
+                locations: data.locations,
+                codeCountry: data.codeCountry,
+                codeCity: data.codeCity,
+                phone: data.phone,
+                scacCode: data.scacCode,
+                creditInfoId: data.creditInfoId,
+                userId: data.userId,
+            },
+        });
+        return NextResponse.json(newPostgres);
+    } catch (error) {
+        if (error.code === 'P2002') {
+            return NextResponse.json({ message: 'Unique constraint violation.' }, { status: 400 });
+        }
+        return NextResponse.json({ message: error.message }, { status: 500 });
+    }
+}

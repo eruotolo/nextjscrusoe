@@ -35,12 +35,12 @@ export default function BreadCrumbSetting({ title }) {
                             {index === pathSegments.length - 1 ? (
                                 <span className="text-[14px]">{capitalize(title)}</span>
                             ) : (
-                                <BreadcrumbLink
+                                <Link
                                     href={`/${pathSegments.slice(0, index + 1).join('/')}`}
                                     className="text-[14px]"
                                 >
                                     {capitalize(segment)}
-                                </BreadcrumbLink>
+                                </Link>
                             )}
                         </BreadcrumbItem>
                     </React.Fragment>

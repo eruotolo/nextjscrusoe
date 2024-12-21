@@ -1,0 +1,20 @@
+### GET ALL USERS
+GET http://localhost:3000/api/users
+
+### GET ALL ROLES
+GET http://localhost:3000/api/roles
+
+### GET ALL PARTNER
+GET http://localhost:3000/api/partner/
+
+### GET ALL PARTNER TYPE
+GET http://localhost:3000/api/partnertype/
+
+### GET UNIQUE PARTNERTYPE
+GET http://localhost:3000/api/partnertype/1
+
+### GET ALL AEROPUERTOS
+GET http://localhost:3000/api/airports
+
+### GET COUNTRY BY CODE
+GET http://localhost:3000/api/countries/CL
