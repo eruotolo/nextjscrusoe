@@ -14,10 +14,11 @@ export async function GET(request, { params }) {
             where: { id },
             select: {
                 id: true,
+                contactTypeId: true,
                 name: true,
                 email: true,
                 phone: true,
-                contactTypeId: true,
+                partnerId: true,
             },
         });
 

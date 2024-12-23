@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { createIncoterms } from '@/services/setting/incotermsService';
+import { Plus } from 'lucide-react';
 
 import {
     Dialog,
@@ -14,8 +15,6 @@ import {
     DialogFooter,
     DialogClose,
 } from '@/components/ui/dialog';
-
-import { Plus } from 'lucide-react';
 
 export default function NewIncotermsModal({ refresh }) {
     const {
@@ -35,8 +34,8 @@ export default function NewIncotermsModal({ refresh }) {
                 reset();
             }
         } catch (error) {
-            setError('Error de red al crear el incoterms');
-            console.error('Error creating transport type', error);
+            setError('Error de red al crear');
+            console.error('Error creating', error);
         }
     };
 

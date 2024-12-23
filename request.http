@@ -18,3 +18,9 @@ GET http://localhost:3000/api/airports
 
 ### GET COUNTRY BY CODE
 GET http://localhost:3000/api/countries/CL
+
+### GET ALL CONTACT
+GET http://localhost:3000/api/contacts?partnerId=2
+
+### GET ALL CONTACTS TYPE
+GET http://localhost:3000/api/contactstype

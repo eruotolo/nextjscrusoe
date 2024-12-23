@@ -1,8 +1,8 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-export const getPlaces = async () => {
+export const getContacts = async () => {
     try {
-        const response = await fetch(`${API_URL}/api/places`, {
+        const response = await fetch(`${API_URL}/api/contact`, {
             next: { revalidate: 3600 },
         });
 
@@ -13,19 +13,40 @@ export const getPlaces = async () => {
 
         return await response.json();
     } catch (error) {
-        console.error('Error fetching places:', error);
-        return [];
+        console.error('Error fetching:', error);
+        throw error; // Re-throw the error for the component to handle
     }
 };
 
-export const deletePlaces = async (id) => {
+export const getContacstByPartner = async (id) => {
     try {
-        const response = await fetch(`${API_URL}/api/places/${id}`, { method: 'DELETE' });
+        const response = await fetch(`${API_URL}/api/contacts?partnerId=${id}`, {
+            next: { revalidate: 3600 },
+        });
+
+        if (!response.ok) {
+            console.error(`Error al obtener: ${response.status} - ${response.statusText}`);
+            return null;
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching:', error);
+        throw error; // Re-throw the error for the component to handle
+    }
+};
+
+export const deleteContact = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/api/contacts/${id}`, {
+            method: 'DELETE',
+        });
 
         if (!response.ok) {
             console.error(`Error deleting: ${response.status} - ${response.statusText}`);
             return false;
         }
+
         return await response.json();
     } catch (error) {
         console.error('Error deleting'.error);
@@ -33,15 +54,14 @@ export const deletePlaces = async (id) => {
     }
 };
 
-export const createPlaces = async (placesData) => {
+export const createContact = async (contactData) => {
     try {
-        //console.log('Cargando los datos:', placesData);
-        const response = await fetch(`${API_URL}/api/places`, {
+        const response = await fetch(`${API_URL}/api/contacts`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(placesData),
+            body: JSON.stringify(contactData),
         });
 
         if (!response.ok) {
@@ -56,9 +76,9 @@ export const createPlaces = async (placesData) => {
     }
 };
 
-export const getPlacesById = async (id) => {
+export const getContactById = async (id) => {
     try {
-        const response = await fetch(`${API_URL}/api/places/${id}`, {
+        const response = await fetch(`${API_URL}/api/contacts/${id}`, {
             next: { revalidate: 3600 },
         });
 
@@ -74,15 +94,14 @@ export const getPlacesById = async (id) => {
     }
 };
 
-export const updatePlace = async (id, placesData) => {
+export const updateContact = async (id, contactData) => {
     try {
-        //console.log('Actualizando los datos:', placesData);
-        const response = await fetch(`${API_URL}/api/places/${id}`, {
+        const response = await fetch(`${API_URL}/api/contacts/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(placesData),
+            body: JSON.stringify(contactData),
         });
 
         if (!response.ok) {

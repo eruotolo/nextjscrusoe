@@ -233,29 +233,29 @@ model PartnerType {
 
 // Socios
 model Partner {
-    id             String             @id @default(uuid())
-    partnerTypeId  String?
-    partnerType    PartnerType?       @relation(fields: [partnerTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    name           String
-    rut            String?
-    socialReazon   String?
-    taxId          String?
-    address        String?
-    zipCode        String?
-    locations      String?
-    codeCountry    String?
-    country        Country?           @relation(fields: [codeCountry], references: [code], onDelete: Cascade, onUpdate: Cascade)
-    codeCity       Int?
-    city           City?              @relation(fields: [codeCity], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    phone          String?
-    scacCode       String?
-    creditInfoId   String?
-    creditInfo     PartnerCreditInfo? @relation(fields: [creditInfoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    userId         Int?
-    user           User?              @relation(fields: [userId], references: [id])
-    createdAt      DateTime           @default(now())
-    updatedAt      DateTime?          @updatedAt
-    PartnerContact PartnerContact[]
+    id            String             @id @default(uuid())
+    partnerTypeId String?
+    partnerType   PartnerType?       @relation(fields: [partnerTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    name          String
+    rut           String?
+    socialReazon  String?
+    taxId         String?
+    address       String?
+    zipCode       String?
+    locations     String?
+    codeCountry   String?
+    country       Country?           @relation(fields: [codeCountry], references: [code], onDelete: Cascade, onUpdate: Cascade)
+    codeCity      Int?
+    city          City?              @relation(fields: [codeCity], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    phone         String?
+    scacCode      String?
+    creditInfoId  String?
+    creditInfo    PartnerCreditInfo? @relation(fields: [creditInfoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId        Int?
+    user          User?              @relation(fields: [userId], references: [id])
+    createdAt     DateTime           @default(now())
+    updatedAt     DateTime?          @updatedAt
+    contacts      Contact[]
 
     @@index([name])
     @@index([socialReazon])
@@ -273,25 +273,17 @@ model ContactType {
 
 // Contacto
 model Contact {
-    id             String           @id @default(uuid())
-    name           String?
-    email          String?
-    phone          String?
-    contactTypeId  String?
-    contactType    ContactType?     @relation(fields: [contactTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    createdAt      DateTime         @default(now())
-    PartnerContact PartnerContact[]
+    id            String       @id @default(uuid())
+    name          String?
+    email         String?
+    phone         String?
+    contactTypeId String?
+    contactType   ContactType? @relation(fields: [contactTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    partnerId     String? // Referencia al Partner
+    partner       Partner?     @relation(fields: [partnerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    createdAt     DateTime     @default(now())
 
     @@index([name])
-}
-
-model PartnerContact {
-    id        String   @id @default(uuid())
-    partnerId String?
-    partner   Partner? @relation(fields: [partnerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    contactId String?
-    contact   Contact? @relation(fields: [contactId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    createdAt DateTime @default(now())
 }
 
 // Socio Credito

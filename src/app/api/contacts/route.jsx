@@ -2,9 +2,13 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
-export async function GET() {
+export async function GET(request) {
     try {
+        const { searchParams } = new URL(request.url);
+        const partnerId = searchParams.get('partnerId');
+
         const getContact = await prisma.contact.findMany({
+            where: partnerId ? { partnerId } : {},
             select: {
                 id: true,
                 name: true,
@@ -16,6 +20,7 @@ export async function GET() {
                         name: true,
                     },
                 },
+                partnerId: true,
             },
             orderBy: {
                 name: 'asc',
@@ -49,6 +54,7 @@ export async function POST(request) {
                 email: data.email,
                 phone: data.phone,
                 contactTypeId: data.contactTypeId,
+                partnerId: data.partnerId,
             },
         });
 
