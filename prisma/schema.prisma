@@ -214,9 +214,10 @@ model Traffics {
 }
 
 model SupplierType {
-    id        String   @id @default(uuid())
+    id        String                @id @default(uuid())
     name      String?
-    createdAt DateTime @default(now())
+    createdAt DateTime              @default(now())
+    partners  PartnerSupplierType[]
 
     @@index([name])
 }
@@ -233,29 +234,30 @@ model PartnerType {
 
 // Socios
 model Partner {
-    id            String             @id @default(uuid())
-    partnerTypeId String?
-    partnerType   PartnerType?       @relation(fields: [partnerTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    name          String
-    rut           String?
-    socialReazon  String?
-    taxId         String?
-    address       String?
-    zipCode       String?
-    locations     String?
-    codeCountry   String?
-    country       Country?           @relation(fields: [codeCountry], references: [code], onDelete: Cascade, onUpdate: Cascade)
-    codeCity      Int?
-    city          City?              @relation(fields: [codeCity], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    phone         String?
-    scacCode      String?
-    creditInfoId  String?
-    creditInfo    PartnerCreditInfo? @relation(fields: [creditInfoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    userId        Int?
-    user          User?              @relation(fields: [userId], references: [id])
-    createdAt     DateTime           @default(now())
-    updatedAt     DateTime?          @updatedAt
-    contacts      Contact[]
+    id                String                @id @default(uuid())
+    partnerTypeId     String?
+    partnerType       PartnerType?          @relation(fields: [partnerTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    name              String
+    rut               String?
+    socialReazon      String?
+    taxId             String?
+    address           String?
+    zipCode           String?
+    locations         String?
+    codeCountry       String?
+    country           Country?              @relation(fields: [codeCountry], references: [code], onDelete: Cascade, onUpdate: Cascade)
+    codeCity          Int?
+    city              City?                 @relation(fields: [codeCity], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    phone             String?
+    email             String?
+    scacCode          String?
+    userId            Int?
+    user              User?                 @relation(fields: [userId], references: [id])
+    createdAt         DateTime              @default(now())
+    updatedAt         DateTime?             @updatedAt
+    contacts          Contact[]
+    partnerCreditInfo PartnerCreditInfo?
+    supplierTypes     PartnerSupplierType[]
 
     @@index([name])
     @@index([socialReazon])
@@ -298,9 +300,10 @@ model PartnerCreditInfo {
     termCreditCurrency    String?
     termCurrency          Currencies? @relation("TermCurrency", fields: [termCreditCurrency], references: [id], onDelete: Cascade, onUpdate: Cascade)
     incomeAccountNumber   String?
-    outgoingAccountMumber String?
+    outgoingAccountNumber String?
     createdAt             DateTime    @default(now())
-    Partner               Partner[]
+    partnerId             String?     @unique
+    partner               Partner?    @relation(fields: [partnerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@index([id])
 }
@@ -314,4 +317,16 @@ model Currencies {
     createdAt          DateTime            @default(now())
     freightCreditInfos PartnerCreditInfo[] @relation("FreightCurrency")
     termCreditInfos    PartnerCreditInfo[] @relation("TermCurrency")
+}
+
+model PartnerSupplierType {
+    id             Int          @id @default(autoincrement())
+    partnerId      String
+    partner        Partner      @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+    supplierTypeId String
+    supplierType   SupplierType @relation(fields: [supplierTypeId], references: [id], onDelete: Cascade)
+    createdAt      DateTime     @default(now())
+
+    @@index([partnerId])
+    @@index([supplierTypeId])
 }

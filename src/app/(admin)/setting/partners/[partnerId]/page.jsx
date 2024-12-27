@@ -1,6 +1,7 @@
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 import UniquePartner from '@/components/Partner/uniquePartner';
 import ContactTable from '@/components/Tables/Contact/ContactTable';
+import CreditInfoPartner from '@/components/Partner/creditInfoPartner';
 
 export default function PartnerDetail({ params }) {
     return (
@@ -16,7 +17,9 @@ export default function PartnerDetail({ params }) {
                     <div className="mr-[15px] rounded-[10px] bg-[#ffffff] p-[30px] shadow-lg">
                         <ContactTable id={params.partnerId} />
                     </div>
-                    <div className="mr-[15px] mt-[15px] rounded-[10px] bg-[#ffffff] p-[30px] shadow-lg"></div>
+                    <div className="mr-[15px] mt-[15px] rounded-[10px] bg-[#ffffff] p-[30px] shadow-lg">
+                        <CreditInfoPartner id={params.partnerId} />
+                    </div>
                 </div>
             </div>
         </>

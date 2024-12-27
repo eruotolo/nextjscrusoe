@@ -18,6 +18,7 @@ export async function GET(request, { params }) {
                 rut: true,
                 socialReazon: true,
                 taxId: true,
+                email: true,
                 address: true,
                 zipCode: true,
                 locations: true,
@@ -25,7 +26,6 @@ export async function GET(request, { params }) {
                 codeCity: true,
                 phone: true,
                 scacCode: true,
-                creditInfoId: true,
                 userId: true,
             },
         });

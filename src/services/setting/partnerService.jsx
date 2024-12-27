@@ -42,6 +42,7 @@ export const createPartner = async (partnerData) => {
             },
             body: JSON.stringify(partnerData),
         });
+
         if (!response.ok) {
             console.error(`Error creating: ${response.status} - ${response.statusText}`);
             return null;

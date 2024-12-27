@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import NewPartner from '@/components/Modal/Partner/NewPartner';
 
 import { getPartner } from '@/services/setting/partnerService';
 import { BtnEditTable, BtnCredit, BtnContact, BtnViewTable } from '@/components/BtnTable/BtnTable';
@@ -21,6 +22,10 @@ const DynamicTableContact = dynamic(
     }
 );
 
+const DynamicModalCredit = dynamic(() => import('@/components/Modal/Partner/ViewCreditInfoModal'), {
+    ssr: false,
+});
+
 export default function PartnerTable() {
     const [partnerData, setPartnerData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -28,6 +33,7 @@ export default function PartnerTable() {
 
     const [openEdit, setOpenEdit] = useState(false);
     const [openContact, setOpenContact] = useState(false);
+    const [openCredit, setOpenCredit] = useState(false);
 
     // GET DATA
     const fetchPartner = useCallback(async () => {
@@ -59,6 +65,15 @@ export default function PartnerTable() {
     };
     const handleContactCloseModal = () => {
         setOpenContact(false);
+        setSelectedPartnerId(null);
+    };
+
+    const handleCreditOpenModal = (id) => {
+        setOpenCredit(true);
+        setSelectedPartnerId(id);
+    };
+    const handleCreditCloseModal = () => {
+        setOpenCredit(false);
         setSelectedPartnerId(null);
     };
 
@@ -123,7 +138,7 @@ export default function PartnerTable() {
 
                     <BtnEditTable />
 
-                    <BtnCredit />
+                    <BtnCredit onClick={() => handleCreditOpenModal(row.original.id)} />
 
                     <BtnContact onClick={() => handleContactOpenModal(row.original.id)} />
 
@@ -147,7 +162,9 @@ export default function PartnerTable() {
                     </h5>
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
-                <div>Nuevo +</div>
+                <div>
+                    <NewPartner refresh={refreshTable} />
+                </div>
             </div>
             <div className="mt-[20px] flex">
                 <GenericTable columns={columns} data={partnerData} loading={isLoading} />
@@ -157,6 +174,13 @@ export default function PartnerTable() {
                     id={selectedPartnerId}
                     open={openContact}
                     onClose={handleContactCloseModal}
+                />
+            )}
+            {openCredit && setSelectedPartnerId && (
+                <DynamicModalCredit
+                    id={selectedPartnerId}
+                    open={openCredit}
+                    onClose={handleCreditCloseModal}
                 />
             )}
         </>

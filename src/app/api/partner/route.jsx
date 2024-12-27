@@ -15,6 +15,8 @@ export async function GET() {
                 name: true,
                 socialReazon: true,
                 rut: true,
+                taxId: true,
+                email: true,
                 address: true,
                 zipCode: true,
                 locations: true,
@@ -22,7 +24,6 @@ export async function GET() {
                 codeCity: true,
                 phone: true,
                 scacCode: true,
-                creditInfoId: true,
                 userId: true,
             },
             orderBy: {
@@ -43,12 +44,15 @@ export async function GET() {
 export async function POST(request) {
     try {
         const data = await request.json();
-        const newPostgres = await prisma.partner.create({
+        console.log('Información Partner', data);
+        const newPartner = await prisma.partner.create({
             data: {
                 partnerTypeId: data.partnerTypeId,
                 name: data.name,
-                socialReazon: data.socialReazon,
                 rut: data.rut,
+                socialReazon: data.socialReazon,
+                taxId: data.taxId,
+                email: data.email,
                 address: data.address,
                 zipCode: data.zipCode,
                 locations: data.locations,
@@ -56,11 +60,10 @@ export async function POST(request) {
                 codeCity: data.codeCity,
                 phone: data.phone,
                 scacCode: data.scacCode,
-                creditInfoId: data.creditInfoId,
                 userId: data.userId,
             },
         });
-        return NextResponse.json(newPostgres);
+        return NextResponse.json(newPartner);
     } catch (error) {
         if (error.code === 'P2002') {
             return NextResponse.json({ message: 'Unique constraint violation.' }, { status: 400 });

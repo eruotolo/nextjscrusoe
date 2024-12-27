@@ -41,6 +41,7 @@ export async function GET(request) {
 export async function POST(request) {
     try {
         const data = await request.json();
+
         if (!data.name || !data.email || !data.phone || !data.contactTypeId) {
             return NextResponse.json(
                 { message: 'Todos los campos son obligatorios.' },

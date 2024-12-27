@@ -1,10 +1,7 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { createContact } from '@/services/setting/contactsService';
-import { getContactsType } from '@/services/setting/contactsTypeService';
-import { Plus } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 
 import {
     Dialog,
@@ -12,29 +9,64 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
     DialogFooter,
-    DialogClose,
 } from '@/components/ui/dialog';
 
-export default function NewContactModal({ refresh, partnerId }) {
+import { getContactById, updateContact } from '@/services/setting/contactsService';
+import { getContactsType } from '@/services/setting/contactsTypeService';
+
+export default function EditContactModal({ id, refresh, open, onClose }) {
     const [contactType, setContactType] = useState([]);
     const [error, setError] = useState('');
 
     const {
         register,
         handleSubmit,
-        formState: { errors, isValid },
+        setValue,
         reset,
-    } = useForm({ mode: 'onChange' });
+        formState: { errors },
+    } = useForm();
 
     useEffect(() => {
         const fetchContactType = async () => {
-            const contactTypeData = await getContactsType();
-            setContactType(contactTypeData);
+            try {
+                const conytactTypeData = await getContactsType();
+                setContactType(conytactTypeData);
+            } catch (err) {
+                console.error('Error fetching commodities sections:', err);
+                setError('Error al cargar las secciones.');
+            }
         };
+
         fetchContactType();
     }, []);
+
+    useEffect(() => {
+        const fetchContact = async () => {
+            if (id) {
+                try {
+                    const contactData = await getContactById(id);
+                    if (contactData) {
+                        reset({
+                            contactTypeId: contactData.contactTypeId || '',
+                            name: contactData.name || '',
+                            email: contactData.email || '',
+                            phone: contactData.phone || '',
+                        });
+                    }
+                } catch (err) {
+                    console.error('Error fetching commodity:', err);
+                    setError('Error al cargar los datos del commodity.');
+                }
+            }
+        };
+
+        if (open) {
+            fetchContact();
+        } else {
+            reset();
+        }
+    }, [id, open, reset]);
 
     const onSubmit = async (data) => {
         setError('');
@@ -44,47 +76,40 @@ export default function NewContactModal({ refresh, partnerId }) {
                 name: data.name,
                 email: data.email,
                 phone: data.phone,
-                partnerId: data.partnerId,
             };
 
-            const createdContact = await createContact(formattedData);
-            if (createdContact) {
-                await refresh();
-                reset();
-            }
-        } catch (error) {
-            setError('Error de red al crear');
-            console.error('Error creating', error);
+            await updateContact(id, formattedData);
+            await refresh();
+            onClose();
+        } catch (err) {
+            setError('Error de red al actualizar');
+            console.error('Error updating commodities:', err);
         }
     };
 
     return (
-        <Dialog>
-            <DialogTrigger className="flex h-[36px] w-[100px] items-center justify-center rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[100px]">
-                Nuevo
-                <Plus className="ml-[5px] h-3 w-3" />
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
+        <Dialog open={open} onOpenChange={onClose}>
+            <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Crear Nuevo Contacto</DialogTitle>
+                    <DialogTitle>Editar Contacto</DialogTitle>
                     <DialogDescription>
-                        Introduce los datos del contacto que deseas crear.
+                        Edita el nombre y actualiza los datos relacionados con esta contacto.
+                        Asegúrate de que los cambios reflejen correctamente la información antes de
+                        guardar.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-[15px] grid grid-cols-1">
+                        <label htmlFor="contactType" className="custom-label">
+                            Tipo de Contacto
+                        </label>
                         <select
-                            id="contactTypeId"
+                            id="contactType"
                             {...register('contactTypeId', { required: true })}
                             className="custom-select"
-                            defaultValue=""
                         >
-                            <option
-                                value=""
-                                disabled
-                                className="text-[14px] font-light text-muted-foreground"
-                            >
-                                Seleccionar el tipo
+                            <option value="" disabled>
+                                Seleccionar
                             </option>
                             {contactType.map((type) => (
                                 <option value={type.id} key={type.id}>
@@ -92,15 +117,15 @@ export default function NewContactModal({ refresh, partnerId }) {
                                 </option>
                             ))}
                         </select>
-                        {errors.contactTypeId && (
-                            <span className="text-red-500">{errors.contactTypeId.message}</span>
-                        )}
                     </div>
 
                     <div className="mb-[15px] grid grid-cols-1">
+                        <label htmlFor="name" className="custom-label">
+                            Nombre
+                        </label>
                         <input
+                            id="name"
                             type="text"
-                            placeholder="Nombre"
                             {...register('name', { required: true })}
                             className="custom-input"
                         />
@@ -108,9 +133,12 @@ export default function NewContactModal({ refresh, partnerId }) {
                     </div>
 
                     <div className="mb-[15px] grid grid-cols-1">
+                        <label htmlFor="email" className="custom-label">
+                            Email
+                        </label>
                         <input
+                            id="email"
                             type="email"
-                            placeholder="Email"
                             {...register('email', {
                                 required: 'El email es requerido',
                                 pattern: {
@@ -120,39 +148,24 @@ export default function NewContactModal({ refresh, partnerId }) {
                             })}
                             className="custom-input"
                         />
-                        {errors.email && (
-                            <span className="text-red-500">{errors.email.message}</span>
-                        )}
                     </div>
 
                     <div className="mb-[15px] grid grid-cols-1">
+                        <label htmlFor="phone" className="custom-label">
+                            Teléfono
+                        </label>
                         <input
                             type="text"
-                            placeholder="Teléfono"
                             {...register('phone', { required: true })}
-                            className="custom-input"
-                        />
-                        {errors.phone && (
-                            <span className="text-red-500">{errors.phone.message}</span>
-                        )}
-                    </div>
-
-                    <div className="hidden">
-                        <input
-                            type="text"
-                            {...register('partnerId')}
-                            value={partnerId}
                             className="custom-input"
                         />
                     </div>
 
                     {error && <div className="mt-2 text-sm text-red-500">{error}</div>}
                     <DialogFooter>
-                        <DialogClose asChild>
-                            <button type="submit" className="custom-button" disabled={!isValid}>
-                                Crear
-                            </button>
-                        </DialogClose>
+                        <button type="submit" className="custom-button">
+                            Actualizar
+                        </button>
                     </DialogFooter>
                 </form>
             </DialogContent>

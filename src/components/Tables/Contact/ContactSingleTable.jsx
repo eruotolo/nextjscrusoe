@@ -9,7 +9,7 @@ import { ArrowUpDown, Plus } from 'lucide-react';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
-export default function ContactSingleTable({ id, refresh, open, onClose }) {
+export default function ContactSingleTable({ id, open, onClose }) {
     const [contactData, setContactData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
