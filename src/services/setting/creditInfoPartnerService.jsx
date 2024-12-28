@@ -47,8 +47,11 @@ export const getCreditInfoById = async (id) => {
         });
 
         if (!response.ok) {
-            console.error(`Error fetching: ${response.status} - ${response.statusText}`);
-            return null;
+            if (response.status === 404) {
+                // No se encontraron datos, devolvemos null en lugar de lanzar un error
+                return null;
+            }
+            throw new Error(`¡Error HTTP! estado: ${response.status}`);
         }
 
         return await response.json();

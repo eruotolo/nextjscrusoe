@@ -69,3 +69,17 @@ npx prisma migrate deploy
 Verificar la migración:  
 Asegúrate de que los datos se hayan migrado correctamente y que tu aplicación funcione con la nueva base de datos.
 Estos pasos te permitirán migrar el contenido de tu base de datos actual a una nueva base de datos en tu proyecto Next.js con Prisma y PostgreSQL.
+
+
+#### PASAR A PRODUCCIÓN EL SISTEMA ####
+
+### RESPALDAR TABLAS ###
+
+- PAISES
+- CIUDADES
+- AEROPUERTOS
+- PUERTOS
+- TIPO DE TRANSPORTES
+- TIPOS DE PROVEEDORES
+- INCOTERMS
+

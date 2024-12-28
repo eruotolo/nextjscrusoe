@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import GenericTable from '@/components/TableGeneric/TableGeneric';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import NewPartner from '@/components/Modal/Partner/NewPartner';
+import NewPartnerModal from '@/components/Modal/Partner/NewPartnerModal';
 
 import { getPartner, deletePartner } from '@/services/setting/partnerService';
 import {
@@ -35,6 +35,11 @@ const DynamicAssignSupplierType = dynamic(
 const DynamicModalCredit = dynamic(() => import('@/components/Modal/Partner/ViewCreditInfoModal'), {
     ssr: false,
 });
+
+const DynamicEditPartnerModal = dynamic(
+    () => import('@/components/Modal/Partner/EditPartnerModal'),
+    { ssr: false }
+);
 
 export default function PartnerTable() {
     const [partnerData, setPartnerData] = useState([]);
@@ -70,6 +75,15 @@ export default function PartnerTable() {
     }, []);
 
     //DIALOG OPEN AND CLOSE
+    const handleEditOpenModal = (id) => {
+        setSelectedPartnerId(id);
+        setOpenEdit(true);
+    };
+    const handleEditCloseModal = () => {
+        setSelectedPartnerId(false);
+        setOpenEdit(null);
+    };
+
     const handleContactOpenModal = (id) => {
         setOpenContact(true);
         setSelectedPartnerId(id);
@@ -166,14 +180,18 @@ export default function PartnerTable() {
                             <BtnViewTable />
                         </Link>
 
-                        <BtnEditTable />
+                        <BtnEditTable onClick={() => handleEditOpenModal(row.original.id)} />
 
                         {showCreditButton && (
-                            <BtnCredit onClick={() => handleCreditOpenModal(row.original.id)} />
+                            <BtnCredit
+                                text="Ver Credito"
+                                onClick={() => handleCreditOpenModal(row.original.id)}
+                            />
                         )}
 
                         {showAssignButton && (
                             <BtnAssign
+                                text="Asignar Proveedor"
                                 onClick={() => handleAssignSupplierOpenModal(row.original.id)}
                             />
                         )}
@@ -192,6 +210,36 @@ export default function PartnerTable() {
         },
     ];
 
+    const exportToExcel = async () => {
+        try {
+            const combinedData = partnerData.map((partner) => ({
+                id: partner.id,
+                partnerType: partner.partnerType?.name || 'N/A',
+                name: partner.name,
+                socialReazon: partner.socialReazon,
+                rut: partner.rut,
+                scacCode: partner.scacCode,
+                taxId: partner.taxId,
+                email: partner.email,
+                phone: partner.phone,
+                address: partner.address,
+                zipCode: partner.zipCode,
+                locations: partner.locations,
+                countryName: partner.country?.name || 'N/A',
+                cityName: partner.city?.name || 'N/A',
+            }));
+            //console.log('Combinado:', combinedData);
+            // Crear hoja de trabajo a partir de los datos combinados
+            const worksheet = XLSX.utils.json_to_sheet(combinedData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Partner');
+            // Exportar archivo Excel
+            XLSX.writeFile(workbook, 'partner_export.xlsx');
+        } catch (error) {
+            console.error('Error exporting to Excel:', error);
+        }
+    };
+
     return (
         <>
             <div className="flex h-auto w-full justify-between">
@@ -202,12 +250,25 @@ export default function PartnerTable() {
                     <p className="text-[13px] text-muted-foreground">Crear, Editar y Eliminar</p>
                 </div>
                 <div>
-                    <NewPartner refresh={refreshTable} />
+                    <NewPartnerModal refresh={refreshTable} />
                 </div>
             </div>
             <div className="mt-[20px] flex">
-                <GenericTable columns={columns} data={partnerData} loading={isLoading} />
+                <GenericTable
+                    columns={columns}
+                    data={partnerData}
+                    loading={isLoading}
+                    exportToExcel={exportToExcel}
+                />
             </div>
+            {openEdit && selectedPartnerId && (
+                <DynamicEditPartnerModal
+                    id={selectedPartnerId}
+                    refresh={refreshTable}
+                    open={openEdit}
+                    onClose={handleEditCloseModal}
+                />
+            )}
             {openContact && setSelectedPartnerId && (
                 <DynamicTableContact
                     id={selectedPartnerId}

@@ -103,7 +103,7 @@ export function BtnAssignRole({ onClick }) {
     );
 }
 
-export function BtnAssign({ onClick }) {
+export function BtnAssign({ onClick, text }) {
     return (
         <TooltipProvider>
             <Tooltip>
@@ -111,14 +111,14 @@ export function BtnAssign({ onClick }) {
                     <CircleFadingPlus className="h-[16px] w-[16px] cursor-pointer hover:text-verde" />
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>Asignar</p>
+                    <p>{text}</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
     );
 }
 
-export function BtnCredit({ onClick }) {
+export function BtnCredit({ onClick, text }) {
     return (
         <TooltipProvider>
             <Tooltip>
@@ -126,7 +126,7 @@ export function BtnCredit({ onClick }) {
                     <CreditCard className="h-[16px] w-[16px] cursor-pointer hover:text-verde" />
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>Crédito</p>
+                    <p>{text}</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>

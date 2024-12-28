@@ -153,7 +153,10 @@ export default function IncotermsTable() {
             cell: ({ row }) => (
                 <div className="flex items-center justify-center space-x-3">
                     <BtnEditTable onClick={() => handleEditOpenModal(row.original.id)} />
-                    <BtnAssign onClick={() => handleAssignTransportOpenModal(row.original.id)} />
+                    <BtnAssign
+                        text="Tipo de Transporte"
+                        onClick={() => handleAssignTransportOpenModal(row.original.id)}
+                    />
                     <BtnDeleteTable onClick={() => handleDelete(row.original.id)} />
                 </div>
             ),

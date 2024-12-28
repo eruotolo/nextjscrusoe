@@ -20,8 +20,20 @@ export async function GET() {
                 address: true,
                 zipCode: true,
                 locations: true,
-                codeCountry: true,
-                codeCity: true,
+                country: {
+                    select: {
+                        id: true,
+                        code: true,
+                        name: true,
+                    },
+                },
+                city: {
+                    select: {
+                        id: true,
+                        name: true,
+                        countryCode: true,
+                    },
+                },
                 phone: true,
                 scacCode: true,
                 userId: true,

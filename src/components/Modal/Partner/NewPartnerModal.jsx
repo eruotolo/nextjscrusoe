@@ -6,6 +6,7 @@ import { Plus } from 'lucide-react';
 import { createPartner } from '@/services/setting/partnerService';
 import { getCountries } from '@/services/setting/countryService';
 import { getCitiesCountry } from '@/services/setting/cityService';
+import { getPartnerType } from '@/services/setting/partnerTypeService';
 import useAuthStore from '@/store/authStore';
 
 import {
@@ -18,10 +19,8 @@ import {
     DialogFooter,
     DialogClose,
 } from '@/components/ui/dialog';
-import { getPartnerType } from '@/services/setting/partnerTypeService';
-import { userAgent } from 'next/server';
 
-export default function NewPartner({ refresh }) {
+export default function NewPartnerModal({ refresh }) {
     const session = useAuthStore((state) => state.session);
     const [error, setError] = useState('');
 
@@ -131,6 +130,7 @@ export default function NewPartner({ refresh }) {
                             ))}
                         </select>
                     </div>
+
                     <div className="mb-[15px] grid grid-cols-2 gap-4">
                         <div>
                             <input

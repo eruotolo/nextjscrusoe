@@ -7,12 +7,16 @@ import { getPartnerById } from '@/services/setting/partnerService';
 import { getPartnerTypeById } from '@/services/setting/partnerTypeService';
 import { getCountriesByCode } from '@/services/setting/countriesService';
 import { getCityById } from '@/services/setting/cityService';
+import { getSupplierType } from '@/services/setting/supplierService';
 import Loading from '@/components/Loading/Loading';
 
 export default function UniquePartner({ id }) {
     const [partnerTypeName, setPartnerTypeName] = useState('');
     const [cityName, setCityName] = useState('');
     const [countryName, setCountryName] = useState('');
+
+    const [supplierTypeData, setSupplierTypeData] = useState([]);
+    const [selectedSupplierType, setSelectedSupplierType] = useState([]);
 
     const [isLoading, setIsLoading] = useState(true);
     const { register, setValue } = useForm();
@@ -62,6 +66,37 @@ export default function UniquePartner({ id }) {
         fetchUniquePartner();
     }, [id, setValue]);
 
+    // OBTENGO LOS SUPPLIER TYPE
+    useEffect(() => {
+        const fecthSupplierType = async () => {
+            try {
+                const data = await getSupplierType();
+                setSupplierTypeData(data);
+            } catch (error) {
+                console.error('Error fetching:', error);
+            }
+        };
+
+        fecthSupplierType();
+    }, []);
+
+    // OBTENGO LOS SUPPLIER ASIGNADOS AL PARTNER
+    useEffect(() => {
+        const fetchPartnerSupplierType = async () => {
+            try {
+                const response = await fetch(`/api/partner/${id}/supplier`);
+                const data = await response.json();
+                setSelectedSupplierType(data.map((relation) => relation.supplierTypeId));
+            } catch (error) {
+                console.error('Error fetching:', error);
+            }
+        };
+
+        if (open) {
+            fetchPartnerSupplierType();
+        }
+    }, [id]);
+
     return (
         <div>
             <div className="mb-[20px]">
@@ -105,6 +140,21 @@ export default function UniquePartner({ id }) {
                             />
                         </div>
                     </div>
+
+                    {partnerTypeName === 'Proveedor' && (
+                        <div className="mb-[15px] grid grid-cols-1">
+                            <label className="custom-label">Tipos de Proveedor Asignados</label>
+                            <div className="flex flex-row flex-wrap gap-2">
+                                {supplierTypeData
+                                    .filter((type) => selectedSupplierType.includes(type.id))
+                                    .map((type) => (
+                                        <span key={type.id} className="custom-input w-auto">
+                                            {type.name}
+                                        </span>
+                                    ))}
+                            </div>
+                        </div>
+                    )}
 
                     <div className="grid grid-cols-1 gap-2">
                         <div className="mb-[7px]">

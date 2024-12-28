@@ -42,18 +42,15 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
     try {
-        const { id } = params;
-
         const data = await request.json();
+        const { partnerTypeId, codeCountry, codeCity, userId, ...res } = data;
 
-        if (!id || typeof id !== 'string') {
-            return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
-        }
-
-        const { partnerTypeId, codeCountry, codeCity, creditInfoId, ...res } = data;
+        //console.log('Datos API:', data);
 
         const updatePartner = await prisma.partner.update({
-            where: { id },
+            where: {
+                id: params.id,
+            },
             data: {
                 ...res,
                 partnerType: {
@@ -71,9 +68,9 @@ export async function PUT(request, { params }) {
                         id: codeCity,
                     },
                 },
-                PartnerCreditInfo: {
+                user: {
                     connect: {
-                        id: partnerTypeId,
+                        id: userId,
                     },
                 },
             },

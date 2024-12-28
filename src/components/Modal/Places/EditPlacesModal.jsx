@@ -85,7 +85,7 @@ export default function EditPlacesModal({ id, refresh, open, onClose }) {
                     setLatitude(placesData.latitude || '');
                     setLongitude(placesData.longitude || '');
                 }
-                console.log('PlacesData:', placesData);
+                //console.log('PlacesData:', placesData);
             }
         };
 
@@ -108,7 +108,7 @@ export default function EditPlacesModal({ id, refresh, open, onClose }) {
                 codeCountry: selectedCountry,
                 codeCity: parseInt(selectedCity, 10),
             });
-            console.log(response);
+            //console.log(response);
             if (response) {
                 await refresh();
                 onClose();
