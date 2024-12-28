@@ -29,7 +29,7 @@ async function seed() {
     });
 
     // Verificar si el usuario super admin ya existe
-    const superAdminEmail = process.env.SUPER_EMAIL ?? 'hola@crowadvance.com';
+    const superAdminEmail = process.env.SUPER_EMAIL ?? 'edgardoruotolo@crowadvance.com';
     const existingUser = await prisma.user.findUnique({
         where: { email: superAdminEmail },
     });
