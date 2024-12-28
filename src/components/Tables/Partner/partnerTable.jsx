@@ -6,20 +6,30 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import NewPartner from '@/components/Modal/Partner/NewPartner';
 
-import { getPartner } from '@/services/setting/partnerService';
-import { BtnEditTable, BtnCredit, BtnContact, BtnViewTable } from '@/components/BtnTable/BtnTable';
+import { getPartner, deletePartner } from '@/services/setting/partnerService';
+import {
+    BtnEditTable,
+    BtnCredit,
+    BtnContact,
+    BtnViewTable,
+    BtnAssign,
+} from '@/components/BtnTable/BtnTable';
 import DeleteConfirmationSweet from '@/components/DeleteConfirmationSweet/DeleteConfirmationSweet';
 
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import * as XLSX from 'xlsx';
-import { deleteShips } from '@/services/setting/shipsService';
 
 const DynamicTableContact = dynamic(
     () => import('@/components/Tables/Contact/ContactSingleTable'),
     {
         ssr: false,
     }
+);
+
+const DynamicAssignSupplierType = dynamic(
+    () => import('@/components/Modal/Partner/AssignShupplierType'),
+    { ssr: false }
 );
 
 const DynamicModalCredit = dynamic(() => import('@/components/Modal/Partner/ViewCreditInfoModal'), {
@@ -34,6 +44,7 @@ export default function PartnerTable() {
     const [openEdit, setOpenEdit] = useState(false);
     const [openContact, setOpenContact] = useState(false);
     const [openCredit, setOpenCredit] = useState(false);
+    const [openAssignSupplier, setOpenAssignSupplier] = useState(false);
 
     // GET DATA
     const fetchPartner = useCallback(async () => {
@@ -74,6 +85,15 @@ export default function PartnerTable() {
     };
     const handleCreditCloseModal = () => {
         setOpenCredit(false);
+        setSelectedPartnerId(null);
+    };
+
+    const handleAssignSupplierOpenModal = (id) => {
+        setOpenAssignSupplier(true);
+        setSelectedPartnerId(id);
+    };
+    const handleAssignSupplierCloseModal = () => {
+        setOpenAssignSupplier(false);
         setSelectedPartnerId(null);
     };
 
@@ -130,26 +150,45 @@ export default function PartnerTable() {
             accessorKey: 'action',
             size: 120,
             header: 'Acciones',
-            cell: ({ row }) => (
-                <div className="flex items-center justify-center space-x-3">
-                    <Link href={`/setting/partners/${row.original.id}`}>
-                        <BtnViewTable />
-                    </Link>
+            cell: ({ row }) => {
+                const partnerType = row.original.partnerType.name;
+                const showCreditButton =
+                    partnerType === 'Cliente' ||
+                    partnerType === 'Agente' ||
+                    partnerType === 'Proveedor' ||
+                    partnerType === 'Mixto';
 
-                    <BtnEditTable />
+                const showAssignButton = partnerType === 'Proveedor';
 
-                    <BtnCredit onClick={() => handleCreditOpenModal(row.original.id)} />
+                return (
+                    <div className="flex items-center justify-end space-x-3">
+                        <Link href={`/setting/partners/${row.original.id}`}>
+                            <BtnViewTable />
+                        </Link>
 
-                    <BtnContact onClick={() => handleContactOpenModal(row.original.id)} />
+                        <BtnEditTable />
 
-                    <DeleteConfirmationSweet
-                        id={row.original.id}
-                        deleteFunction={deleteShips}
-                        refreshFunction={refreshTable}
-                        itemName="Ships"
-                    />
-                </div>
-            ),
+                        {showCreditButton && (
+                            <BtnCredit onClick={() => handleCreditOpenModal(row.original.id)} />
+                        )}
+
+                        {showAssignButton && (
+                            <BtnAssign
+                                onClick={() => handleAssignSupplierOpenModal(row.original.id)}
+                            />
+                        )}
+
+                        <BtnContact onClick={() => handleContactOpenModal(row.original.id)} />
+
+                        <DeleteConfirmationSweet
+                            id={row.original.id}
+                            deleteFunction={deletePartner}
+                            refreshFunction={refreshTable}
+                            itemName="Socio"
+                        />
+                    </div>
+                );
+            },
         },
     ];
 
@@ -181,6 +220,14 @@ export default function PartnerTable() {
                     id={selectedPartnerId}
                     open={openCredit}
                     onClose={handleCreditCloseModal}
+                />
+            )}
+            {openAssignSupplier && setSelectedPartnerId && (
+                <DynamicAssignSupplierType
+                    id={selectedPartnerId}
+                    open={openAssignSupplier}
+                    refresh={refreshTable}
+                    onClose={handleAssignSupplierCloseModal}
                 />
             )}
         </>

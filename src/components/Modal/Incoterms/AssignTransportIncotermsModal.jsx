@@ -98,7 +98,7 @@ export default function AssignTransportIncotermsModal({ id, refresh, open, onClo
                                         id={`transportType-${type.id}`}
                                         checked={selectedTransportType.includes(type.id)}
                                         onChange={() => handleTransportTypeChange(type.id)}
-                                        className={`mr-2 h-4 w-4 rounded-[4px] ${
+                                        className={`mr-2 h-4 w-4 cursor-pointer rounded-[4px] ${
                                             selectedTransportType.includes(type.id)
                                                 ? 'checked:accent-[#01E469] focus:ring-offset-0'
                                                 : ''

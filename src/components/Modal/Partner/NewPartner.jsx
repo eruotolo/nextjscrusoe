@@ -19,6 +19,7 @@ import {
     DialogClose,
 } from '@/components/ui/dialog';
 import { getPartnerType } from '@/services/setting/partnerTypeService';
+import { userAgent } from 'next/server';
 
 export default function NewPartner({ refresh }) {
     const session = useAuthStore((state) => state.session);
@@ -75,13 +76,12 @@ export default function NewPartner({ refresh }) {
     const onSubmit = async (data) => {
         setError('');
         //console.log(data);
-        // Transforma el id del usuario a un número
-        data.userId = Number(session?.user?.id) || 0;
         try {
             const partnerData = {
                 ...data,
                 codeCountry: selectedCountry,
-                codeCity: parseInt(selectedCity, 10),
+                codeCity: Number(selectedCity),
+                userId: Number(session?.user?.id) || 0,
             };
 
             const createdPartner = await createPartner(partnerData);
