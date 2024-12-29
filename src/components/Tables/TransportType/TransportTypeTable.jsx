@@ -45,20 +45,9 @@ export default function TransportTypeTable() {
     }, [fetchTransportType]);
 
     // REFRESH TABLE BEFORE UPDATE
-    // REFRESH TABLE BEFORE UPDATE
     const refreshTable = useCallback(async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetch(`/api/transporttype`, {
-                cache: 'no-store',
-            });
-            const data = await response.json();
-            setTransportData(data);
-        } catch (error) {
-            console.error('Error refreshing:', error);
-        } finally {
-            setIsLoading(false);
-        }
+        const data = await getTransportType();
+        setTransportData(data);
     }, []);
 
     // DIALOG OPEN AND CLOSE
