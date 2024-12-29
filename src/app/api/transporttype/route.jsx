@@ -3,6 +3,7 @@ import prisma from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
 export async function GET() {
+    //return NextResponse.json({ message: 'Soy Un Moustro' });
     try {
         const getTransportType = await prisma.transportType.findMany({
             select: {
@@ -14,7 +15,6 @@ export async function GET() {
             },
         });
 
-        // Forzar revalidación
         revalidatePath('/api/transporttype');
 
         const response = NextResponse.json(getTransportType);
@@ -67,77 +67,6 @@ export async function POST(request) {
                 }
             );
         }
-        return NextResponse.json(
-            {
-                message: error.message,
-            },
-            {
-                status: 500,
-            }
-        );
-    }
-}
-
-// Agregar endpoints para PUT y DELETE con el mismo manejo de caché
-export async function PUT(request) {
-    try {
-        const url = new URL(request.url);
-        const id = url.pathname.split('/').pop();
-        const data = await request.json();
-
-        const updatedTransportType = await prisma.transportType.update({
-            where: { id: parseInt(id) },
-            data: {
-                name: data.name,
-            },
-        });
-
-        // Forzar revalidación después de actualizar
-        revalidatePath('/api/transporttype');
-
-        const response = NextResponse.json(updatedTransportType);
-        response.headers.set(
-            'Cache-Control',
-            'no-store, no-cache, must-revalidate, proxy-revalidate'
-        );
-        response.headers.set('Pragma', 'no-cache');
-        response.headers.set('Expires', '0');
-
-        return response;
-    } catch (error) {
-        return NextResponse.json(
-            {
-                message: error.message,
-            },
-            {
-                status: 500,
-            }
-        );
-    }
-}
-
-export async function DELETE(request) {
-    try {
-        const url = new URL(request.url);
-        const id = url.pathname.split('/').pop();
-
-        const deletedTransportType = await prisma.transportType.delete({
-            where: { id: parseInt(id) },
-        });
-
-        // Forzar revalidación después de eliminar
-        revalidatePath('/api/transporttype');
-
-        const response = NextResponse.json(deletedTransportType);
-        response.headers.set(
-            'Cache-Control',
-            'no-store, no-cache, must-revalidate, proxy-revalidate'
-        );
-        response.headers.set('Pragma', 'no-cache');
-        response.headers.set('Expires', '0');
-
-        return response;
-    } catch (error) {
         return NextResponse.json(
             {
                 message: error.message,
