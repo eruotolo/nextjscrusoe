@@ -25,7 +25,7 @@ export default function Sidebar() {
                         <SetImageLogin />
                         <div>
                             <Link
-                                href="/setting/profile"
+                                href="#"
                                 className="mt-px block text-xs text-gray-600 hover:text-indigo-600"
                             >
                                 <SetNameLogin />

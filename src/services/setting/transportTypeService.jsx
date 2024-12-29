@@ -3,7 +3,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 export const getTransportType = async () => {
     try {
         const response = await fetch(`${API_URL}/api/transporttype`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -22,6 +22,7 @@ export const deleteTransporteType = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/transporttype/${id}`, {
             method: 'DELETE',
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -29,6 +30,7 @@ export const deleteTransporteType = async (id) => {
             return false;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error deleting'.error);
@@ -45,12 +47,15 @@ export const createTransportType = async (transportData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(transportData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
             console.error(`Error creating: ${response.status} - ${response.statusText}`);
             return null;
         }
+
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.log('Error creating:', error);
@@ -61,7 +66,7 @@ export const createTransportType = async (transportData) => {
 export const getTransportTypeById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/transporttype/${id}`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -85,6 +90,7 @@ export const updateTransportType = async (id, transportData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(transportData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -92,9 +98,21 @@ export const updateTransportType = async (id, transportData) => {
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error updating:', error);
         return null;
+    }
+};
+
+// Helper function to revalidate data
+const revalidateData = async () => {
+    try {
+        await fetch(`${API_URL}/api/revalidate?path=/api/transporttype`, {
+            method: 'POST',
+        });
+    } catch (error) {
+        console.error('Error revalidating:', error);
     }
 };
