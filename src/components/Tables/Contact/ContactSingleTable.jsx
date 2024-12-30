@@ -3,9 +3,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import SingleTable from '@/components/TableGeneric/TableSingle';
 
-import { getContacstByPartner, deleteContact } from '@/services/setting/contactsService';
+import { getContacstByPartner } from '@/services/setting/contactsService';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, Plus } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
@@ -70,7 +70,7 @@ export default function ContactSingleTable({ id, open, onClose }) {
             <Dialog open={open} onOpenChange={onClose}>
                 <DialogContent className="sm:max-w-[900px]">
                     <DialogHeader>
-                        <DialogTitle>Contactos Asociados al Socio</DialogTitle>
+                        <DialogTitle>Contactos</DialogTitle>
                     </DialogHeader>
 
                     <SingleTable columns={columns} data={contactData} loading={isLoading} />
