@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(request) {
     try {
@@ -39,7 +40,18 @@ export async function GET(request) {
             });
         }
 
-        return NextResponse.json(cities);
+        revalidatePath('/api/city');
+
+        const response = NextResponse.json(cities);
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         console.error('Error city:', error);
         return NextResponse.json({ error: 'Failed to get cities' }, { status: 500 });

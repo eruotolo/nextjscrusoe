@@ -1,9 +1,20 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Helper function to revalidate data
+const revalidateData = async () => {
+    try {
+        await fetch(`${API_URL}/api/revalidate?path=/api/shipowner`, {
+            method: 'POST',
+        });
+    } catch (error) {
+        console.error('Error revalidating:', error);
+    }
+};
+
 export const getShipOwner = async () => {
     try {
         const response = await fetch(`${API_URL}/api/shipowner`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -22,11 +33,15 @@ export const deleteShipOwner = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/shipowner/${id}`, {
             method: 'DELETE',
+            cache: 'no-store',
         });
+
         if (!response.ok) {
             console.error(`Error deleting: ${response.status} - ${response.statusText}`);
             return false;
         }
+
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error deleting'.error);
@@ -42,12 +57,15 @@ export const createShipOwner = async (shipOwnerData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(shipOwnerData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
             console.error(`Error creating: ${response.status} - ${response.statusText}`);
             return null;
         }
+
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.log('Error creating:', error);
@@ -58,7 +76,7 @@ export const createShipOwner = async (shipOwnerData) => {
 export const getShipOwnerById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/shipowner/${id}`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
         if (!response.ok) {
             console.error(`Error fetching: ${response.status} - ${response.statusText}`);
@@ -80,6 +98,7 @@ export const updateShipOwner = async (id, shipOwnerData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(shipOwnerData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -87,6 +106,7 @@ export const updateShipOwner = async (id, shipOwnerData) => {
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error updating:', error);

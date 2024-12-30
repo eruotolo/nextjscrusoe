@@ -23,9 +23,17 @@ export async function GET() {
             },
         });
 
+        revalidatePath('/api/shippingports');
+
         // Set cache headers
         const response = NextResponse.json(getShippingPort);
-        response.headers.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
 
         return response;
     } catch (error) {
@@ -56,10 +64,7 @@ export async function POST(request) {
                 longitude: data.longitude,
             },
         });
-        console.log('Created new shipping port:', newShippingPort); // Log the created shipping port
 
-        // Revalidate the path
-        revalidatePath('/api/shippingports');
         return NextResponse.json(newShippingPort, { status: 201 });
     } catch (error) {
         console.error('Error creating shipping port:', error);

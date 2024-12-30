@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { notFound } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(request, { params }) {
     try {
@@ -31,8 +32,17 @@ export async function GET(request, { params }) {
             notFound();
         }
 
+        // Forzar revalidación
+        revalidatePath(`/api/places/${params.id}`);
+
         const response = NextResponse.json(viewPlaces);
-        response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
 
         return response;
     } catch (error) {
@@ -64,7 +74,19 @@ export async function PUT(request, { params }) {
                 },
             },
         });
-        return NextResponse.json(updatePlaces);
+
+        // Forzar revalidación
+        revalidatePath(`/api/places/${params.id}`);
+
+        const response = NextResponse.json(updatePlaces);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
@@ -78,7 +100,16 @@ export async function DELETE(request, { params }) {
                 id: params.id,
             },
         });
-        return NextResponse.json(removePlace);
+
+        const response = NextResponse.json(removePlace);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         console.error(error);
         return NextResponse.json(

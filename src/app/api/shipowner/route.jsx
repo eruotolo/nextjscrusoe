@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 export async function GET() {
     try {
-        const shipowner = await prisma.shipowner.findMany({
+        const getShipowner = await prisma.shipowner.findMany({
             select: {
                 id: true,
                 name: true,
@@ -17,8 +17,14 @@ export async function GET() {
         // Revalidate the path
         revalidatePath('/api/shipowner');
 
-        const response = NextResponse.json(shipowner);
-        response.headers.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+        const response = NextResponse.json(getShipowner);
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
 
         return response;
     } catch (error) {

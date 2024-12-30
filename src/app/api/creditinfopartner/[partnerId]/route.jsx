@@ -29,7 +29,16 @@ export async function GET(request, { params }) {
             return NextResponse.json({ error: 'Partner not found' }, { status: 404 });
         }
 
-        return NextResponse.json(creditInfoView);
+        const response = NextResponse.json(creditInfoView);
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         return NextResponse.json({ error: 'Error fetching partner' }, { status: 500 });
     }

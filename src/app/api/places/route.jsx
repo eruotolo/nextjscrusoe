@@ -35,7 +35,13 @@ export async function GET() {
 
         // Set cache headers
         const response = NextResponse.json(getPlaces);
-        response.headers.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
 
         return response;
     } catch (error) {
@@ -76,7 +82,6 @@ export async function POST(request) {
         });
 
         //console.log('Create new:', newPlaces);
-        revalidatePath('/api/places');
         return NextResponse.json(newPlaces, { status: 201 });
     } catch (error) {
         console.error('Error creating:', error);

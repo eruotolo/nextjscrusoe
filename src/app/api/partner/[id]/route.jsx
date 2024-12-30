@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(request, { params }) {
     try {
@@ -34,7 +35,19 @@ export async function GET(request, { params }) {
             return NextResponse.json({ error: 'Partner not found' }, { status: 404 });
         }
 
-        return NextResponse.json(partnerView);
+        // Forzar revalidación
+        revalidatePath(`/api/partner/${params.id}`);
+
+        const response = NextResponse.json(partnerView);
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         return NextResponse.json({ error: 'Error fetching partner' }, { status: 500 });
     }
@@ -76,7 +89,18 @@ export async function PUT(request, { params }) {
             },
         });
 
-        return NextResponse.json(updatePartner);
+        // Forzar revalidación después de actualizar
+        revalidatePath(`/api/partner/${params.id}`);
+
+        const response = NextResponse.json(updatePartner);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
@@ -94,7 +118,16 @@ export async function DELETE(request, { params }) {
         const removePartner = await prisma.partner.delete({
             where: { id },
         });
-        return NextResponse.json(removePartner);
+
+        const response = NextResponse.json(removePartner);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         console.error(error);
         return NextResponse.json(

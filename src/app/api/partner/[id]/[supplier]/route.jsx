@@ -9,7 +9,13 @@ export async function GET(request, { params: { id } }) {
         });
 
         const response = NextResponse.json(supplierPartner);
-        response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
 
         return response;
     } catch (error) {
@@ -31,9 +37,18 @@ export async function PUT(request, { params: { id } }) {
         }));
         await prisma.partnerSupplierType.createMany({ data: newRelations });
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             message: 'Relaciones se actualizaron correctamente',
         });
+
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         console.error('Error actualizando las relaciones:', error);
         return NextResponse.json({ error: 'Error actualizando las relaciones' }, { status: 500 });

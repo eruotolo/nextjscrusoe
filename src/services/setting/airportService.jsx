@@ -1,9 +1,20 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Helper function to revalidate data
+const revalidateData = async () => {
+    try {
+        await fetch(`${API_URL}/api/revalidate?path=/api/airports`, {
+            method: 'POST',
+        });
+    } catch (error) {
+        console.error('Error revalidating:', error);
+    }
+};
+
 export const getAirports = async () => {
     try {
         const response = await fetch(`${API_URL}/api/airports`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -22,11 +33,14 @@ export const deleteAirport = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/airports/${id}`, {
             method: 'DELETE',
+            cache: 'no-store',
         });
         if (!response.ok) {
             console.error(`Error deleting Airports: ${response.status} - ${response.statusText}`);
             return false;
         }
+
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error deleting Shipping Port'.error);
@@ -43,6 +57,7 @@ export const createAirport = async (airportData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(airportData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -50,6 +65,7 @@ export const createAirport = async (airportData) => {
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.log('Error creating:', error);
@@ -60,7 +76,7 @@ export const createAirport = async (airportData) => {
 export const getAirportById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/airports/${id}`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -84,6 +100,7 @@ export const updateAirport = async (id, airportData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(airportData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -91,6 +108,7 @@ export const updateAirport = async (id, airportData) => {
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error updating:', error);

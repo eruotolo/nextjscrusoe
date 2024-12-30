@@ -1,9 +1,20 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Helper function to revalidate data
+const revalidateData = async () => {
+    try {
+        await fetch(`${API_URL}/api/revalidate?path=/api/partner`, {
+            method: 'POST',
+        });
+    } catch (error) {
+        console.error('Error revalidating:', error);
+    }
+};
+
 export const getPartner = async () => {
     try {
         const response = await fetch(`${API_URL}/api/partner`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -22,12 +33,15 @@ export const deletePartner = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/partner/${id}`, {
             method: 'DELETE',
+            cache: 'no-store',
         });
 
         if (!response.ok) {
             console.error(`Error deleting: ${response.status} - ${response.statusText}`);
             return false;
         }
+
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error deleting'.error);
@@ -43,6 +57,7 @@ export const createPartner = async (partnerData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(partnerData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -50,6 +65,7 @@ export const createPartner = async (partnerData) => {
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.log('Error creating:', error);
@@ -60,7 +76,7 @@ export const createPartner = async (partnerData) => {
 export const getPartnerById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/partner/${id}`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -83,6 +99,7 @@ export const updatePartner = async (id, partnerData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(partnerData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -90,6 +107,7 @@ export const updatePartner = async (id, partnerData) => {
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error updating:', error);

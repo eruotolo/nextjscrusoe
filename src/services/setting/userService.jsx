@@ -1,9 +1,20 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Helper function to revalidate data
+const revalidateData = async () => {
+    try {
+        await fetch(`${API_URL}/api/revalidate?path=/api/users`, {
+            method: 'POST',
+        });
+    } catch (error) {
+        console.error('Error revalidating:', error);
+    }
+};
+
 export const getUsers = async () => {
     try {
         const response = await fetch(`${API_URL}/api/users`, {
-            next: { revalidate: 60 }, // Revalidate every 60 seconds
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -33,6 +44,7 @@ export const disableUser = async (id) => {
             throw new Error(`Error disabling user: ${response.status} - ${response.statusText}`);
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error disabling user:', error);
@@ -55,6 +67,7 @@ export const activeUser = async (id) => {
             throw new Error(`Error activating user: ${response.status} - ${response.statusText}`);
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error activating user:', error);

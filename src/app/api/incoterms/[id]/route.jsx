@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { notFound } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(request, { params }) {
     try {
@@ -23,8 +24,17 @@ export async function GET(request, { params }) {
             notFound();
         }
 
+        // Forzar revalidación
+        revalidatePath(`/api/incoterms/${params.id}`);
+
         const response = NextResponse.json(viewIncoterms);
-        response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
 
         return response;
     } catch (error) {
@@ -42,7 +52,18 @@ export async function PUT(request, { params }) {
             data: data,
         });
 
-        return NextResponse.json(updateIncoterms);
+        // Forzar revalidación
+        revalidatePath(`/api/incoterms/${params.id}`);
+
+        const response = NextResponse.json(updateIncoterms);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         return NextResponse.json({ error: 'Error updating incoterms' }, { status: 500 });
     }
@@ -63,8 +84,16 @@ export async function DELETE(request, { params }) {
             },
         });
 
-        return NextResponse.json(deleteIncoterms);
+        const response = NextResponse.json(deleteIncoterms);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
-        return NextResponse.json({ error: 'Error deleting incoterms' }, { status: 500 });
+        return NextResponse.json({ error: 'Error deleting:' }, { status: 500 });
     }
 }

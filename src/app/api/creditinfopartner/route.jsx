@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { revalidatePath } from 'next/cache';
 
 export async function GET() {
     try {
@@ -18,8 +19,16 @@ export async function GET() {
             },
         });
 
+        revalidatePath('/api/creditinfopartner');
+
         const response = NextResponse.json(getCreditInfoPartner);
-        response.headers.set('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
 
         return response;
     } catch (error) {

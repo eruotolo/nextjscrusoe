@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { notFound } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(request, { params }) {
     try {
@@ -22,8 +23,17 @@ export async function GET(request, { params }) {
             notFound();
         }
 
+        // Forzar revalidación
+        revalidatePath(`/api/shipstype/${id}`);
+
         const response = NextResponse.json(viewShipsType);
-        response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
 
         return response;
     } catch (error) {

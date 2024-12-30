@@ -1,9 +1,20 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Helper function to revalidate data
+const revalidateData = async () => {
+    try {
+        await fetch(`${API_URL}/api/revalidate?path=/api/supplier`, {
+            method: 'POST',
+        });
+    } catch (error) {
+        console.error('Error revalidating:', error);
+    }
+};
+
 export const getSupplierType = async () => {
     try {
         const response = await fetch(`${API_URL}/api/supplier`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -22,6 +33,7 @@ export const deleteSupplierType = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/supplier/${id}`, {
             method: 'DELETE',
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -29,6 +41,7 @@ export const deleteSupplierType = async (id) => {
             return false;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error deleting'.error);
@@ -44,12 +57,15 @@ export const createSupplierType = async (supplierData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(supplierData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
             console.error(`Error creating: ${response.status} - ${response.statusText}`);
             return null;
         }
+
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.log('Error creating:', error);
@@ -60,7 +76,7 @@ export const createSupplierType = async (supplierData) => {
 export const getSupplierTypeById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/supplier/${id}`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -83,6 +99,7 @@ export const updateSupplierType = async (id, shupplierData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(shupplierData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -90,6 +107,7 @@ export const updateSupplierType = async (id, shupplierData) => {
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error updating:', error);

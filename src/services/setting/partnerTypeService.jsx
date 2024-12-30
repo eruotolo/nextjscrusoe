@@ -3,7 +3,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 export const getPartnerType = async () => {
     try {
         const response = await fetch(`${API_URL}/api/partnertype`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -21,7 +21,7 @@ export const getPartnerType = async () => {
 export const getPartnerTypeById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/partnertype/${id}`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {

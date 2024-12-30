@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(request, { params }) {
     try {
@@ -13,8 +14,17 @@ export async function GET(request, { params }) {
             },
         });
 
+        // Forzar revalidación
+        revalidatePath(`/api/supplier/${params.id}`);
+
         const response = NextResponse.json(viewSupplier);
-        response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
 
         return response;
     } catch (error) {
@@ -32,7 +42,18 @@ export async function PUT(request, { params }) {
             data: data,
         });
 
-        return NextResponse.json(updateSupplier);
+        // Forzar revalidación después de actualizar
+        revalidatePath(`/api/supplier/${params.id}`);
+
+        const response = NextResponse.json(updateSupplier);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         return NextResponse.json({ error: 'Error updating transport type' }, { status: 500 });
     }
@@ -46,7 +67,15 @@ export async function DELETE(request, { params }) {
             },
         });
 
-        return NextResponse.json(deleteSupplier);
+        const response = NextResponse.json(deleteSupplier);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         return NextResponse.json({ error: 'Error deleting transport type' }, { status: 500 });
     }

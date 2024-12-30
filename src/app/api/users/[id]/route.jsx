@@ -6,20 +6,33 @@ import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(request, { params }) {
-    //return NextResponse.json({ message: 'Obtengo un usuario' });
+    try {
+        //return NextResponse.json({ message: 'Obtengo un usuario' });
 
-    const userView = await prisma.user.findUnique({
-        where: { id: Number(params.id) },
-        include: {
-            roles: {
-                include: {
-                    role: true,
+        const userView = await prisma.user.findUnique({
+            where: { id: Number(params.id) },
+            include: {
+                roles: {
+                    include: {
+                        role: true,
+                    },
                 },
             },
-        },
-    });
+        });
 
-    return NextResponse.json(userView);
+        const response = NextResponse.json(userView);
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
+    } catch (error) {
+        return NextResponse.json({ error: 'Error fetching:' }, { status: 500 });
+    }
 }
 
 export async function DELETE(request, { id }) {
@@ -29,7 +42,16 @@ export async function DELETE(request, { id }) {
                 id: Number(id),
             },
         });
-        return NextResponse.json(userRemoved);
+
+        const response = NextResponse.json(userRemoved);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         return NextResponse.json(error.message);
     }
@@ -98,7 +120,16 @@ export async function PUT(request, { params: { id } }) {
             data: data,
         });
         //console.log('User updated:', userUpdated);
-        return NextResponse.json(userUpdated);
+
+        const response = NextResponse.json(userUpdated);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         //console.error('Error updating user:', error);
         return NextResponse.json({ error: error.message }, { status: 500 });

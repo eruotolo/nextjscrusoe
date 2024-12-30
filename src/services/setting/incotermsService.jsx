@@ -1,9 +1,20 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Helper function to revalidate data
+const revalidateData = async () => {
+    try {
+        await fetch(`${API_URL}/api/revalidate?path=/api/incoterms`, {
+            method: 'POST',
+        });
+    } catch (error) {
+        console.error('Error revalidating:', error);
+    }
+};
+
 export const getIncoterms = async () => {
     try {
         const response = await fetch(`${API_URL}/api/incoterms`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -22,6 +33,7 @@ export const deleteIncoterms = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/incoterms/${id}`, {
             method: 'DELETE',
+            cache: 'no-store',
         });
         //console.log('Eliminado:', response);
 
@@ -29,6 +41,8 @@ export const deleteIncoterms = async (id) => {
             console.error(`Error deleting: ${response.status} - ${response.statusText}`);
             return false;
         }
+
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error deleting'.error);
@@ -44,12 +58,15 @@ export const createIncoterms = async (incotermsData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(incotermsData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
             console.error(`Error creating: ${response.status} - ${response.statusText}`);
             return null;
         }
+
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.log('Error creating:', error);
@@ -60,7 +77,7 @@ export const createIncoterms = async (incotermsData) => {
 export const getIncotermsById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/incoterms/${id}`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -83,6 +100,7 @@ export const updateIncoterms = async (id, incotermsData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(incotermsData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -90,6 +108,7 @@ export const updateIncoterms = async (id, incotermsData) => {
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error updating:', error);

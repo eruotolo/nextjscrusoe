@@ -1,13 +1,36 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { revalidatePath } from 'next/cache';
 
 export async function GET() {
-    const roles = await prisma.role.findMany({
-        orderBy: {
-            name: 'asc',
-        },
-    });
-    return NextResponse.json(roles);
+    try {
+        const getRoles = await prisma.role.findMany({
+            select: {
+                id: true,
+                name: true,
+                state: true,
+            },
+            orderBy: {
+                name: 'asc',
+            },
+        });
+
+        revalidatePath('/api/roles');
+
+        const response = NextResponse.json(getRoles);
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
+    } catch (error) {
+        console.error('Error fetching:', error);
+        return NextResponse.json({ error: 'No se pudieron obtener:' }, { status: 500 });
+    }
 }
 
 export async function POST(request) {

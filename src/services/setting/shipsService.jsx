@@ -1,9 +1,20 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Helper function to revalidate data
+const revalidateData = async () => {
+    try {
+        await fetch(`${API_URL}/api/revalidate?path=/api/ships`, {
+            method: 'POST',
+        });
+    } catch (error) {
+        console.error('Error revalidating:', error);
+    }
+};
+
 export const getShips = async () => {
     try {
         const response = await fetch(`${API_URL}/api/ships`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -22,12 +33,15 @@ export const deleteShips = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/ships/${id}`, {
             method: 'DELETE',
+            cache: 'no-store',
         });
 
         if (!response.ok) {
             console.error(`Error deleting: ${response.status} - ${response.statusText}`);
             return false;
         }
+
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error deleting'.error);
@@ -43,6 +57,7 @@ export const createShips = async (shipsData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(shipsData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -50,6 +65,7 @@ export const createShips = async (shipsData) => {
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.log('Error creating:', error);
@@ -60,7 +76,7 @@ export const createShips = async (shipsData) => {
 export const getShipsById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/ships/${id}`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -84,15 +100,17 @@ export const updateShips = async (id, shipsData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(shipsData),
+            cache: 'no-store',
         });
 
-        console.log('Respuesta del servidor:', response);
+        //console.log('Respuesta del servidor:', response);
 
         if (!response.ok) {
             console.error(`Error updating: ${response.status} - ${response.statusText}`);
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error updating:', error);

@@ -1,5 +1,5 @@
 ### GET ALL USERS
-GET http://localhost:3000/api/users
+GET http://localhost:3000/api/users/1
 
 ### GET ALL ROLES
 GET http://localhost:3000/api/roles

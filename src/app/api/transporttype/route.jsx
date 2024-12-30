@@ -42,19 +42,7 @@ export async function POST(request) {
             },
         });
 
-        // Forzar revalidación después de crear
-        revalidatePath('/api/transporttype');
-
-        const response = NextResponse.json(newTransportType);
-        // Deshabilitar el caché para la respuesta POST también
-        response.headers.set(
-            'Cache-Control',
-            'no-store, no-cache, must-revalidate, proxy-revalidate'
-        );
-        response.headers.set('Pragma', 'no-cache');
-        response.headers.set('Expires', '0');
-
-        return response;
+        return NextResponse.json(newTransportType);
     } catch (error) {
         if (error.code === 'P2002') {
             return NextResponse.json(

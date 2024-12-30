@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { notFound } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(request, { params }) {
     try {
@@ -19,8 +20,17 @@ export async function GET(request, { params }) {
             notFound();
         }
 
+        // Forzar revalidación
+        revalidatePath(`/api/country/${params.id}`);
+
         const response = NextResponse.json(viewCountry);
-        response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+        // Deshabilitar el caché completamente
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
 
         return response;
     } catch (error) {
@@ -40,7 +50,18 @@ export async function PUT(request, { params }) {
             data: data,
         });
 
-        return NextResponse.json(countryUpdated);
+        // Forzar revalidación
+        revalidatePath(`/api/country/${params.id}`);
+
+        const response = NextResponse.json(countryUpdated);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: 'Failed to update country' }, { status: 500 });
@@ -73,10 +94,15 @@ export async function DELETE(request, { params }) {
             },
         });
 
-        return NextResponse.json({
-            message: 'Country and related records deleted successfully',
-            country: removeCountry,
-        });
+        const response = NextResponse.json(removeCountry);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         console.error('Error completo al eliminar el país:', error);
         return NextResponse.json(

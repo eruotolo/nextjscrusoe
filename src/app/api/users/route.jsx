@@ -4,11 +4,12 @@ import { writeFile } from 'fs/promises';
 import path from 'path';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import { revalidatePath } from 'next/cache';
 
 export async function GET() {
     //return NextResponse.json({ message: 'Soy Un Moustro' });
     try {
-        const users = await prisma.user.findMany({
+        const getUsers = await prisma.user.findMany({
             select: {
                 id: true,
                 email: true,
@@ -35,7 +36,17 @@ export async function GET() {
                 name: 'asc',
             },
         });
-        return NextResponse.json(users);
+
+        revalidatePath('/api/users');
+        const response = NextResponse.json(getUsers);
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         return NextResponse.json({ message: 'Error al obtener los usuarios' });
     }

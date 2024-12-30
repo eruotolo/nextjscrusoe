@@ -2,7 +2,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 export const getCountriesByCode = async (code) => {
     try {
-        const response = await fetch(`/api/countries/${code}`);
+        const response = await fetch(`/api/countries/${code}`, {
+            cache: 'no-store',
+        });
 
         if (!response.ok) {
             console.error(`Error fetching country: ${response.status} - ${response.statusText}`);

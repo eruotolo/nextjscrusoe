@@ -1,9 +1,20 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Helper function to revalidate data
+const revalidateData = async () => {
+    try {
+        await fetch(`${API_URL}/api/revalidate?path=/api/country`, {
+            method: 'POST',
+        });
+    } catch (error) {
+        console.error('Error revalidating:', error);
+    }
+};
+
 export const getCountries = async () => {
     try {
         const response = await fetch(`${API_URL}/api/country`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -18,6 +29,26 @@ export const getCountries = async () => {
     }
 };
 
+export const deleteCountry = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/api/country/${id}`, {
+            method: 'DELETE',
+            ache: 'no-store',
+        });
+
+        if (!response.ok) {
+            console.error(`Error deleting country: ${response.status} - ${response.statusText}`);
+            return false;
+        }
+
+        await revalidateData();
+        return await response.json();
+    } catch (error) {
+        console.error('Error deleting country:', error);
+        return false;
+    }
+};
+
 export const createCountry = async (countryData) => {
     try {
         const response = await fetch(`${API_URL}/api/country`, {
@@ -26,6 +57,7 @@ export const createCountry = async (countryData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(countryData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -37,6 +69,7 @@ export const createCountry = async (countryData) => {
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.log('Error creating country:', error);
@@ -44,27 +77,11 @@ export const createCountry = async (countryData) => {
     }
 };
 
-export const deleteCountry = async (id) => {
-    try {
-        const response = await fetch(`${API_URL}/api/country/${id}`, {
-            method: 'DELETE',
-        });
-
-        if (!response.ok) {
-            console.error(`Error deleting country: ${response.status} - ${response.statusText}`);
-            return false;
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Error deleting country:', error);
-        return false;
-    }
-};
-
 export const getCountryById = async (id) => {
     try {
-        const response = await fetch(`/api/country/${id}`);
+        const response = await fetch(`/api/country/${id}`, {
+            cache: 'no-store',
+        });
 
         if (!response.ok) {
             console.error(`Error fetching country: ${response.status} - ${response.statusText}`);
@@ -86,6 +103,7 @@ export const updateCountry = async (id, countryData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(countryData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -93,6 +111,7 @@ export const updateCountry = async (id, countryData) => {
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error updating country:', error);

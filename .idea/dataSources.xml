@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/sistema</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="postgres@neon-prod" uuid="fa51360d-733c-465b-8465-17b83c6d6f9d">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ep-lucky-smoke-a5dur1dr.us-east-2.aws.neon.tech:5432/next-cruseo-db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

@@ -1,16 +1,28 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Helper function to revalidate data
+const revalidateData = async () => {
+    try {
+        await fetch(`${API_URL}/api/revalidate?path=/api/roles`, {
+            method: 'POST',
+        });
+    } catch (error) {
+        console.error('Error revalidating:', error);
+    }
+};
+
 export const getRoles = async () => {
     try {
         const response = await fetch(`${API_URL}/api/roles`, {
-            next: { revalidate: 60 },
+            cache: 'no-store',
         });
+
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            console.error(`Error al obtener: ${response.status} - ${response.statusText}`);
+            return null;
         }
 
-        let data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.error('Error fetching roles:', error);
         throw error; // Re-throw the error for the component to handle
@@ -20,13 +32,16 @@ export const getRoles = async () => {
 export const getRoleById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/roles/${id}`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
+
         if (!response.ok) {
-            throw new Error(`Error disabling: ${response.status} - ${response.statusText}`);
+            console.error(`Error deleting: ${response.status} - ${response.statusText}`);
+            return false;
         }
-        let data = await response.json();
-        return data;
+
+        await revalidateData();
+        return await response.json();
     } catch (error) {
         console.error('Error:', error);
         return null;
@@ -45,11 +60,12 @@ export const changeStateRole = async (id) => {
         });
 
         if (!response.ok) {
-            throw new Error(`Error disabling: ${response.status} - ${response.statusText}`);
+            console.error(`Error creating: ${response.status} - ${response.statusText}`);
+            return null;
         }
 
-        let data = await response.json();
-        return data;
+        await revalidateData();
+        return await response.json();
     } catch (error) {
         console.error('Error updating:', error);
         return null;

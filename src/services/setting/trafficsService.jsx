@@ -1,9 +1,20 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Helper function to revalidate data
+const revalidateData = async () => {
+    try {
+        await fetch(`${API_URL}/api/revalidate?path=/api/traffics`, {
+            method: 'POST',
+        });
+    } catch (error) {
+        console.error('Error revalidating:', error);
+    }
+};
+
 export const getTraffics = async () => {
     try {
         const response = await fetch(`${API_URL}/api/traffics`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -22,6 +33,7 @@ export const deleteTraffics = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/traffics/${id}`, {
             method: 'DELETE',
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -29,6 +41,7 @@ export const deleteTraffics = async (id) => {
             return false;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error deleting'.error);
@@ -44,12 +57,15 @@ export const createTraffics = async (trafficsData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(trafficsData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
             console.error(`Error creating: ${response.status} - ${response.statusText}`);
             return null;
         }
+
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.log('Error creating:', error);
@@ -60,7 +76,7 @@ export const createTraffics = async (trafficsData) => {
 export const getTrafficsById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/api/traffics/${id}`, {
-            next: { revalidate: 3600 },
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -83,6 +99,7 @@ export const updateTraffics = async (id, trafficsData) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(trafficsData),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
@@ -90,6 +107,7 @@ export const updateTraffics = async (id, trafficsData) => {
             return null;
         }
 
+        await revalidateData();
         return await response.json();
     } catch (error) {
         console.error('Error updating:', error);
