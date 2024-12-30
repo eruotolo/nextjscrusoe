@@ -53,44 +53,51 @@ export async function GET() {
 }
 
 export async function POST(request) {
-    const data = await request.formData();
-    const file = data.get('file');
-    const name = data.get('name');
-    const lastName = data.get('lastName');
-    const email = data.get('email');
-    const phone = data.get('phone');
-    const address = data.get('address');
-    const city = data.get('city');
-    const password = data.get('password');
+    try {
+        const data = await request.formData();
+        const file = data.get('file');
+        const name = data.get('name');
+        const lastName = data.get('lastName');
+        const email = data.get('email');
+        const phone = data.get('phone');
+        const address = data.get('address');
+        const city = data.get('city');
+        const password = data.get('password');
 
-    if (!file || !name || !lastName || !email || !phone || !address || !city || !password) {
-        return NextResponse.json({ success: false, message: 'All fields are required' });
+        if (!file || !name || !lastName || !email || !phone || !address || !city || !password) {
+            return NextResponse.json(
+                { success: false, message: 'All fields are required' },
+                { status: 400 }
+            );
+        }
+
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+
+        const fileExtension = path.extname(file.name);
+        const randomFileName = `${uuidv4()}${fileExtension}`;
+        const filePath = path.join(process.cwd(), 'public/profile', randomFileName);
+        await writeFile(filePath, buffer);
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const user = await prisma.user.create({
+            data: {
+                name,
+                lastName,
+                email,
+                phone,
+                address,
+                city,
+                image: randomFileName,
+                password: hashedPassword,
+                state: 1,
+            },
+        });
+
+        return NextResponse.json({ success: true, user }, { status: 201 });
+    } catch (error) {
+        console.error('Error creating user:', error);
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    const fileExtension = path.extname(file.name);
-    const randomFileName = `${uuidv4()}${fileExtension}`;
-    const filePath = path.join(process.cwd(), 'public/profile', randomFileName);
-    await writeFile(filePath, buffer);
-    //console.log(`open ${filePath} to see the uploaded file`);
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await prisma.user.create({
-        data: {
-            name,
-            lastName,
-            email,
-            phone,
-            address,
-            city,
-            image: randomFileName, // Guardar el nombre de archivo aleatorio
-            password: hashedPassword,
-            state: 1,
-        },
-    });
-
-    return NextResponse.json({ success: true, user });
 }
