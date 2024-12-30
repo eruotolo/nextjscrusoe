@@ -56,14 +56,20 @@ export default function NewUserModal({ open, onClose, refresh }) {
                 body: formDataToSend,
             });
 
+            const data = await res.json();
+
             if (res.ok) {
-                console.log('File and data uploaded successfully');
+                console.log('User created successfully:', data);
                 resetForm();
                 refresh();
                 onClose();
+            } else {
+                console.error('Error creating user:', data.message);
+                // Aquí puedes mostrar un mensaje de error al usuario
             }
         } catch (error) {
-            console.log(error);
+            console.error('Error submitting form:', error);
+            // Aquí puedes mostrar un mensaje de error al usuario
         }
     };
 
