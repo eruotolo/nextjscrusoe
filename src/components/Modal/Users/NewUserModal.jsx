@@ -22,38 +22,18 @@ export default function NewUserModal({ open, onClose, refresh }) {
         city: '',
         password: '',
     });
-    const [file, setFile] = useState(null);
-    const fileInputRef = useRef(null);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    const handleFileChange = (e) => {
-        if (e.target.files.length > 0) {
-            setFile(e.target.files[0]);
-        }
-    };
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        if (!file || Object.values(formData).some((value) => value === '')) return;
+        if (Object.values(formData).some((value) => value === '')) return;
 
         try {
-            const formDataToSend = new FormData();
-            formDataToSend.set('file', file);
-            Object.entries(formData).forEach(([key, value]) => {
-                formDataToSend.set(key, value);
-            });
-            formDataToSend.set('state', 1);
-
             const res = await fetch('/api/users', {
                 method: 'POST',
-                body: formDataToSend,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
             });
 
             const data = await res.json();
@@ -82,10 +62,11 @@ export default function NewUserModal({ open, onClose, refresh }) {
             address: '',
             city: '',
             password: '',
-            file: '',
         });
-        setFile(null);
-        fileInputRef.current.value = null;
+    };
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const isFormValid = () => {
@@ -110,19 +91,19 @@ export default function NewUserModal({ open, onClose, refresh }) {
                             <div className="mb-[15px] flex">
                                 <input
                                     id="name"
+                                    type="text"
                                     name="name"
                                     value={formData.name}
-                                    onChange={handleInputChange}
-                                    type="text"
+                                    onChange={handleChange}
                                     placeholder="Nombre"
                                     className="custom-input mr-[10px]"
                                 />
                                 <input
                                     id="lastName"
+                                    type="text"
                                     name="lastName"
                                     value={formData.lastName}
-                                    onChange={handleInputChange}
-                                    type="text"
+                                    onChange={handleChange}
                                     placeholder="Apellido"
                                     className="custom-input"
                                 />
@@ -130,21 +111,21 @@ export default function NewUserModal({ open, onClose, refresh }) {
                             <div className="mb-[15px]">
                                 <input
                                     id="email"
+                                    type="email"
                                     name="email"
                                     value={formData.email}
-                                    onChange={handleInputChange}
-                                    type="email"
-                                    placeholder="Correo Electrónico"
+                                    onChange={handleChange}
+                                    placeholder="Email"
                                     className="custom-input"
                                 />
                             </div>
                             <div className="mb-[15px]">
                                 <input
                                     id="phone"
+                                    type="tel"
                                     name="phone"
                                     value={formData.phone}
-                                    onChange={handleInputChange}
-                                    type="text"
+                                    onChange={handleChange}
                                     placeholder="Teléfono"
                                     className="custom-input"
                                 />
@@ -152,10 +133,10 @@ export default function NewUserModal({ open, onClose, refresh }) {
                             <div className="mb-[15px]">
                                 <input
                                     id="address"
+                                    type="text"
                                     name="address"
                                     value={formData.address}
-                                    onChange={handleInputChange}
-                                    type="text"
+                                    onChange={handleChange}
                                     placeholder="Dirección"
                                     className="custom-input"
                                 />
@@ -163,10 +144,10 @@ export default function NewUserModal({ open, onClose, refresh }) {
                             <div className="mb-[15px]">
                                 <input
                                     id="city"
+                                    type="text"
                                     name="city"
                                     value={formData.city}
-                                    onChange={handleInputChange}
-                                    type="text"
+                                    onChange={handleChange}
                                     placeholder="Ciudad"
                                     className="custom-input"
                                 />
@@ -174,37 +155,25 @@ export default function NewUserModal({ open, onClose, refresh }) {
                             <div className="mb-[15px]">
                                 <input
                                     id="password"
+                                    type="password"
                                     name="password"
                                     value={formData.password}
-                                    onChange={handleInputChange}
-                                    type="password"
-                                    placeholder="Ingrese su contraseña"
+                                    onChange={handleChange}
+                                    placeholder="Contraseña"
                                     className="custom-input"
                                 />
                             </div>
                         </div>
                         <div className="col-span-1 pl-[20px]">
-                            {file && (
-                                <div>
-                                    <Image
-                                        src={URL.createObjectURL(file)}
-                                        width={220}
-                                        height={220}
-                                        alt="Vista previa"
-                                        className="rounded-[50%]"
-                                    />
-                                </div>
-                            )}
-                            <label htmlFor="file" className="mb-[10px] mt-[34px] block">
-                                Foto de perfil
-                            </label>
-                            <input
-                                id="file"
-                                type="file"
-                                ref={fileInputRef}
-                                onChange={handleFileChange}
-                                className="custom-input"
-                            />
+                            <div>
+                                <Image
+                                    src="/profile/perfil-default.jpg"
+                                    width={220}
+                                    height={220}
+                                    alt="Perfil por defecto"
+                                    className="rounded-[50%]"
+                                />
+                            </div>
                         </div>
                     </div>
                     <DialogFooter className="mt-6">

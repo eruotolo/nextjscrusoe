@@ -52,7 +52,7 @@ export async function GET() {
     }
 }
 
-export async function POST(request) {
+/*export async function POST(request) {
     try {
         const data = await request.formData();
         const file = data.get('file');
@@ -98,6 +98,44 @@ export async function POST(request) {
         return NextResponse.json({ success: true, user }, { status: 201 });
     } catch (error) {
         console.error('Error creating user:', error);
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}*/
+export async function POST(request) {
+    try {
+        console.log('Starting POST request');
+        const data = await request.json();
+        console.log('Data received:', data);
+        const { name, lastName, email, phone, address, city, password } = data;
+
+        if (!name || !lastName || !email || !phone || !address || !city || !password) {
+            return NextResponse.json(
+                { success: false, message: 'All fields are required' },
+                { status: 400 }
+            );
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        console.log('Password hashed');
+
+        const user = await prisma.user.create({
+            data: {
+                name,
+                lastName,
+                email,
+                phone,
+                address,
+                city,
+                image: '/profile/perfil-default.jpg', // Usar la imagen por defecto
+                password: hashedPassword,
+                state: 1,
+            },
+        });
+        console.log('User created:', user);
+
+        return NextResponse.json({ success: true, user }, { status: 201 });
+    } catch (error) {
+        console.error('Error in POST /api/users:', error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
