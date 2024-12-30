@@ -56,7 +56,10 @@ export const createCountry = async (countryData) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(countryData),
+            body: JSON.stringify({
+                code: countryData.code,
+                name: countryData.name,
+            }),
             cache: 'no-store',
         });
 
