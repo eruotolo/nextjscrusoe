@@ -1,5 +1,16 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Helper function for common fetch options
+const fetchOptions = (method = 'GET', body = null) => ({
+    method,
+    headers: {
+        'Content-Type': 'application/json',
+        // Add any other common headers here
+    },
+    cache: 'no-store',
+    ...(body && { body: JSON.stringify(body) }),
+});
+
 // Helper function to revalidate data
 const revalidateData = async () => {
     try {
@@ -13,9 +24,7 @@ const revalidateData = async () => {
 
 export const getShipOwner = async () => {
     try {
-        const response = await fetch(`${API_URL}/api/shipowner`, {
-            cache: 'no-store',
-        });
+        const response = await fetch(`${API_URL}/api/shipowner`, fetchOptions());
 
         if (!response.ok) {
             console.error(`Error al obtener: ${response.status} - ${response.statusText}`);
@@ -31,10 +40,7 @@ export const getShipOwner = async () => {
 
 export const deleteShipOwner = async (id) => {
     try {
-        const response = await fetch(`${API_URL}/api/shipowner/${id}`, {
-            method: 'DELETE',
-            cache: 'no-store',
-        });
+        const response = await fetch(`${API_URL}/api/shipowner/${id}`, fetchOptions('DELETE'));
 
         if (!response.ok) {
             console.error(`Error deleting: ${response.status} - ${response.statusText}`);
@@ -51,14 +57,10 @@ export const deleteShipOwner = async (id) => {
 
 export const createShipOwner = async (shipOwnerData) => {
     try {
-        const response = await fetch(`${API_URL}/api/shipowner`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(shipOwnerData),
-            cache: 'no-store',
-        });
+        const response = await fetch(
+            `${API_URL}/api/shipowner`,
+            fetchOptions('POST', shipOwnerData)
+        );
 
         if (!response.ok) {
             console.error(`Error creating: ${response.status} - ${response.statusText}`);
@@ -75,9 +77,8 @@ export const createShipOwner = async (shipOwnerData) => {
 
 export const getShipOwnerById = async (id) => {
     try {
-        const response = await fetch(`${API_URL}/api/shipowner/${id}`, {
-            cache: 'no-store',
-        });
+        const response = await fetch(`${API_URL}/api/shipowner/${id}`, fetchOptions());
+
         if (!response.ok) {
             console.error(`Error fetching: ${response.status} - ${response.statusText}`);
             return null;
@@ -92,14 +93,10 @@ export const getShipOwnerById = async (id) => {
 
 export const updateShipOwner = async (id, shipOwnerData) => {
     try {
-        const response = await fetch(`${API_URL}/api/shipowner/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(shipOwnerData),
-            cache: 'no-store',
-        });
+        const response = await fetch(
+            `${API_URL}/api/shipowner/${id}`,
+            fetchOptions('PUT', shipOwnerData)
+        );
 
         if (!response.ok) {
             console.error(`Error updating: ${response.status} - ${response.statusText}`);
