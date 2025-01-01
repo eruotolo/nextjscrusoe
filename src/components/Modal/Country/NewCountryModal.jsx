@@ -28,11 +28,11 @@ export default function NewCountryModal({ refresh }) {
                 code: code,
                 name: name,
             };
-            console.log(countryData);
+            console.log('Datos Antes:', countryData);
 
             const createdCountry = await createCountry(countryData);
             if (createdCountry) {
-                console.log('Hola');
+                //console.log('Hola');
                 await refresh();
                 resetForm();
             }

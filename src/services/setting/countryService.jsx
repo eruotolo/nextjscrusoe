@@ -63,6 +63,8 @@ export const createCountry = async (countryData) => {
             cache: 'no-store',
         });
 
+        console.log('Crear Pais:', response);
+
         if (!response.ok) {
             const errorData = await response.json();
             console.error(
