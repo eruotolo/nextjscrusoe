@@ -37,7 +37,7 @@ export default function NewCityModal({ refresh }) {
                 countryCode: selectedCountry,
                 name: cityName,
             };
-            console.log('City Data:', cityData);
+            //console.log('City Data:', cityData);
 
             const createdCity = await createCity(cityData);
 
