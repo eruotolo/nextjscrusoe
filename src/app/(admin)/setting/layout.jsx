@@ -1,6 +1,5 @@
 import MenuSettingInternal from '@/components/MenuSettingInternal/MenuSettingInternal';
 import TitlePage from '@/components/TitlePages/TitlePage';
-import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 import { Settings } from 'lucide-react';
 
 export default function DashboardLayout({ children }) {

@@ -38,7 +38,17 @@ export default function NewCityModal({ refresh }) {
         const createdCity = await createCity(cityData);
         if (createdCity) {
             await refresh();
+            resetForm();
         }
+    };
+
+    const resetForm = () => {
+        setSelectedCountry('');
+        setCityName('');
+    };
+
+    const isFormValid = () => {
+        return selectedCountry && cityName;
     };
 
     return (
@@ -93,7 +103,11 @@ export default function NewCityModal({ refresh }) {
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
-                            <button type="submit" className="custom-button">
+                            <button
+                                type="submit"
+                                className="custom-button"
+                                disabled={!isFormValid()}
+                            >
                                 Crear Ciudad
                             </button>
                         </DialogClose>

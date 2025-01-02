@@ -1,326 +1,326 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  name      String?
-  lastName  String?
-  phone     String?
-  address   String?
-  city      String?
-  password  String
-  image     String     @default("Hola")
-  state     Int        @default(1)
-  createdAt DateTime   @default(now())
-  Partner   Partner[]
-  Traffics  Traffics[]
-  roles     UserRole[]
+    id        Int        @id @default(autoincrement())
+    email     String     @unique
+    name      String?
+    lastName  String?
+    phone     String?
+    address   String?
+    city      String?
+    password  String
+    image     String     @default("Hola")
+    state     Int        @default(1)
+    createdAt DateTime   @default(now())
+    Partner   Partner[]
+    Traffics  Traffics[]
+    roles     UserRole[]
 }
 
 model Role {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  state     Int        @default(1)
-  createdAt DateTime   @default(now())
-  users     UserRole[]
+    id        Int        @id @default(autoincrement())
+    name      String     @unique
+    state     Int        @default(1)
+    createdAt DateTime   @default(now())
+    users     UserRole[]
 }
 
 model UserRole {
-  createdAt DateTime @default(now())
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  roleId    Int
-  role      Role     @relation(fields: [roleId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+    id        Int      @id @default(autoincrement())
+    userId    Int
+    roleId    Int
+    role      Role     @relation(fields: [roleId], references: [id])
+    user      User     @relation(fields: [userId], references: [id])
 }
 
 model Country {
-  id            Int             @id @default(autoincrement())
-  code          String          @unique
-  name          String          @unique
-  createdAt     DateTime        @default(now())
-  airports      Airports[]
-  cities        City[]
-  Partner       Partner[]
-  places        Places[]
-  shippingPorts ShippingPorts[]
-  Ships         Ships[]
+    id            String          @id @default(uuid())
+    code          String          @unique
+    name          String          @unique
+    createdAt     DateTime        @default(now())
+    airports      Airports[]
+    cities        City[]
+    Partner       Partner[]
+    places        Places[]
+    shippingPorts ShippingPorts[]
+    Ships         Ships[]
 }
 
 model City {
-  id          Int       @id @default(autoincrement())
-  countryCode String?
-  name        String
-  createdAt   DateTime  @default(now())
-  country     Country?  @relation(fields: [countryCode], references: [code], onDelete: Cascade)
-  Partner     Partner[]
-  places      Places[]
+    id          String    @id @default(uuid())
+    countryCode String?
+    name        String
+    createdAt   DateTime  @default(now())
+    country     Country?  @relation(fields: [countryCode], references: [code], onDelete: Cascade)
+    Partner     Partner[]
+    places      Places[]
 
-  @@index([name])
-  @@index([countryCode])
+    @@index([name])
+    @@index([countryCode])
 }
 
 model Airports {
-  id          String   @id @default(uuid())
-  geocode     String?
-  name        String
-  gcdiata     String
-  gcdicao     String?
-  codeCountry String?
-  createdAt   DateTime @default(now())
-  latitude    Float?
-  longitude   Float?
-  country     Country? @relation(fields: [codeCountry], references: [code], onDelete: Cascade)
+    id          String   @id @default(uuid())
+    geocode     String?
+    name        String
+    gcdiata     String
+    gcdicao     String?
+    codeCountry String?
+    createdAt   DateTime @default(now())
+    latitude    Float?
+    longitude   Float?
+    country     Country? @relation(fields: [codeCountry], references: [code], onDelete: Cascade)
 
-  @@index([name])
-  @@index([codeCountry])
+    @@index([name])
+    @@index([codeCountry])
 }
 
 model ShippingPorts {
-  id          String   @id @default(uuid())
-  unCode      String?
-  name        String
-  codeCountry String?
-  createdAt   DateTime @default(now())
-  latitude    Float?
-  longitude   Float?
-  country     Country? @relation(fields: [codeCountry], references: [code], onDelete: Cascade)
+    id          String   @id @default(uuid())
+    unCode      String?
+    name        String
+    codeCountry String?
+    createdAt   DateTime @default(now())
+    latitude    Float?
+    longitude   Float?
+    country     Country? @relation(fields: [codeCountry], references: [code], onDelete: Cascade)
 
-  @@index([name])
-  @@index([codeCountry])
+    @@index([name])
+    @@index([codeCountry])
 }
 
 model Places {
-  id           String   @id @default(uuid())
-  name         String
-  latitude     Float?
-  longitude    Float?
-  codeCountry  String?
-  codeCity     Int?
-  createdAt    DateTime @default(now())
-  address      String?
-  contactEmail String?
-  contactName  String?
-  contactPhone String?
-  zipCode      String?
-  city         City?    @relation(fields: [codeCity], references: [id], onDelete: Cascade)
-  country      Country? @relation(fields: [codeCountry], references: [code], onDelete: Cascade)
+    id           String   @id @default(uuid())
+    name         String
+    latitude     Float?
+    longitude    Float?
+    codeCountry  String?
+    codeCity     String?
+    createdAt    DateTime @default(now())
+    address      String?
+    contactEmail String?
+    contactName  String?
+    contactPhone String?
+    zipCode      String?
+    city         City?    @relation(fields: [codeCity], references: [id], onDelete: Cascade)
+    country      Country? @relation(fields: [codeCountry], references: [code], onDelete: Cascade)
 
-  @@index([name])
-  @@index([codeCountry])
-  @@index([codeCity])
+    @@index([name])
+    @@index([codeCountry])
+    @@index([codeCity])
 }
 
 model TransportType {
-  id                String               @id @default(uuid())
-  name              String
-  createdAt         DateTime             @default(now())
-  incotermsRelarion IncotermsTransport[]
+    id                String               @id @default(uuid())
+    name              String
+    createdAt         DateTime             @default(now())
+    incotermsRelarion IncotermsTransport[]
 
-  @@index([name])
+    @@index([name])
 }
 
 model Incoterms {
-  id                String               @id @default(uuid())
-  name              String
-  code              String
-  createdAt         DateTime             @default(now())
-  transportRelation IncotermsTransport[]
+    id                String               @id @default(uuid())
+    name              String
+    code              String
+    createdAt         DateTime             @default(now())
+    transportRelation IncotermsTransport[]
 
-  @@index([name])
-  @@index([code])
+    @@index([name])
+    @@index([code])
 }
 
 model IncotermsTransport {
-  id              String        @id @default(uuid())
-  incotermsId     String
-  transportTypeId String
-  createdAt       DateTime      @default(now())
-  incoterms       Incoterms     @relation(fields: [incotermsId], references: [id], onDelete: Cascade)
-  transportType   TransportType @relation(fields: [transportTypeId], references: [id], onDelete: Cascade)
+    id              String        @id @default(uuid())
+    incotermsId     String
+    transportTypeId String
+    createdAt       DateTime      @default(now())
+    incoterms       Incoterms     @relation(fields: [incotermsId], references: [id], onDelete: Cascade)
+    transportType   TransportType @relation(fields: [transportTypeId], references: [id], onDelete: Cascade)
 }
 
 model Ships {
-  id          String     @id @default(uuid())
-  name        String
-  code        String
-  shipownerId String
-  codeCountry String?
-  shipsTypeId String?
-  createdAt   DateTime   @default(now())
-  country     Country?   @relation(fields: [codeCountry], references: [code], onDelete: Cascade)
-  shipowner   Shipowner  @relation(fields: [shipownerId], references: [id], onDelete: Cascade)
-  shipsType   ShipsType? @relation(fields: [shipsTypeId], references: [id], onDelete: Cascade)
+    id          String     @id @default(uuid())
+    name        String
+    code        String
+    shipownerId String
+    codeCountry String?
+    shipsTypeId String?
+    createdAt   DateTime   @default(now())
+    country     Country?   @relation(fields: [codeCountry], references: [code], onDelete: Cascade)
+    shipowner   Shipowner  @relation(fields: [shipownerId], references: [id], onDelete: Cascade)
+    shipsType   ShipsType? @relation(fields: [shipsTypeId], references: [id], onDelete: Cascade)
 }
 
 model Shipowner {
-  id        String   @id @default(uuid())
-  name      String
-  code      String
-  createdAt DateTime @default(now())
-  ships     Ships[]
+    id        String   @id @default(uuid())
+    name      String
+    code      String
+    createdAt DateTime @default(now())
+    ships     Ships[]
 }
 
 model ShipsType {
-  id        String   @id @default(uuid())
-  name      String
-  createdAt DateTime @default(now())
-  Ships     Ships[]
+    id        String   @id @default(uuid())
+    name      String
+    createdAt DateTime @default(now())
+    Ships     Ships[]
 }
 
 model CommoditiesSection {
-  id          String        @id @default(uuid())
-  name        String
-  createdAt   DateTime      @default(now())
-  commodities Commodities[]
+    id          String        @id @default(uuid())
+    name        String
+    createdAt   DateTime      @default(now())
+    commodities Commodities[]
 
-  @@index([name])
+    @@index([name])
 }
 
 model Commodities {
-  id                   String              @id @default(uuid())
-  name                 String
-  nameEnglish          String?
-  dangerous            Boolean?
-  perishable           Boolean?
-  tariffPositional     String?
-  commoditiesSectionId String?
-  createdAt            DateTime            @default(now())
-  commoditiesSection   CommoditiesSection? @relation(fields: [commoditiesSectionId], references: [id], onDelete: Cascade)
+    id                   String              @id @default(uuid())
+    name                 String
+    nameEnglish          String?
+    dangerous            Boolean?
+    perishable           Boolean?
+    tariffPositional     String?
+    commoditiesSectionId String?
+    createdAt            DateTime            @default(now())
+    commoditiesSection   CommoditiesSection? @relation(fields: [commoditiesSectionId], references: [id], onDelete: Cascade)
 
-  @@index([name])
-  @@index([nameEnglish])
+    @@index([name])
+    @@index([nameEnglish])
 }
 
 model Traffics {
-  id          String    @id @default(uuid())
-  name        String?
-  nameEnglish String?
-  modifiedBy  Int?
-  createdAt   DateTime  @default(now())
-  code        String?
-  updatedAt   DateTime? @updatedAt
-  user        User?     @relation(fields: [modifiedBy], references: [id])
+    id          String    @id @default(uuid())
+    name        String?
+    nameEnglish String?
+    modifiedBy  Int?
+    createdAt   DateTime  @default(now())
+    code        String?
+    updatedAt   DateTime? @updatedAt
+    user        User?     @relation(fields: [modifiedBy], references: [id])
 
-  @@index([name])
-  @@index([nameEnglish])
+    @@index([name])
+    @@index([nameEnglish])
 }
 
 model SupplierType {
-  id        String                @id @default(uuid())
-  name      String?
-  createdAt DateTime              @default(now())
-  partners  PartnerSupplierType[]
+    id        String                @id @default(uuid())
+    name      String?
+    createdAt DateTime              @default(now())
+    partners  PartnerSupplierType[]
 
-  @@index([name])
+    @@index([name])
 }
 
 model PartnerType {
-  id        String    @id @default(uuid())
-  name      String?
-  createdAt DateTime  @default(now())
-  Partner   Partner[]
+    id        String    @id @default(uuid())
+    name      String?
+    createdAt DateTime  @default(now())
+    Partner   Partner[]
 
-  @@index([name])
+    @@index([name])
 }
 
 model Partner {
-  id                String                @id @default(uuid())
-  name              String
-  socialReazon      String?
-  taxId             String?
-  address           String?
-  zipCode           String?
-  codeCountry       String?
-  codeCity          Int?
-  phone             String?
-  scacCode          String?
-  userId            Int?
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime?             @updatedAt
-  partnerTypeId     String?
-  rut               String?
-  locations         String?
-  email             String?
-  contacts          Contact[]
-  city              City?                 @relation(fields: [codeCity], references: [id], onDelete: Cascade)
-  country           Country?              @relation(fields: [codeCountry], references: [code], onDelete: Cascade)
-  partnerType       PartnerType?          @relation(fields: [partnerTypeId], references: [id], onDelete: Cascade)
-  user              User?                 @relation(fields: [userId], references: [id])
-  partnerCreditInfo PartnerCreditInfo?
-  supplierTypes     PartnerSupplierType[]
+    id                String                @id @default(uuid())
+    name              String
+    socialReazon      String?
+    taxId             String?
+    address           String?
+    zipCode           String?
+    codeCountry       String?
+    codeCity          String?
+    phone             String?
+    scacCode          String?
+    userId            Int?
+    createdAt         DateTime              @default(now())
+    updatedAt         DateTime?             @updatedAt
+    partnerTypeId     String?
+    rut               String?
+    locations         String?
+    email             String?
+    contacts          Contact[]
+    city              City?                 @relation(fields: [codeCity], references: [id], onDelete: Cascade)
+    country           Country?              @relation(fields: [codeCountry], references: [code], onDelete: Cascade)
+    partnerType       PartnerType?          @relation(fields: [partnerTypeId], references: [id], onDelete: Cascade)
+    user              User?                 @relation(fields: [userId], references: [id])
+    partnerCreditInfo PartnerCreditInfo?
+    supplierTypes     PartnerSupplierType[]
 
-  @@index([name])
-  @@index([socialReazon])
+    @@index([name])
+    @@index([socialReazon])
 }
 
 model ContactType {
-  id             String    @id @default(uuid())
-  name           String?
-  createdAt      DateTime  @default(now())
-  PartnerContact Contact[]
+    id             String    @id @default(uuid())
+    name           String?
+    createdAt      DateTime  @default(now())
+    PartnerContact Contact[]
 
-  @@index([name])
+    @@index([name])
 }
 
 model Contact {
-  id            String       @id @default(uuid())
-  name          String?
-  email         String?
-  phone         String?
-  contactTypeId String?
-  createdAt     DateTime     @default(now())
-  partnerId     String?
-  contactType   ContactType? @relation(fields: [contactTypeId], references: [id], onDelete: Cascade)
-  partner       Partner?     @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+    id            String       @id @default(uuid())
+    name          String?
+    email         String?
+    phone         String?
+    contactTypeId String?
+    createdAt     DateTime     @default(now())
+    partnerId     String?
+    contactType   ContactType? @relation(fields: [contactTypeId], references: [id], onDelete: Cascade)
+    partner       Partner?     @relation(fields: [partnerId], references: [id], onDelete: Cascade)
 
-  @@index([name])
+    @@index([name])
 }
 
 model PartnerCreditInfo {
-  id                    String      @id @default(uuid())
-  freightCreditTerm     String?
-  freightCreditAmount   String?
-  freightCreditCurrency String?
-  termCreditExpenses    String?
-  termCreditAmount      String?
-  termCreditCurrency    String?
-  incomeAccountNumber   String?
-  createdAt             DateTime    @default(now())
-  outgoingAccountNumber String?
-  partnerId             String?     @unique
-  freightCurrency       Currencies? @relation("FreightCurrency", fields: [freightCreditCurrency], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  partner               Partner?    @relation(fields: [partnerId], references: [id], onDelete: Cascade)
-  termCurrency          Currencies? @relation("TermCurrency", fields: [termCreditCurrency], references: [id], onDelete: Cascade)
+    id                    String      @id @default(uuid())
+    freightCreditTerm     String?
+    freightCreditAmount   String?
+    freightCreditCurrency String?
+    termCreditExpenses    String?
+    termCreditAmount      String?
+    termCreditCurrency    String?
+    incomeAccountNumber   String?
+    createdAt             DateTime    @default(now())
+    outgoingAccountNumber String?
+    partnerId             String?     @unique
+    freightCurrency       Currencies? @relation("FreightCurrency", fields: [freightCreditCurrency], references: [id], onDelete: Cascade, onUpdate: NoAction)
+    partner               Partner?    @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+    termCurrency          Currencies? @relation("TermCurrency", fields: [termCreditCurrency], references: [id], onDelete: Cascade)
 
-  @@index([id])
+    @@index([id])
 }
 
 model Currencies {
-  id                 String              @id @default(uuid())
-  code               String?
-  name               String?
-  symbol             String?
-  createdAt          DateTime            @default(now())
-  freightCreditInfos PartnerCreditInfo[] @relation("FreightCurrency")
-  termCreditInfos    PartnerCreditInfo[] @relation("TermCurrency")
+    id                 String              @id @default(uuid())
+    code               String?
+    name               String?
+    symbol             String?
+    createdAt          DateTime            @default(now())
+    freightCreditInfos PartnerCreditInfo[] @relation("FreightCurrency")
+    termCreditInfos    PartnerCreditInfo[] @relation("TermCurrency")
 }
 
 model PartnerSupplierType {
-  id             Int          @id @default(autoincrement())
-  partnerId      String
-  supplierTypeId String
-  createdAt      DateTime     @default(now())
-  partner        Partner      @relation(fields: [partnerId], references: [id], onDelete: Cascade)
-  supplierType   SupplierType @relation(fields: [supplierTypeId], references: [id], onDelete: Cascade)
+    id             Int          @id @default(autoincrement())
+    partnerId      String
+    supplierTypeId String
+    createdAt      DateTime     @default(now())
+    partner        Partner      @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+    supplierType   SupplierType @relation(fields: [supplierTypeId], references: [id], onDelete: Cascade)
 
-  @@index([partnerId])
-  @@index([supplierTypeId])
+    @@index([partnerId])
+    @@index([supplierTypeId])
 }

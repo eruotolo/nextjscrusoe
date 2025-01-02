@@ -5,10 +5,15 @@ import { revalidatePath } from 'next/cache';
 
 export async function GET(request, { params }) {
     try {
+        const { id } = params;
+
+        if (!id || typeof id !== 'string') {
+            return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+        }
+
         const viewCity = await prisma.city.findUnique({
-            where: {
-                id: Number(params.id),
-            },
+            where: { id },
+
             select: {
                 id: true,
                 name: true,
@@ -53,7 +58,7 @@ export async function PUT(request, { params }) {
 
         const cityUpdate = await prisma.city.update({
             where: {
-                id: Number(params.id),
+                id: params.id,
             },
             data: {
                 name: data.name,
@@ -95,9 +100,7 @@ export async function DELETE(request, { params }) {
     //return NextResponse.json({ message: 'Soy Un Moustro' });
     try {
         const removeCity = await prisma.city.delete({
-            where: {
-                id: Number(params.id),
-            },
+            where: { id: params.id },
         });
 
         const response = NextResponse.json(removeCity);

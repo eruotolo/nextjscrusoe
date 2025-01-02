@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
-import { revalidatePath } from 'next/cache';
 
 export async function GET() {
     try {
@@ -10,8 +9,6 @@ export async function GET() {
                 name: true,
             },
         });
-
-        revalidatePath('/api/partnertype');
 
         const response = NextResponse.json(getPartnerType);
         // Deshabilitar el caché completamente

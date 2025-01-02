@@ -108,7 +108,7 @@ export default function EditPartnerModal({ id, refresh, open, onClose }) {
             const response = await updatePartner(id, {
                 ...data,
                 codeCountry: selectedCountry,
-                codeCity: Number(selectedCity),
+                codeCity: selectedCity,
                 userId: Number(session?.user?.id) || 0,
             });
             //console.log('Update:', response);

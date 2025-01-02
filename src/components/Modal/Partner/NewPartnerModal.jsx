@@ -79,7 +79,7 @@ export default function NewPartnerModal({ refresh }) {
             const partnerData = {
                 ...data,
                 codeCountry: selectedCountry,
-                codeCity: Number(selectedCity),
+                codeCity: selectedCity,
                 userId: Number(session?.user?.id) || 0,
             };
 

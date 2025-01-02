@@ -58,7 +58,7 @@ export default function NewPlacesModal({ refresh }) {
         e.preventDefault();
         const placesData = {
             codeCountry: selectedCountry,
-            codeCity: parseInt(selectedCity, 10),
+            codeCity: selectedCity,
             name: placesName,
             address: placesAddress,
             latitude: parseFloat(latitude),

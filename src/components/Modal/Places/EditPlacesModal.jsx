@@ -106,7 +106,7 @@ export default function EditPlacesModal({ id, refresh, open, onClose }) {
                 latitude: parseFloat(latitude),
                 longitude: parseFloat(longitude),
                 codeCountry: selectedCountry,
-                codeCity: parseInt(selectedCity, 10),
+                codeCity: selectedCity,
             });
             //console.log(response);
             if (response) {

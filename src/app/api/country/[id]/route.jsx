@@ -5,10 +5,15 @@ import { revalidatePath } from 'next/cache';
 
 export async function GET(request, { params }) {
     try {
+        const { id } = params;
+
+        if (!id || typeof id !== 'string') {
+            return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+        }
+
         const viewCountry = await prisma.country.findUnique({
-            where: {
-                id: Number(params.id),
-            },
+            where: { id },
+
             select: {
                 id: true,
                 code: true,
@@ -45,7 +50,7 @@ export async function PUT(request, { params }) {
 
         const countryUpdated = await prisma.country.update({
             where: {
-                id: Number(params.id),
+                id: params.id,
             },
             data: data,
         });
@@ -70,15 +75,9 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
     try {
-        const countryId = Number(params.id);
-
-        if (isNaN(countryId)) {
-            return NextResponse.json({ error: 'Invalid country ID' }, { status: 400 });
-        }
-
         // Primero, buscamos el país por su ID para obtener su código
         const country = await prisma.country.findUnique({
-            where: { id: countryId },
+            where: { id: params.id },
             select: { id: true, code: true },
         });
 
@@ -89,7 +88,7 @@ export async function DELETE(request, { params }) {
         // Ahora eliminamos el país usando tanto el id como el code
         const removeCountry = await prisma.country.delete({
             where: {
-                id: countryId,
+                id: params.id,
                 code: country.code,
             },
         });
