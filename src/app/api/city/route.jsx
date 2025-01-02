@@ -66,12 +66,31 @@ export async function POST(request) {
                 name: data.name,
                 countryCode: data.countryCode,
             },
+            include: {
+                country: true,
+            },
         });
         return NextResponse.json(newCity);
     } catch (error) {
+        console.error('Error creating city:', error);
+
         if (error.code === 'P2002') {
-            return NextResponse.json({ message: 'Unique constraint violation.' }, { status: 400 });
+            return NextResponse.json(
+                { error: 'A city with this name already exists' },
+                { status: 400 }
+            );
         }
-        return NextResponse.json({ message: error.message }, { status: 500 });
+
+        if (error.code === 'P2003') {
+            return NextResponse.json(
+                { error: 'The specified country does not exist' },
+                { status: 400 }
+            );
+        }
+
+        return NextResponse.json(
+            { error: 'Failed to create city', details: error.message },
+            { status: 500 }
+        );
     }
 }

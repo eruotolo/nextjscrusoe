@@ -31,14 +31,23 @@ export default function NewCityModal({ refresh }) {
 
     const handleCreateCity = async (e) => {
         e.preventDefault();
-        const cityData = {
-            countryCode: selectedCountry,
-            name: cityName,
-        };
-        const createdCity = await createCity(cityData);
-        if (createdCity) {
-            await refresh();
-            resetForm();
+
+        try {
+            const cityData = {
+                countryCode: selectedCountry,
+                name: cityName,
+            };
+            console.log('City Data:', cityData);
+
+            const createdCity = await createCity(cityData);
+
+            if (createdCity) {
+                await refresh();
+                resetForm();
+            }
+        } catch (error) {
+            console.error('Error creating city:', error);
+            console.log('Error creating city:', error);
         }
     };
 
