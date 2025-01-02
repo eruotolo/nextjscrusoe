@@ -61,15 +61,42 @@ export async function GET(request) {
 export async function POST(request) {
     try {
         const data = await request.json();
+
+        // Validación de datos
+        if (!data.name || !data.countryCode) {
+            return NextResponse.json(
+                { error: 'Name and countryCode are required' },
+                { status: 400 }
+            );
+        }
+
+        // Verificar si ya existe una ciudad con el mismo nombre en el mismo país
+        const existingCity = await prisma.city.findFirst({
+            where: {
+                countryCode: data.countryCode,
+                name: data.name,
+            },
+        });
+
+        if (existingCity) {
+            return NextResponse.json(
+                { error: 'A city with this name already exists in the selected country' },
+                { status: 400 }
+            );
+        }
+
         const newCity = await prisma.city.create({
             data: {
-                name: data.name,
                 countryCode: data.countryCode,
+                name: data.name.trim(),
             },
             include: {
                 country: true,
             },
         });
+
+        revalidatePath('/api/city');
+
         return NextResponse.json(newCity);
     } catch (error) {
         console.error('Error creating city:', error);

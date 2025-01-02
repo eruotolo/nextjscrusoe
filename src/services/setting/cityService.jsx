@@ -59,6 +59,8 @@ export const createCity = async (cityData) => {
             cache: 'no-store',
         });
 
+        console.log('Datos en Servicio:', response);
+
         if (!response.ok) {
             console.error(`Error creating country: ${response.status} - ${response.statusText}`);
             return null;
