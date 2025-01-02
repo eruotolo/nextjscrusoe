@@ -13,7 +13,10 @@
     "clean": "rm -rf .next && npm run build",
     "preview": "next build && next start",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
-    "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
+    "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
+    "build:production": "NODE_ENV=production next build",
+    "build:development": "NODE_ENV=development next build",
+    "build:testing": "NODE_ENV=test next build"
   },
   "dependencies": {
     "@prisma/client": "^6.0.1",
