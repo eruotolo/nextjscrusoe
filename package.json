@@ -6,16 +6,14 @@
     "seed": "node prisma/seed.js"
   },
   "scripts": {
-    "dev": "dotenv -e .env.development -- next dev",
-    "build": "dotenv -e .env.production -- next build",
-    "start": "dotenv -e .env.production -- next start",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint",
     "clean": "rm -rf .next && npm run build",
-    "preview": "dotenv -e .env.production -- next build && dotenv -e .env.production -- next start",
+    "preview": "next build && next start",
     "format:write": "prettier --write \"**/*.{js, jsx, ts,tsx,mdx}\" --cache",
-    "format:check": "prettier --check \"**/*.{js, jsx, ts,tsx,mdx}\" --cache",
-    "build:production": "dotenv -e .env.production -- next build",
-    "build:development": "dotenv -e .env.development -- next build"
+    "format:check": "prettier --check \"**/*.{js, jsx, ts,tsx,mdx}\" --cache"
   },
   "dependencies": {
     "@prisma/client": "^6.0.1",
