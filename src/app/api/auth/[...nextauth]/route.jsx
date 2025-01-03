@@ -11,17 +11,26 @@ const authOptions = {
                 email: { label: 'Email', type: 'text', placeholder: 'ejemplo@ejemplo.com' },
                 password: { label: 'Password', type: 'password', placeholder: '*************' },
             },
-            async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) {
-                    throw new Error('Email and password required');
-                }
+            async authorize(credentials, req) {
+                //console.log(credentials);
+                //console.log(`Credenciales recibidas: ${JSON.stringify(credentials)}`);
 
                 const userFound = await db.user.findUnique({
-                    where: { email: credentials.email },
-                    include: { roles: { include: { role: true } } },
+                    where: {
+                        email: credentials.email,
+                    },
+                    include: {
+                        roles: {
+                            include: {
+                                role: true,
+                            },
+                        },
+                    },
                 });
 
-                if (!userFound) throw new Error('No user found');
+                if (!userFound) throw new Error('No users found');
+
+                //console.log(userFound);
 
                 const matchPassword = await bcrypt.compare(
                     credentials.password,
@@ -48,19 +57,13 @@ const authOptions = {
     pages: {
         signIn: '/login',
     },
+    // Añade la secreta aquí
     secret: process.env.NEXTAUTH_SECRET,
     session: {
-        strategy: 'jwt',
-    },
-    cookies: {
-        sessionToken: {
-            name: `__Secure-next-auth.session-token`,
-            options: {
-                httpOnly: true,
-                sameSite: 'lax',
-                path: '/',
-                secure: process.env.NODE_ENV === 'production',
-            },
+        jwt: true,
+        cookie: {
+            secure: process.env.NODE_ENV && process.env.NODE_ENV === 'production',
+            sameSite: 'none',
         },
     },
     callbacks: {
@@ -78,6 +81,7 @@ const authOptions = {
                 state: token.state,
                 roles: token.roles,
             };
+            //console.log(session);
             return session;
         },
         async jwt({ token, user }) {
@@ -93,6 +97,7 @@ const authOptions = {
                 token.state = user.state;
                 token.roles = user.roles;
             }
+            //console.log(token);
             return token;
         },
     },
