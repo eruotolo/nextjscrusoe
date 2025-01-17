@@ -43,7 +43,7 @@ export default function EditAirportModal({ id, refresh, open, onClose }) {
         const fetchAirport = async () => {
             if (id) {
                 const airportData = await getAirportById(id);
-                console.log('Airport data fetched:', airportData);
+                //console.log('Airport data fetched:', airportData);
                 if (airportData) {
                     setSelectedCountry(airportData.codeCountry);
                     setValue('name', airportData.name);

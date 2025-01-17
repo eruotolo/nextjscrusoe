@@ -25,14 +25,14 @@ export default function MenuSetting() {
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted hover:text-primary ${pathname === '#' ? 'bg-muted text-gris' : 'text-gris'} `}
             >
                 <CircleHelp className="h-4 w-4" />
-                Help
+                Ayuda
             </Link>
             <Link
                 href="/setting/users"
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted hover:text-primary ${pathname === '/setting/users' ? 'bg-muted text-gris' : 'text-gris'} `}
             >
                 <Settings className="h-4 w-4" />
-                Setting
+                Configuración
             </Link>
             <Link
                 href="#"
@@ -40,7 +40,7 @@ export default function MenuSetting() {
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted hover:text-primary ${pathname === '#' ? 'bg-muted text-gris' : 'text-gris'} `}
             >
                 <LogOut className="h-4 w-4" />
-                Logout
+                Cerrar sesión
             </Link>
         </nav>
     );

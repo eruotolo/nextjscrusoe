@@ -43,6 +43,8 @@ next-env.d.ts
 # Otro
 /sql
 /postgres-data
-.jetclient
+/.jetclient/
 request.http
-.idea
+/.idea/
+docker-compose.yml
+/Sidatabase

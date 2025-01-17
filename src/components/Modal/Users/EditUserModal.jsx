@@ -117,7 +117,7 @@ export default function EditUserModal({ id, refresh, open, onClose }) {
                             <div className="mb-[15px] grid grid-cols-2">
                                 <div className="col-span-1 mr-[5px] flex flex-col">
                                     <label
-                                        for="name"
+                                        htmlFor="name"
                                         className="px-[15px] text-[13px] font-normal text-[#646464]"
                                     >
                                         Nombre
@@ -134,7 +134,7 @@ export default function EditUserModal({ id, refresh, open, onClose }) {
                                 </div>
                                 <div className="col-span-1 ml-[5px] flex flex-col">
                                     <label
-                                        for="lastName"
+                                        htmlFor="lastName"
                                         className="px-[15px] text-[13px] font-normal text-[#646464]"
                                     >
                                         Apellido
@@ -152,7 +152,7 @@ export default function EditUserModal({ id, refresh, open, onClose }) {
                             </div>
                             <div className="mb-[15px]">
                                 <label
-                                    for="email"
+                                    htmlFor="email"
                                     className="px-[15px] text-[13px] font-normal text-[#646464]"
                                 >
                                     Correo Electrónico
@@ -169,10 +169,10 @@ export default function EditUserModal({ id, refresh, open, onClose }) {
                             </div>
                             <div className="mb-[15px]">
                                 <label
-                                    for="phone"
+                                    htmlFor="phone"
                                     className="px-[15px] text-[13px] font-normal text-[#646464]"
                                 >
-                                    Correo Electrónico
+                                    Teléfono
                                 </label>
                                 <input
                                     id="phone"
@@ -186,7 +186,7 @@ export default function EditUserModal({ id, refresh, open, onClose }) {
                             </div>
                             <div className="mb-[15px]">
                                 <label
-                                    for="address"
+                                    htmlFor="address"
                                     className="px-[15px] text-[13px] font-normal text-[#646464]"
                                 >
                                     Dirección
@@ -203,10 +203,10 @@ export default function EditUserModal({ id, refresh, open, onClose }) {
                             </div>
                             <div className="mb-[15px]">
                                 <label
-                                    for="city"
+                                    htmlFor="city"
                                     className="px-[15px] text-[13px] font-normal text-[#646464]"
                                 >
-                                    Dirección
+                                    Ciudad
                                 </label>
                                 <input
                                     id="city"
@@ -220,7 +220,7 @@ export default function EditUserModal({ id, refresh, open, onClose }) {
                             </div>
                             <div className="mb-[15px]">
                                 <label
-                                    for="city"
+                                    htmlFor="city"
                                     className="px-[15px] text-[13px] font-normal text-[#646464]"
                                 >
                                     Contraseña

@@ -15,5 +15,12 @@
       <jdbc-url>jdbc:postgresql://db-postgresql-nyc3-38283-do-user-15288186-0.f.db.ondigitalocean.com:25060/defaultdb</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="postgres@vercel-neon" uuid="c5669b83-0d28-4e4f-9e24-180c970c707f">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ep-restless-haze-a5cf924k-pooler.us-east-2.aws.neon.tech:5432/neondb</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

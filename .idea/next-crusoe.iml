@@ -7,6 +7,11 @@
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/postgres-data" />
       <excludeFolder url="file://$MODULE_DIR$/sql" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules" />
+      <excludePattern pattern=".idea" />
+      <excludePattern pattern=".vscode" />
+      <excludePattern pattern=".next" />
+      <excludePattern pattern=".git" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
