@@ -132,11 +132,14 @@ export default function Header() {
                     </DropdownMenuTrigger>
                     <SetNameLogin />
                     <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>
+                        <DropdownMenuItem>
                             <Link href="#" onClick={handleProfileOpenModal}>
                                 Ver Perfil
                             </Link>
-                        </DropdownMenuLabel>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link href="#">Cambiar password</Link>
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                             <Link href="#" onClick={handleSignOut}>
