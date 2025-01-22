@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
-import { writeFile } from 'fs/promises';
-import path from 'path';
 import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
+import cloudinary from '@/lib/cloudinary';
 
 export async function GET(request, { params }) {
     try {
@@ -59,41 +57,58 @@ export async function DELETE(request, { id }) {
 
 export async function PUT(request, { params: { id } }) {
     let data = {};
-
     const contentType = request.headers.get('Content-Type');
-    //console.log('Content-Type:', contentType);
 
     if (contentType.includes('multipart/form-data')) {
-        const formData = await request.formData();
-        formData.forEach((value, key) => {
-            data[key] = value;
-        });
+        try {
+            const formData = await request.formData();
 
-        const { password, file, ...rest } = data;
-        //console.log('Form Data:', data);
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
 
-        if (password) {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            rest.password = hashedPassword;
+            const { password, file, ...rest } = data;
+
+            if (password) {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                rest.password = hashedPassword;
+            }
+
+            if (file instanceof File) {
+                const bytes = await file.arrayBuffer();
+                const buffer = Buffer.from(bytes);
+
+                const { secure_url } = await new Promise((resolve, reject) => {
+                    cloudinary.uploader
+                        .upload_stream({ folder: 'profile' }, (error, result) => {
+                            if (error) return reject(error);
+                            resolve(result);
+                        })
+                        .end(buffer);
+                });
+
+                rest.image = secure_url;
+            }
+
+            const userUpdated = await prisma.user.update({
+                where: {
+                    id: Number.parseInt(id, 10),
+                },
+                data: rest,
+            });
+
+            const response = NextResponse.json(userUpdated);
+            response.headers.set(
+                'Cache-Control',
+                'no-store, no-cache, must-revalidate, proxy-revalidate'
+            );
+            response.headers.set('Pragma', 'no-cache');
+            response.headers.set('Expires', '0');
+            return response;
+        } catch (error) {
+            console.error('Error in PUT /api/users:', error);
+            return NextResponse.json({ error: error.message }, { status: 500 });
         }
-
-        if (file) {
-            const bytes = await file.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-
-            const fileExtension = path.extname(file.name);
-            const randomFileName = `${uuidv4()}${fileExtension}`;
-            const filePath = path.join(process.cwd(), 'public/profile', randomFileName);
-            await writeFile(filePath, buffer);
-            rest.image = randomFileName; // Update the image field with the new file name
-        }
-
-        // Convert state to integer if it exists
-        if (rest.state) {
-            rest.state = parseInt(rest.state, 10);
-        }
-
-        data = rest;
     } else if (contentType.includes('application/json')) {
         data = await request.json();
         //console.log('JSON Data:', data);
@@ -122,6 +137,7 @@ export async function PUT(request, { params: { id } }) {
         //console.log('User updated:', userUpdated);
 
         const response = NextResponse.json(userUpdated);
+
         response.headers.set(
             'Cache-Control',
             'no-store, no-cache, must-revalidate, proxy-revalidate'

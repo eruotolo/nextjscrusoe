@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
-import { writeFile } from 'fs/promises';
-import path from 'path';
 import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache';
+
+import cloudinary from '@/lib/cloudinary';
 
 export async function GET() {
     //return NextResponse.json({ message: 'Soy Un Moustro' });
@@ -48,77 +47,54 @@ export async function GET() {
 
         return response;
     } catch (error) {
-        return NextResponse.json({ message: 'Error al obtener los usuarios' });
+        return NextResponse.json(
+            { success: false, message: error.message, stack: error.stack },
+            { status: 500 }
+        );
     }
 }
 
-/*export async function POST(request) {
-    try {
-        const data = await request.formData();
-        const file = data.get('file');
-        const name = data.get('name');
-        const lastName = data.get('lastName');
-        const email = data.get('email');
-        const phone = data.get('phone');
-        const address = data.get('address');
-        const city = data.get('city');
-        const password = data.get('password');
-
-        if (!file || !name || !lastName || !email || !phone || !address || !city || !password) {
-            return NextResponse.json(
-                { success: false, message: 'All fields are required' },
-                { status: 400 }
-            );
-        }
-
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-
-        const fileExtension = path.extname(file.name);
-        const randomFileName = `${uuidv4()}${fileExtension}`;
-        const filePath = path.join(process.cwd(), 'public/profile', randomFileName);
-        await writeFile(filePath, buffer);
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const user = await prisma.user.create({
-            data: {
-                name,
-                lastName,
-                email,
-                phone,
-                address,
-                city,
-                image: randomFileName,
-                password: hashedPassword,
-                state: 1,
-            },
-        });
-
-        return NextResponse.json({ success: true, user }, { status: 201 });
-    } catch (error) {
-        console.error('Error creating user:', error);
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
-    }
-}*/
 export async function POST(request) {
     try {
-        console.log('Starting POST request');
-        const data = await request.json();
-        console.log('Data received:', data);
-        const { name, lastName, email, phone, address, city, password } = data;
+        const formData = await request.formData();
+        //console.log('Data received:', formData);
 
-        if (!name || !lastName || !email || !phone || !address || !city || !password) {
-            return NextResponse.json(
-                { success: false, message: 'All fields are required' },
-                { status: 400 }
-            );
+        const file = formData.get('file');
+        let imageUrl = null;
+
+        if (file) {
+            // Convertir el archivo a un buffer para subirlo a Cloudinary
+            const bytes = await file.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+
+            // Subir el archivo a Cloudinary utilizando un stream
+            const { secure_url } = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+                    { folder: 'profile' },
+                    (error, result) => {
+                        if (error) {
+                            console.error('Error al subir la imagen a Cloudinary:', error);
+                            return reject(error);
+                        }
+                        resolve(result);
+                    }
+                );
+                stream.end(buffer);
+            });
+            imageUrl = secure_url;
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        console.log('Password hashed');
+        const name = formData.get('name');
+        const lastName = formData.get('lastName');
+        const email = formData.get('email');
+        const phone = formData.get('phone');
+        const address = formData.get('address');
+        const city = formData.get('city');
+        const password = formData.get('password');
 
-        const user = await prisma.user.create({
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = await prisma.user.create({
             data: {
                 name,
                 lastName,
@@ -126,14 +102,19 @@ export async function POST(request) {
                 phone,
                 address,
                 city,
-                image: '/profile/perfil-default.jpg', // Usar la imagen por defecto
+                image: imageUrl,
                 password: hashedPassword,
                 state: 1,
             },
         });
-        console.log('User created:', user);
 
-        return NextResponse.json({ success: true, user }, { status: 201 });
+        //console.log('Nuevo Usuario:', newUser);
+
+        if (newUser) {
+            return NextResponse.json({ message: 'Usuario creado correctamente' }, { status: 201 });
+        } else {
+            return NextResponse.json({ message: 'Error al crear el usuario' }, { status: 500 });
+        }
     } catch (error) {
         console.error('Error in POST /api/users:', error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

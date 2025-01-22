@@ -102,13 +102,13 @@ export default function ViewUserModal({ id, open, onClose }) {
                             <Image
                                 src={
                                     user.image
-                                        ? `/profile/${user.image}`
-                                        : '/profile/perfil-defaul.jpeg'
+                                        ? `${user.image}`
+                                        : 'https://res.cloudinary.com/crusoeproduccion/image/upload/v1737207089/profile/perfil-default.jpg'
                                 }
                                 alt="Imagen Perfil usuario"
                                 width={220}
                                 height={220}
-                                className="rounded-[50%]"
+                                className="h-[220px] w-[220px] rounded-[50%] object-cover"
                             />
                         </div>
                     </div>

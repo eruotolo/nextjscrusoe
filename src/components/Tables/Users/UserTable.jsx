@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getUsers } from '@/services/setting/userService';
+import { getUsers, changeUserState } from '@/services/setting/userService';
 import dynamic from 'next/dynamic';
 
 import GenericTable from '@/components/TableGeneric/TableGeneric';
@@ -113,7 +113,6 @@ export default function UserTable() {
         buttonsStyling: false,
     });
 
-    // CHANGE ESTADO
     async function handleUserStateChange(id, state) {
         const action = state === 1 ? 'activado' : 'desactivado';
         const confirmText =
@@ -136,18 +135,17 @@ export default function UserTable() {
             })
             .then(async (result) => {
                 if (result.isConfirmed) {
-                    await fetch(`/api/users/${id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ state }),
-                    });
-                    swalWithBootstrapButtons.fire({
-                        title: successText,
-                        text: successMessage,
-                        icon: 'success',
-                    });
+                    const success = await changeUserState(id, state);
+                    if (success) {
+                        await refreshTable();
+                        swalWithBootstrapButtons.fire({
+                            title: successText,
+                            text: successMessage,
+                            icon: 'success',
+                        });
+                    } else {
+                        console.error('Error change');
+                    }
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     swalWithBootstrapButtons.fire({
                         title: 'Cancelado',

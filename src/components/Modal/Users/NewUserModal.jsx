@@ -1,6 +1,10 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { createUser } from '@/services/setting/userService';
+import { FilePenLine } from 'lucide-react';
+
 import Image from 'next/image';
 
 import {
@@ -13,65 +17,71 @@ import {
 } from '@/components/ui/dialog';
 
 export default function NewUserModal({ open, onClose, refresh }) {
-    const [formData, setFormData] = useState({
-        name: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        address: '',
-        city: '',
-        password: '',
-    });
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm();
+    const [error, setError] = useState('');
 
-    const onSubmit = async (e) => {
-        e.preventDefault();
-        if (Object.values(formData).some((value) => value === '')) return;
+    const [imagePreview, setImagePreview] = useState(
+        'https://res.cloudinary.com/crusoeproduccion/image/upload/v1737207089/profile/perfil-default.jpg'
+    );
+    // Estado para la imagen seleccionada
+    const [selectedImage, setSelectedImage] = useState(null);
+    // Archivo de imagen seleccionado
 
-        try {
-            const res = await fetch('/api/users', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
+    // Manejo del cambio en el input de archivo
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            // Actualiza el preview de la imagen
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result); // Muestra la imagen preview
+            };
+            reader.readAsDataURL(file);
 
-            const data = await res.json();
-
-            if (res.ok) {
-                console.log('User created successfully:', data);
-                resetForm();
-                refresh();
-                onClose();
-            } else {
-                console.error('Error creating user:', data.message);
-                // Aquí puedes mostrar un mensaje de error al usuario
-            }
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            // Aquí puedes mostrar un mensaje de error al usuario
+            setSelectedImage(file); // Guarda el archivo seleccionado
         }
     };
 
-    const resetForm = () => {
-        setFormData({
-            name: '',
-            lastName: '',
-            email: '',
-            phone: '',
-            address: '',
-            city: '',
-            password: '',
-        });
-    };
+    const onSubmit = async (data) => {
+        setError('');
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+        try {
+            const formData = new FormData();
 
-    const isFormValid = () => {
-        const { name, lastName, email, phone, address, city, password } = formData;
-        return name && lastName && email && phone && address && city && password;
+            Object.keys(data).forEach((key) => {
+                formData.append(key, data[key]);
+            });
+
+            if (selectedImage) {
+                formData.append('file', selectedImage); // Añade la imagen correctamente
+            }
+
+            // Log para inspeccionar el contenido del FormData
+            for (const [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+
+            const createdUser = await createUser(formData);
+
+            if (createdUser) {
+                refresh();
+                onClose();
+                reset();
+                setImagePreview(
+                    'https://res.cloudinary.com/crusoeproduccion/image/upload/v1737207089/profile/perfil-default.jpg'
+                ); // Resetea la imagen al valor por defecto
+                setSelectedImage(null); // Limpia el archivo seleccionado
+            } else {
+                console.error('Error creating user:', data.message);
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
     };
 
     return (
@@ -85,7 +95,7 @@ export default function NewUserModal({ open, onClose, refresh }) {
                         crear la cuenta.
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={onSubmit}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-3">
                         <div className="col-span-2">
                             <div className="mb-[15px] flex">
@@ -93,8 +103,7 @@ export default function NewUserModal({ open, onClose, refresh }) {
                                     id="name"
                                     type="text"
                                     name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
+                                    {...register('name', { required: true })}
                                     placeholder="Nombre"
                                     className="custom-input mr-[10px]"
                                 />
@@ -102,8 +111,7 @@ export default function NewUserModal({ open, onClose, refresh }) {
                                     id="lastName"
                                     type="text"
                                     name="lastName"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
+                                    {...register('lastName', { required: true })}
                                     placeholder="Apellido"
                                     className="custom-input"
                                 />
@@ -113,8 +121,7 @@ export default function NewUserModal({ open, onClose, refresh }) {
                                     id="email"
                                     type="email"
                                     name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
+                                    {...register('email', { required: true })}
                                     placeholder="Email"
                                     className="custom-input"
                                 />
@@ -124,8 +131,7 @@ export default function NewUserModal({ open, onClose, refresh }) {
                                     id="phone"
                                     type="tel"
                                     name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
+                                    {...register('phone', { required: true })}
                                     placeholder="Teléfono"
                                     className="custom-input"
                                 />
@@ -135,8 +141,7 @@ export default function NewUserModal({ open, onClose, refresh }) {
                                     id="address"
                                     type="text"
                                     name="address"
-                                    value={formData.address}
-                                    onChange={handleChange}
+                                    {...register('address', { required: true })}
                                     placeholder="Dirección"
                                     className="custom-input"
                                 />
@@ -146,8 +151,7 @@ export default function NewUserModal({ open, onClose, refresh }) {
                                     id="city"
                                     type="text"
                                     name="city"
-                                    value={formData.city}
-                                    onChange={handleChange}
+                                    {...register('city', { required: true })}
                                     placeholder="Ciudad"
                                     className="custom-input"
                                 />
@@ -157,8 +161,7 @@ export default function NewUserModal({ open, onClose, refresh }) {
                                     id="password"
                                     type="password"
                                     name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
+                                    {...register('password', { required: true })}
                                     placeholder="Contraseña"
                                     className="custom-input"
                                 />
@@ -167,17 +170,31 @@ export default function NewUserModal({ open, onClose, refresh }) {
                         <div className="col-span-1 pl-[20px]">
                             <div>
                                 <Image
-                                    src="/profile/perfil-default.jpg"
+                                    src={imagePreview}
                                     width={220}
                                     height={220}
-                                    alt="Perfil por defecto"
-                                    className="rounded-[50%]"
+                                    alt="Vista previa de la imagen"
+                                    className="h-[220px] w-[220px] rounded-[50%] object-cover"
+                                />
+                                <label
+                                    htmlFor="file-upload"
+                                    className="mt-[34px] flex w-full cursor-pointer items-center justify-center rounded-md bg-gris px-4 py-2 text-[12px] font-medium text-white hover:bg-grisclaro hover:text-gris focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                >
+                                    <FilePenLine className="mr-2 h-5 w-5" />
+                                    Cambiar foto de perfil
+                                </label>
+                                <input
+                                    id="file-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden" // Ocultar el input original
+                                    onChange={handleImageChange} // Maneja el cambio de archivo
                                 />
                             </div>
                         </div>
                     </div>
                     <DialogFooter className="mt-6">
-                        <button type="submit" disabled={!isFormValid()} className="custom-button">
+                        <button type="submit" className="custom-button">
                             Crear
                         </button>
                     </DialogFooter>

@@ -18,7 +18,8 @@ export const getUsers = async () => {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            console.error(`Error al obtener: ${response.status} - ${response.statusText}`);
+            return null;
         }
 
         let data = await response.json();
@@ -29,48 +30,107 @@ export const getUsers = async () => {
     }
 };
 
-export const disableUser = async (id) => {
+export const createUser = async (userData) => {
     try {
-        const response = await fetch(`${API_URL}/api/users/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ state: 0 }),
-            cache: 'no-store', // Ensure we're not caching this request
+        const response = await fetch(`${API_URL}/api/users`, {
+            method: 'POST',
+            body: userData,
+            cache: 'no-store',
         });
 
         if (!response.ok) {
-            throw new Error(`Error disabling user: ${response.status} - ${response.statusText}`);
+            console.error(`Error creating: ${response.status} - ${response.statusText}`);
+            return null;
         }
 
         await revalidateData();
         return await response.json();
     } catch (error) {
-        console.error('Error disabling user:', error);
-        throw error; // Re-throw the error for the component to handle
+        console.error('Error creating user:', error);
+        return null;
     }
 };
 
-export const activeUser = async (id) => {
+export const getUserById = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/api/users/${id}`, {
+            cache: 'no-store',
+        });
+
+        if (!response.ok) {
+            console.error(`Error al obtener: ${response.status} - ${response.statusText}`);
+            return null;
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching:', error);
+        return null;
+    }
+};
+
+export const updateUser = async (id, userData) => {
+    try {
+        const response = await fetch(`${API_URL}/api/users/${id}`, {
+            method: 'PUT',
+            body: userData,
+            cache: 'no-store',
+        });
+
+        if (!response.ok) {
+            console.error(`Error updating: ${response.status} - ${response.statusText}`);
+            return null;
+        }
+
+        await revalidateData();
+        return await response.json();
+    } catch (error) {
+        console.error('Error updating user:', error);
+        return null;
+    }
+};
+
+export const changeUserState = async (id, newState) => {
     try {
         const response = await fetch(`${API_URL}/api/users/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ state: 1 }),
-            cache: 'no-store', // Ensure we're not caching this request
+            body: JSON.stringify({ state: newState }),
+            cache: 'no-store',
         });
 
         if (!response.ok) {
-            throw new Error(`Error activating user: ${response.status} - ${response.statusText}`);
+            console.error(`Error changing user state: ${response.status} - ${response.statusText}`);
+            return null;
         }
 
         await revalidateData();
         return await response.json();
     } catch (error) {
-        console.error('Error activating user:', error);
-        throw error; // Re-throw the error for the component to handle
+        console.error('Error changing user state:', error);
+        throw error;
+    }
+};
+
+export const changeUserPassword = async (id, formData) => {
+    try {
+        const response = await fetch(`${API_URL}/api/users/${id}`, {
+            method: 'PUT',
+            body: formData,
+            cache: 'no-store',
+        });
+
+        if (!response.ok) {
+            console.error(`Error updating: ${response.status} - ${response.statusText}`);
+            return null;
+        }
+
+        await revalidateData();
+        return await response.json();
+    } catch (error) {
+        console.error('Error changing user state:', error);
+        throw error;
     }
 };

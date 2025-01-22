@@ -1,7 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useState, useEffect } from 'react';
+
+import useAuthStore from '@/store/authStore';
+import { changeUserPassword } from '@/services/setting/userService';
 
 import {
     Dialog,
@@ -12,7 +15,11 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 
-export default function ChangeUserPassModal({ id, refresh, open, onClose }) {
+export default function ChangePasswordModal({ open, onClose }) {
+    const [error, setError] = useState('');
+    const session = useAuthStore((state) => state.session);
+    const fetchSession = useAuthStore((state) => state.fetchSession); // Importa fetchSession
+
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isDisabled, setIsDisabled] = useState(true);
@@ -24,27 +31,26 @@ export default function ChangeUserPassModal({ id, refresh, open, onClose }) {
         formState: { errors },
     } = useForm();
 
-    const onSubmit = handleSubmit(async (data) => {
-        const formData = new FormData();
-        formData.append('password', data.password);
+    const onSubmit = async (data) => {
+        setError('');
+        try {
+            const formData = new FormData();
+            formData.append('password', data.password);
 
-        const res = await fetch(`/api/users/${id}`, {
-            method: 'PUT',
-            body: formData,
-        });
+            const updatedUser = await changeUserPassword(session.user.id, formData);
+            //console.log('NewPassword:', updatedUser);
 
-        if (res.ok) {
-            await refresh();
-            resetForm();
-            onClose();
+            if (updatedUser) {
+                await fetchSession();
+                reset();
+                onClose();
+            } else {
+                setError('Error al actualizar el usuario.');
+            }
+        } catch (error) {
+            console.error('Error al enviar el formulario:', error);
+            setError('Error al actualizar el usuario.');
         }
-    });
-
-    const resetForm = () => {
-        reset();
-        setPassword('');
-        setConfirmPassword('');
-        setIsDisabled(true);
     };
 
     useEffect(() => {
@@ -65,7 +71,7 @@ export default function ChangeUserPassModal({ id, refresh, open, onClose }) {
                         los requisitos de seguridad antes de guardar los cambios.
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={onSubmit}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-[15px] grid grid-cols-1">
                         <div className="mb-[15px]">
                             <label

@@ -6,12 +6,14 @@ import useAuthStore from '@/store/authStore';
 
 export default function SetImageLogin() {
     const session = useAuthStore((state) => state.session);
-
+    //console.log(session);
     return (
         <>
             <Image
-                src={`/profile/${
-                    session && session.user ? session.user.image : '/perfil-default.jpg'
+                src={`${
+                    session && session.user
+                        ? session.user.image
+                        : 'https://res.cloudinary.com/crusoeproduccion/image/upload/v1737207089/profile/perfil-default.jpg'
                 }`}
                 alt="Imagen Perfil Usuario"
                 width={770}

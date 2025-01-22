@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import db from '@/lib/db';
 import bcrypt from 'bcrypt';
+import AuthAdapter from '@/store/authAdapter'; // Importa el adaptador
 
 const authOptions = {
     providers: [
@@ -68,21 +69,33 @@ const authOptions = {
     },
     callbacks: {
         async session({ session, token }) {
-            session.user = {
-                ...session.user,
-                id: token.id,
-                name: token.name,
-                lastName: token.lastName,
-                email: token.email,
-                phone: token.phone,
-                address: token.address,
-                city: token.city,
-                image: token.image,
-                state: token.state,
-                roles: token.roles,
-            };
-            //console.log(session);
-            return session;
+            try {
+                const { getUserById } = AuthAdapter(); // Inicializa el adaptador
+
+                // Obtener la información más reciente del usuario
+                const freshUserData = await getUserById(token.id);
+
+                session.user = {
+                    ...session.user,
+                    id: token.id,
+                    name: token.name,
+                    lastName: token.lastName,
+                    email: token.email,
+                    phone: token.phone,
+                    address: token.address,
+                    city: token.city,
+                    image: token.image,
+                    state: token.state,
+                    ...freshUserData,
+                    roles: token.roles,
+                };
+                //console.log(session);
+                return session;
+            } catch (error) {
+                console.error('Error actualizando la sesión:', error);
+                // Maneja el error apropiadamente, tal vez regresa la sesión original o una sesión nula
+                return session; // O return null; para invalidar la session
+            }
         },
         async jwt({ token, user }) {
             if (user) {

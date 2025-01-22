@@ -1,6 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { getUserById, updateUser } from '@/services/setting/userService';
+
 import Image from 'next/image';
 
 import {
@@ -15,88 +18,80 @@ import {
 import { FilePenLine } from 'lucide-react';
 
 export default function EditUserModal({ id, refresh, open, onClose }) {
-    const [formData, setFormData] = useState({
-        name: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        address: '',
-        city: '',
-        password: '',
-        image: '', // para almacenar la ruta de la imagen
-    });
-    const [file, setFile] = useState(null);
-    const fileInputRef = useRef(null);
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        formState: { errors },
+    } = useForm();
 
-    useEffect(() => {
-        fetch(`/api/users/${id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                setFormData({
-                    name: data.name,
-                    lastName: data.lastName,
-                    email: data.email,
-                    phone: data.phone,
-                    address: data.address,
-                    city: data.city,
-                    state: data.state,
-                    password: '', // No recuperar el password por seguridad
-                    image: data.image, // almacenar la ruta de la imagen
-                });
-            })
-            .catch((error) => console.error('Error fetching user:', error));
-    }, [id]);
+    const [error, setError] = useState('');
+    const [imagePreview, setImagePreview] = useState(
+        'https://res.cloudinary.com/crusoeproduccion/image/upload/v1737207089/profile/perfil-default.jpg'
+    );
+    const [selectedImage, setSelectedImage] = useState(null);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    const handleFileChange = (e) => {
-        if (e.target.files.length > 0) {
-            setFile(e.target.files[0]);
-            setFormData((prevData) => ({
-                ...prevData,
-                image: '', // limpiar la imagen previa
-            }));
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result); // Vista previa
+            };
+            reader.readAsDataURL(file);
+            setSelectedImage(file); // Guardar imagen seleccionada
         }
     };
 
-    const handleCustomFileButtonClick = () => {
-        fileInputRef.current?.click();
-    };
-
-    const onSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const updateData = new FormData();
-            if (file) {
-                updateData.append('file', file);
-            }
-            Object.keys(formData).forEach((key) => {
-                if (formData[key]) {
-                    updateData.append(key, formData[key]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await getUserById(id);
+                if (data) {
+                    setValue('name', data.name || '');
+                    setValue('lastName', data.lastName || '');
+                    setValue('email', data.email || '');
+                    setValue('phone', data.phone || '');
+                    setValue('address', data.address || '');
+                    setValue('city', data.city || '');
+                    setValue('password', ''); // Campo de contraseña vacío por seguridad
+                    setImagePreview(data.image || imagePreview); // Imagen de usuario (o la default)
                 }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setError('Error fetching user data');
+            }
+        };
+
+        // Solo se cargan los datos si el modal está abierto y hay un id válido
+        if (open && id) fetchData();
+    }, [id, open, setValue]);
+
+    const onSubmit = async (data) => {
+        setError(''); // Limpia errores previos
+
+        try {
+            const formData = new FormData();
+
+            Object.keys(data).forEach((key) => {
+                formData.append(key, data[key]); // Agregar datos al FormData
             });
 
-            const res = await fetch(`/api/users/${id}`, {
-                method: 'PUT',
-                body: updateData,
-            });
+            if (selectedImage) {
+                formData.append('file', selectedImage); // Agregar la imagen si fue seleccionada
+            }
 
-            if (res.ok) {
-                console.log('File and data uploaded successfully');
-                await refresh();
-                onClose();
+            const updatedUser = await updateUser(id, formData); // Actualiza los datos del usuario
+
+            if (updatedUser) {
+                refresh(); // Refresca los datos en la lista principal
+                onClose(); // Cierra el modal
             } else {
-                const errorData = await res.json();
-                console.error('Error updating user:', errorData);
+                setError('Error updating user');
             }
         } catch (error) {
-            console.error('Error updating user:', error);
+            console.error('Error submitting form:', error);
+            setError('Error updating user');
         }
     };
 
@@ -111,178 +106,122 @@ export default function EditUserModal({ id, refresh, open, onClose }) {
                         relevantes antes de guardar los cambios.
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={onSubmit}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-3">
                         <div className="col-span-2">
                             <div className="mb-[15px] grid grid-cols-2">
                                 <div className="col-span-1 mr-[5px] flex flex-col">
-                                    <label
-                                        htmlFor="name"
-                                        className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                    >
+                                    <label htmlFor="name" className="custom-label">
                                         Nombre
                                     </label>
                                     <input
                                         className="custom-input"
                                         id="name"
                                         name="name"
-                                        value={formData.name}
-                                        onChange={handleInputChange}
                                         type="text"
-                                        placeholder="Nombre"
+                                        {...register('name')}
                                     />
                                 </div>
                                 <div className="col-span-1 ml-[5px] flex flex-col">
-                                    <label
-                                        htmlFor="lastName"
-                                        className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                    >
+                                    <label htmlFor="lastName" className="custom-label">
                                         Apellido
                                     </label>
                                     <input
                                         className="custom-input"
                                         id="lastName"
                                         name="lastName"
-                                        value={formData.lastName}
-                                        onChange={handleInputChange}
                                         type="text"
-                                        placeholder="Apellido"
+                                        {...register('lastName')}
                                     />
                                 </div>
                             </div>
                             <div className="mb-[15px]">
-                                <label
-                                    htmlFor="email"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
+                                <label htmlFor="email" className="custom-label">
                                     Correo Electrónico
                                 </label>
                                 <input
                                     id="email"
                                     name="email"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
                                     type="email"
-                                    placeholder="Correo Electrónico"
                                     className="custom-input"
+                                    {...register('email')}
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <label
-                                    htmlFor="phone"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
+                                <label htmlFor="phone" className="custom-label">
                                     Teléfono
                                 </label>
                                 <input
                                     id="phone"
                                     name="phone"
-                                    value={formData.phone}
-                                    onChange={handleInputChange}
                                     type="text"
-                                    placeholder="Teléfono"
                                     className="custom-input"
+                                    {...register('phone')}
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <label
-                                    htmlFor="address"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
+                                <label htmlFor="address" className="custom-label">
                                     Dirección
                                 </label>
                                 <input
                                     id="address"
                                     name="address"
-                                    value={formData.address}
-                                    onChange={handleInputChange}
                                     type="text"
-                                    placeholder="Dirección"
                                     className="custom-input"
+                                    {...register('address')}
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <label
-                                    htmlFor="city"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
+                                <label htmlFor="city" className="custom-label">
                                     Ciudad
                                 </label>
                                 <input
                                     id="city"
                                     name="city"
-                                    value={formData.city}
-                                    onChange={handleInputChange}
                                     type="text"
-                                    placeholder="Ciudad"
                                     className="custom-input"
+                                    {...register('city')}
                                 />
                             </div>
                             <div className="mb-[15px]">
-                                <label
-                                    htmlFor="city"
-                                    className="px-[15px] text-[13px] font-normal text-[#646464]"
-                                >
+                                <label htmlFor="city" className="custom-label">
                                     Contraseña
                                 </label>
                                 <input
                                     id="password"
                                     name="password"
-                                    value={formData.password}
-                                    onChange={handleInputChange}
                                     type="password"
-                                    placeholder="*******"
                                     className="custom-input"
+                                    {...register('password', {
+                                        required: false,
+                                    })}
                                 />
                             </div>
                         </div>
                         <div className="col-span-1 pl-[20px]">
-                            {file ? (
-                                <div>
-                                    <Image
-                                        src={
-                                            typeof file === 'string'
-                                                ? file
-                                                : URL.createObjectURL(file)
-                                        }
-                                        width={220}
-                                        height={220}
-                                        alt="Vista previa"
-                                        className="rounded-[50%]"
-                                    />
-                                </div>
-                            ) : formData.image ? (
-                                <div>
-                                    <Image
-                                        src={`/profile/${formData.image}`}
-                                        width={220}
-                                        height={220}
-                                        alt="Vista previa"
-                                        className="rounded-[50%]"
-                                    />
-                                </div>
-                            ) : null}
-
-                            <input
-                                id="file"
-                                type="file"
-                                ref={fileInputRef}
-                                onChange={handleFileChange}
-                                className="hidden"
-                            />
-                            <button
-                                type="button"
-                                onClick={handleCustomFileButtonClick}
-                                className="mt-[34px] flex w-full items-center justify-center rounded-md bg-gris px-4 py-2 text-[12px] font-medium text-white hover:bg-grisclaro hover:text-gris focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                            >
-                                <FilePenLine className="mr-2 h-5 w-5" />
-                                Cambiar foto de perfil
-                            </button>
-                            {file && (
-                                <p className="mt-2 text-sm text-gray-600">
-                                    Archivo seleccionado: {file.name}
-                                </p>
-                            )}
+                            <div>
+                                <Image
+                                    src={imagePreview || '/placeholder.svg'}
+                                    width={220}
+                                    height={220}
+                                    alt="Vista previa de la imagen"
+                                    className="h-[220px] w-[220px] rounded-[50%] object-cover"
+                                />
+                                <label
+                                    htmlFor="file-upload"
+                                    className="mt-[34px] flex w-full cursor-pointer items-center justify-center rounded-md bg-gris px-4 py-2 text-[12px] font-medium text-white hover:bg-grisclaro hover:text-gris focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                >
+                                    <FilePenLine className="mr-2 h-5 w-5" />
+                                    Cambiar foto de perfil
+                                </label>
+                                <input
+                                    id="file-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={handleImageChange}
+                                />
+                            </div>
                         </div>
                     </div>
                     <DialogFooter>

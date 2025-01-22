@@ -84,7 +84,7 @@
 
 @layer components {
     .custom-label {
-        @apply text-sm text-[#8D8989] font-medium leading-5 mb-[3px] pl-[13px] mt-[5px]
+        @apply text-[13px] text-[#333] font-semibold leading-5 mb-[3px] pl-[13px] mt-[5px] px-[15px]
     }
 
     .custom-select {
@@ -97,6 +97,9 @@
 
     .custom-button {
         @apply h-[36px] w-[120px] mt-[20px] rounded-[10px] border-0 bg-gris text-[12px] font-normal text-blanco hover:bg-grisclaro hover:text-gris 2xl:w-[120px] disabled:opacity-50
+    }
+    .custom-button-close{
+        @apply h-[36px] w-[120px] mt-[20px] rounded-[10px] border-0 text-[12px] font-normal text-gris bg-grisclaro hover:bg-gris hover:text-blanco 2xl:w-[120px] disabled:opacity-50
     }
 }
 

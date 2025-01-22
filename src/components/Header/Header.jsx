@@ -26,9 +26,14 @@ const DynamicProfileView = dynamic(() => import('@/components/Modal/Profile/View
     ssr: false,
 });
 
+const DynamicProfilePass = dynamic(() => import('@/components/Modal/Profile/ChangePasswordModal'), {
+    ssr: false,
+});
+
 export default function Header() {
     const router = useRouter();
     const [openProfile, setOpenProfile] = useState(false);
+    const [openPass, setOpenPass] = useState(false);
 
     const handleSignOut = async () => {
         console.log('Cerrando sesión...');
@@ -40,6 +45,9 @@ export default function Header() {
     // DIALOG OPEN CLOSE
     const handleProfileOpenModal = () => setOpenProfile(true);
     const handleProfileCloseModal = () => setOpenProfile(false);
+
+    const handlePassOpenModal = () => setOpenPass(true);
+    const handlePassCloseModal = () => setOpenPass(false);
 
     return (
         <>
@@ -137,7 +145,9 @@ export default function Header() {
                             </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                            <Link href="#">Cambiar password</Link>
+                            <Link href="#" onClick={handlePassOpenModal}>
+                                Cambiar password
+                            </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
@@ -151,6 +161,7 @@ export default function Header() {
             {openProfile && (
                 <DynamicProfileView open={openProfile} onClose={handleProfileCloseModal} />
             )}
+            {openPass && <DynamicProfilePass open={openPass} onClose={handlePassCloseModal} />}
         </>
     );
 }
