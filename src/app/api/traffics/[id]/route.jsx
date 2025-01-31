@@ -53,6 +53,7 @@ export async function PUT(request, { params }) {
         }
 
         const data = await request.json();
+        console.log('Data API:', data);
         const updateTraffics = await prisma.traffics.update({
             where: { id },
             data: data,

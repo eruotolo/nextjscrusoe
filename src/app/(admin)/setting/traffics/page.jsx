@@ -1,4 +1,4 @@
-import TrafficsTable from '@/components/Tables/Traffics/TrafficsTable';
+import TrafficsTable from '@/components/Tables/Setting/Traffics/TrafficsTable';
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 
 export default function Nombre() {

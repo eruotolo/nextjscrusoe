@@ -15,6 +15,11 @@ const nextConfig = {
                 destination: '/setting/users', // URL de destino
                 permanent: true, // true si es una redirección 301, false para 302
             },
+            {
+                source: '/crm',
+                destination: '/crm/ejemplo',
+                permanent: true,
+            },
         ];
     },
     webpack: (config, { isServer }) => {

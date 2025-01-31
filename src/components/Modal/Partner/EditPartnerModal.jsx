@@ -109,7 +109,7 @@ export default function EditPartnerModal({ id, refresh, open, onClose }) {
                 ...data,
                 codeCountry: selectedCountry,
                 codeCity: selectedCity,
-                userId: Number(session?.user?.id) || 0,
+                userId: session?.user?.id || '',
             });
             //console.log('Update:', response);
             if (response) {
@@ -316,11 +316,7 @@ export default function EditPartnerModal({ id, refresh, open, onClose }) {
                         </select>
                     </div>
                     <div className="mb-[15px] grid grid-cols-1">
-                        <input
-                            type="hidden"
-                            value={session?.user?.id || ''}
-                            {...register('userId')}
-                        />
+                        <input type="text" hidden {...register('userId')} />
                     </div>
                     {error && <div className="mt-2 text-sm text-red-500">{error}</div>}
                     <DialogFooter>

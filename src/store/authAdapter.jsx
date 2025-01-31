@@ -10,7 +10,7 @@ const AuthAdapter = () => {
         try {
             // Actualiza los datos del usuario en la base de datos
             const updatedUser = await prisma.user.update({
-                where: { id: userId },
+                where: { id: userId ? String(userId) : undefined },
                 data: userData,
             });
 
@@ -27,7 +27,7 @@ const AuthAdapter = () => {
 
         try {
             const user = await prisma.user.findUnique({
-                where: { id: userId },
+                where: { id: userId ? String(userId) : undefined },
             });
 
             return user;

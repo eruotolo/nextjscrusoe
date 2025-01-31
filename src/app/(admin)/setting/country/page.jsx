@@ -1,5 +1,5 @@
-import CountryTable from '@/components/Tables/Country/CountryTable';
-import CityTable from '@/components/Tables/Country/CityTable';
+import CountryTable from '@/components/Tables/Setting/Country/CountryTable';
+import CityTable from '@/components/Tables/Setting/Country/CityTable';
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 
 export default function SettingCountryPage() {

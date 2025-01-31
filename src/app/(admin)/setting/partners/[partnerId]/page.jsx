@@ -1,6 +1,6 @@
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 import UniquePartner from '@/components/Partner/uniquePartner';
-import ContactTable from '@/components/Tables/Contact/ContactTable';
+import ContactTable from '@/components/Tables/Setting/Contact/ContactTable';
 import CreditInfoPartner from '@/components/Partner/creditInfoPartner';
 
 export default function PartnerDetail({ params }) {

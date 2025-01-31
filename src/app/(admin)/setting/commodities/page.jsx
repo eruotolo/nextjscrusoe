@@ -1,5 +1,5 @@
-import CommoditiesSectionTable from '@/components/Tables/Commodities/CommoditiesSectionTable';
-import CommoditiesTable from '@/components/Tables/Commodities/CommoditiesTable';
+import CommoditiesSectionTable from '@/components/Tables/Setting/Commodities/CommoditiesSectionTable';
+import CommoditiesTable from '@/components/Tables/Setting/Commodities/CommoditiesTable';
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 export default function CommoditiesPage() {
     return (

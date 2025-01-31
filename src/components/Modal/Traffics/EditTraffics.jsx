@@ -17,6 +17,7 @@ import { getTrafficsById, updateTraffics } from '@/services/setting/trafficsServ
 
 export default function EditTraffics({ id, refresh, open, onClose }) {
     const session = useAuthStore((state) => state.session);
+    //console.log('Session', session);
 
     const {
         register,
@@ -35,7 +36,7 @@ export default function EditTraffics({ id, refresh, open, onClose }) {
                     setValue('code', data.code);
                     setValue('name', data.name);
                     setValue('nameEnglish', data.nameEnglish);
-                    setValue('modifiedBy', data.modifiedBy);
+                    setValue('modifiedBy', session?.user?.id);
                 }
             } catch (error) {
                 console.error('Error fetching transport type:', error);
@@ -47,6 +48,7 @@ export default function EditTraffics({ id, refresh, open, onClose }) {
     const onSubmit = handleSubmit(async (data) => {
         try {
             const updatedTraffics = await updateTraffics(id, data);
+            // console.log('Datos;', updatedTraffics);
             if (updatedTraffics) {
                 await refresh();
                 onClose();
@@ -109,12 +111,7 @@ export default function EditTraffics({ id, refresh, open, onClose }) {
                         {errors.name && <span>Este campo es obligatorio</span>}
                     </div>
                     <div className="mb-[15px] grid grid-cols-1">
-                        <input
-                            id="modifiedBy"
-                            type="hidden"
-                            value={session?.user?.id || ''}
-                            {...register('modifiedBy')}
-                        />
+                        <input id="modifiedBy" type="text" {...register('modifiedBy')} hidden />
                     </div>
                     {error && <div className="mt-2 text-sm text-red-500">{error}</div>}
                     <DialogFooter>

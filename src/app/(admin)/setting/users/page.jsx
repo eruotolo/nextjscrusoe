@@ -1,5 +1,5 @@
-import UserTable from '@/components/Tables/Users/UserTable';
-import RoleTable from '@/components/Tables/Users/RoleTable';
+import UserTable from '@/components/Tables/Setting/Users/UserTable';
+import RoleTable from '@/components/Tables/Setting/Users/RoleTable';
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 
 export default function UserPage() {

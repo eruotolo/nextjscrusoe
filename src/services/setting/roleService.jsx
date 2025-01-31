@@ -21,8 +21,9 @@ export const getRoles = async () => {
             console.error(`Error al obtener: ${response.status} - ${response.statusText}`);
             return null;
         }
+        const roles = await response.json();
 
-        return await response.json();
+        return roles.filter((role) => role.name !== 'SuperAdministrador');
     } catch (error) {
         console.error('Error fetching roles:', error);
         throw error; // Re-throw the error for the component to handle

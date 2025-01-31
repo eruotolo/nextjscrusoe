@@ -80,7 +80,7 @@ export default function NewPartnerModal({ refresh }) {
                 ...data,
                 codeCountry: selectedCountry,
                 codeCity: selectedCity,
-                userId: Number(session?.user?.id) || 0,
+                userId: session?.user?.id || '',
             };
 
             const createdPartner = await createPartner(partnerData);
@@ -295,7 +295,8 @@ export default function NewPartnerModal({ refresh }) {
                     </div>
                     <div className="mb-[15px] grid grid-cols-1">
                         <input
-                            type="hidden"
+                            type="text"
+                            hidden
                             value={session?.user?.id || ''}
                             {...register('userId')}
                         />

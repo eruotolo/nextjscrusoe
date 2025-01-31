@@ -23,7 +23,10 @@ export const getUsers = async () => {
         }
 
         let data = await response.json();
-        return data.filter((user) => !user.roles.some((role) => role.roleId === 1));
+
+        return data.filter(
+            (user) => !user.roles.some((userRole) => userRole.role.name === 'SuperAdministrador')
+        );
     } catch (error) {
         console.error('Error fetching users:', error);
         throw error; // Re-throw the error for the component to handle

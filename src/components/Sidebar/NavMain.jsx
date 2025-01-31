@@ -16,7 +16,7 @@ export default function NavMain() {
                 Principales
             </Link>
             <Link
-                href="#"
+                href="/crm"
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted ${pathname === '#' ? 'bg-muted text-gris' : 'text-gris'} `}
 
                 //className="text-primary bg-muted"

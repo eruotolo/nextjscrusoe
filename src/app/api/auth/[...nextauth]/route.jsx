@@ -40,6 +40,16 @@ const authOptions = {
 
                 if (!matchPassword) throw new Error('Wrong Password');
 
+                // Verifica que el usuario tiene roles asociados
+                if (!userFound.roles || userFound.roles.length === 0) {
+                    throw new Error('El usuario no tiene roles asignados');
+                }
+
+                // Extrae los roles asociados como un array de strings
+                const roles = userFound.roles.map((userRole) => userRole.role.name);
+
+                //console.log('Roles asignados al usuario:', roles);
+
                 return {
                     id: userFound.id,
                     email: userFound.email,
@@ -50,23 +60,24 @@ const authOptions = {
                     city: userFound.city,
                     image: userFound.image,
                     state: userFound.state,
-                    roles: userFound.roles.map((userRole) => userRole.role.name),
+                    //roles: userFound.roles.map((userRole) => userRole.role.name),
+                    roles,
                 };
             },
         }),
     ],
+
     pages: {
         signIn: '/login',
     },
     // Añade la secreta aquí
     secret: process.env.NEXTAUTH_SECRET,
+
     session: {
-        jwt: true,
-        cookie: {
-            secure: process.env.NODE_ENV && process.env.NODE_ENV === 'production',
-            sameSite: 'none',
-        },
+        strategy: 'jwt',
+        maxAge: 30 * 24 * 60 * 60, // 30 días
     },
+
     callbacks: {
         async session({ session, token }) {
             try {
@@ -89,7 +100,7 @@ const authOptions = {
                     ...freshUserData,
                     roles: token.roles,
                 };
-                //console.log(session);
+                //console.log('Sesión generada:', session); // Verifica la salida final de la sesión
                 return session;
             } catch (error) {
                 console.error('Error actualizando la sesión:', error);
@@ -97,8 +108,9 @@ const authOptions = {
                 return session; // O return null; para invalidar la session
             }
         },
-        async jwt({ token, user }) {
+        async jwt({ token, user, account }) {
             if (user) {
+                //console.log('Roles del usuario en el JWT:', user.roles); // Verifica los roles antes de asignarlos
                 token.id = user.id;
                 token.name = user.name;
                 token.lastName = user.lastName;

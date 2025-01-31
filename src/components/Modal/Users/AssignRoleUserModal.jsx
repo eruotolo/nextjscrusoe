@@ -15,26 +15,38 @@ import {
 
 export default function AssignRoleUserModal({ id, refresh, open, onClose }) {
     const [roleData, setRoleData] = useState([]);
-    const [userRoles, setUserRoles] = useState([]);
     const [selectedRoles, setSelectedRoles] = useState([]);
 
-    useEffect(() => {
-        // Fetch all roles
-        getRoles()
-            .then((data) => setRoleData(data))
-            .catch((error) => console.error('Error fetching roles:', error));
-    }, []);
+    // OBTENGO LOS ROLES
 
     useEffect(() => {
-        // Fetch user's current roles
-        fetch(`/api/users/${id}/roles`)
-            .then((res) => res.json())
-            .then((data) => {
-                setUserRoles(data);
-                setSelectedRoles(data.map((role) => role.id));
-            })
-            .catch((error) => console.error('Error fetching user roles:', error));
-    }, [id]);
+        const fetchRoles = async () => {
+            try {
+                const data = await getRoles();
+                setRoleData(data);
+            } catch (error) {
+                console.error('Error fetching roles:', error);
+            }
+        };
+        fetchRoles();
+    }, []);
+
+    // OBTIENE LOS ROLES ASIGNADOS AL USUARIO
+
+    useEffect(() => {
+        const fetchUserRoles = async () => {
+            try {
+                const response = await fetch(`/api/users/${id}/roles`);
+                const data = await response.json();
+                setSelectedRoles(data.map((relation) => relation.roleId));
+            } catch (error) {
+                console.error('Error fetching user roles:', error);
+            }
+        };
+        if (open) {
+            fetchUserRoles();
+        }
+    }, [open, id]);
 
     const handleRoleChange = (roleId) => {
         setSelectedRoles((prevSelectedRoles) =>
@@ -89,7 +101,7 @@ export default function AssignRoleUserModal({ id, refresh, open, onClose }) {
                                     onChange={() => handleRoleChange(role.id)}
                                     className={`mr-2 h-4 w-4 ${
                                         selectedRoles.includes(role.id)
-                                            ? 'checked:accent-[#2E5D6D]'
+                                            ? "focus:ring-offset-0' checked:accent-[#2E5D6D]"
                                             : ''
                                     }`}
                                 />

@@ -1,4 +1,4 @@
-import PlacesTable from '@/components/Tables/Places/PlacesTable';
+import PlacesTable from '@/components/Tables/Setting/Places/PlacesTable';
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 
 export default function SettingPlacesPage() {

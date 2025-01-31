@@ -5,10 +5,10 @@ import { revalidatePath } from 'next/cache';
 
 export async function GET(request, { params }) {
     try {
+        const { id } = params;
+
         const viewRole = await prisma.role.findUnique({
-            where: {
-                id: Number(params.id),
-            },
+            where: { id },
             select: {
                 id: true,
                 name: true,
@@ -40,11 +40,11 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
     try {
+        const { id } = params;
+
         const data = await request.json();
         const roleUpdate = await prisma.role.update({
-            where: {
-                id: Number(params.id),
-            },
+            where: { id },
             data: data,
         });
 

@@ -63,7 +63,7 @@ export default function ChangePasswordModal({ open, onClose }) {
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[400px]">
+            <DialogContent className="sm:max-w-[550px]">
                 <DialogHeader>
                     <DialogTitle>Cambiar Contraseña</DialogTitle>
                     <DialogDescription>

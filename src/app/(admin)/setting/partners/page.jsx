@@ -1,4 +1,4 @@
-import PartnerTable from '@/components/Tables/Partner/partnerTable';
+import PartnerTable from '@/components/Tables/Setting/Partner/partnerTable';
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 
 export default function Partner() {

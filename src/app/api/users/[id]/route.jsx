@@ -7,8 +7,10 @@ export async function GET(request, { params }) {
     try {
         //return NextResponse.json({ message: 'Obtengo un usuario' });
 
+        const { id } = params;
+
         const userView = await prisma.user.findUnique({
-            where: { id: Number(params.id) },
+            where: { id },
             include: {
                 roles: {
                     include: {
@@ -33,12 +35,12 @@ export async function GET(request, { params }) {
     }
 }
 
-export async function DELETE(request, { id }) {
+export async function DELETE(request, { params }) {
     try {
+        const { id } = params;
+
         const userRemoved = await prisma.user.delete({
-            where: {
-                id: Number(id),
-            },
+            where: { id },
         });
 
         const response = NextResponse.json(userRemoved);
@@ -92,7 +94,7 @@ export async function PUT(request, { params: { id } }) {
 
             const userUpdated = await prisma.user.update({
                 where: {
-                    id: Number.parseInt(id, 10),
+                    id: id,
                 },
                 data: rest,
             });
@@ -130,7 +132,7 @@ export async function PUT(request, { params: { id } }) {
         //console.log('Data to update:', data);
         const userUpdated = await prisma.user.update({
             where: {
-                id: Number(id),
+                id: id,
             },
             data: data,
         });

@@ -1,4 +1,4 @@
-import ShippingPortTable from '@/components/Tables/ShippingPorts/ShippingPortTable';
+import ShippingPortTable from '@/components/Tables/Setting/ShippingPorts/ShippingPortTable';
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 export default function SettingPortsPage() {
     return (

@@ -1,4 +1,4 @@
-import AirportTable from '@/components/Tables/Airport/AirportTable';
+import AirportTable from '@/components/Tables/Setting/Airport/AirportTable';
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 
 export default function SettingAirportsPage() {

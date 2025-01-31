@@ -1,5 +1,5 @@
-import TransportTypeTable from '@/components/Tables/TransportType/TransportTypeTable';
-import IncotermsTable from '@/components/Tables/Incoterms/IncotermsTable';
+import TransportTypeTable from '@/components/Tables/Setting/TransportType/TransportTypeTable';
+import IncotermsTable from '@/components/Tables/Setting/Incoterms/IncotermsTable';
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 export default function IncotermsPage() {
     return (

@@ -31,8 +31,8 @@ export default function NewTraffics({ refresh }) {
     const onSubmit = async (data) => {
         setError('');
         // Transforma el id del usuario a un número
-        data.modifiedBy = Number(session?.user?.id) || 0;
-        console.log('Datos:', data);
+        //data.modifiedBy = Number(session?.user?.id) || 0;
+        //console.log('Datos:', data);
         try {
             const createdTraffics = await createTraffics(data);
             if (createdTraffics) {

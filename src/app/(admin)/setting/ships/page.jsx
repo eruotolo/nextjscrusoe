@@ -1,5 +1,5 @@
-import ShipOwnerTable from '@/components/Tables/Ships/ShipOwnerTable';
-import ShipsTable from '@/components/Tables/Ships/ShipsTable';
+import ShipOwnerTable from '@/components/Tables/Setting/Ships/ShipOwnerTable';
+import ShipsTable from '@/components/Tables/Setting/Ships/ShipsTable';
 import BreadCrumbSetting from '@/components/BreadCrumb/BreadCrumbSetting';
 
 export default function Ships() {
