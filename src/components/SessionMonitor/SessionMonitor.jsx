@@ -9,7 +9,7 @@ export default function SessionMonitor() {
     useEffect(() => {
         startMonitoring();
         return () => stopMonitoring();
-    }, []);
+    }, [startMonitoring, stopMonitoring]);
 
     return null;
 }

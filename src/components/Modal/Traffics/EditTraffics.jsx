@@ -43,7 +43,7 @@ export default function EditTraffics({ id, refresh, open, onClose }) {
             }
         };
         fetchData();
-    }, [id, setValue]);
+    }, [id, setValue, session?.user?.id]);
 
     const onSubmit = handleSubmit(async (data) => {
         try {

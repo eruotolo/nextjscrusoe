@@ -41,7 +41,7 @@ export function EditMapsComponent({ lng, lat, onLocationChange }) {
                 onLocationChange(lng, lat); // Llamar a la función onLocationChange con las nuevas coordenadas
             });
         }
-    }, [lng, lat]);
+    }, [lng, lat, onLocationChange]);
 
     useEffect(() => {
         if (map.current && marker.current) {

@@ -43,7 +43,7 @@ export function MapsComponent({ lng, lat, onLocationChange, mapHeight = '100%' }
             const { lng, lat } = marker.current.getLngLat();
             onLocationChange(lng, lat);
         });
-    }, [onLocationChange]);
+    }, [onLocationChange, centerLog, centerLat]);
 
     useEffect(() => {
         if (map.current && map.current.isStyleLoaded() && marker.current) {

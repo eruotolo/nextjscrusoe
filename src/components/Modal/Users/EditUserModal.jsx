@@ -65,7 +65,7 @@ export default function EditUserModal({ id, refresh, open, onClose }) {
 
         // Solo se cargan los datos si el modal está abierto y hay un id válido
         if (open && id) fetchData();
-    }, [id, open, setValue]);
+    }, [id, open, setValue, imagePreview]);
 
     const onSubmit = async (data) => {
         setError(''); // Limpia errores previos

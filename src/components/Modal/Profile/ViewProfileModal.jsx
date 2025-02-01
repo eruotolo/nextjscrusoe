@@ -66,7 +66,7 @@ export default function ViewProfileModal({ open, onClose }) {
             }
         };
         fetchData();
-    }, [session, setValue]);
+    }, [session, setValue, imagePreview]);
 
     const [isEditing, setIsEditing] = useState(false);
 
