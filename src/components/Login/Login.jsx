@@ -109,7 +109,11 @@ export default function LoginPage() {
                 </Link>
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button
+                type="submit"
+                disabled={isLoading}
+                className="h-[50px] w-full rounded-[10px] bg-azul from-azul to-verde px-5 py-3 text-white duration-150 hover:bg-gradient-to-r active:bg-gradient-to-r"
+            >
                 {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
             </Button>
 
